@@ -1,0 +1,110 @@
+guns:
+  swagger-open: true                #是否开启swagger (true/false)
+  kaptcha-open: false               #是否开启登录时验证码 (true/false)
+  spring-session-open: false        #是否开启spring session,如果是多机环境需要开启(true/false)
+  session-invalidate-time: 1800     #session失效时间(只在单机环境下生效，多机环境在SpringSessionConfig类中配置) 单位：秒
+  session-validation-interval: 900  #多久检测一次失效的session(只在单机环境下生效) 单位：秒
+  locked: false
+
+server:
+  port: 7010
+  servlet:
+    context-path: /quick
+  max-http-header-size: 10240
+
+rest:
+  img-url: http://127.0.0.1:7010/img
+  img-path: E:\works\img
+
+efps:
+  private-key-path: E:\works\efps.pfx
+  public-key-path: E:\works\efps.cer
+  sign-no: 20190115yhys01
+  password: Epaylinks@EFPS2018
+  customerCode: 5651300003039000
+  order-notify-url: http://127.0.0.1:7010/quick/api/pay/epspOrderNofify
+  split-notify-url: http://127.0.0.1:7010/quick/api/pay/epspSplitNofify
+
+sum:
+  app-id: 101243663
+  agent-id: 101243663
+  password: qwer1234
+  private-key-path: E:\temp\yle
+  public-key-path: E:\temp\yle\TTFPublicNew.cer
+  url: https://entrance.sumpay.cn/gateway.htm
+  domain: 127.0.0.1
+  share-mer-no: 101253659
+  cost-rate: 0.0025
+  cost-fee: 40
+  min-order-amount: 500
+  order-notify: http://127.0.0.1:6001/quick/api/vs/pay/orderNotify
+  sign-notify: http://127.0.0.1:6001/quick/api/vs/mch/signNotify
+
+sumbt:
+  app-id: 101563664
+  mer-no: 101563664
+  card-auth-app-id: 101553668
+  #sub-mer-no: 101553668
+  password: qwer1234
+  private-key-path: E:\\temp\\yle\\101563664.pfx
+  public-key-path: E:\\temp\yle\\TTFPublicNew.cer
+  card-auth-private-key-path: E:\\temp\\yle\\3668.pfx
+  url: https://entrance.sumpay.cn/gateway.htm
+  domain: 127.0.0.1
+  cost-rate: 0.0041
+  cost-fee: 40
+  min-order-amount: 500
+  order-notify: http://127.0.0.1:6001/quick/api/vs/bt/pay/orderNotify
+
+gyf:
+  merchant-no: 101121000008
+  private-key-path: E:\temp\gyf\101121000008.pfx
+  public-key-path: E:\temp\gyf\gyf-online.cer
+  password: qwerty
+  mch-url: https://common.weiyifu123.com
+  trans-url: https://trans.weiyifu123.com
+  query-url: https://query.weiyifu123.com
+  min-order-amount: 1000
+  order-notify: http://127.0.0.1:6001/quick/api/gyf/pay/orderNotify
+  df-notify: http://127.0.0.1:6001/quick/api/gyf/mch/dfNotify
+  cost-fee: 50
+
+paf:
+  mid: "000010000000001"
+  encrypt-id: "000010000000001"
+  public-key: 96ea552bcd55253ba90bbcffcf81e654
+  cost-fee: 50
+  min-order-amount: 500
+  order-notify: http://127.0.0.1:6001/quick/api/paf/pay/orderNotify
+  withdraw-notify: http://127.0.0.1:6001/quick/api/paf/mch/withdrawNotify
+  bind-card-notify: http://127.0.0.1:6001/quick/api/paf/mch/bindCardNotify
+
+ff:
+  url: https://47.92.100.165/service/gateway
+  merchantId: "ff19000001"
+  key: 96ea552bcd55253ba90bbcffcf81e654
+  cost-public-key: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCIaDx0DMC0NxLssTPZg3VZOX8xnW1hu74AK4Kwzv+fpZT9JiliIU/gTBwTJQNCnR2LbFR0DOMRnWUafrbI0IcbA2VA3sO+z/WwfGYTy9/fZnNOXr91Jgg7Hln+7qM7aWy2MoGY4M1s8NvtHbtMc+FZFQwVzgjipGDReEaK3ahGCQIDAQAB"
+  private-key: "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIhoPHQMwLQ3EuyxM9mDdVk5fzGdbWG7vgArgrDO/5+llP0mKWIhT+BMHBMlA0KdHYtsVHQM4xGdZRp+tsjQhxsDZUDew77P9bB8ZhPL399mc05ev3UmCDseWf7uoztpbLYygZjgzWzw2+0du0xz4VkVDBXOCOKkYNF4RordqEYJAgMBAAECgYAxXbfzL+JV1lCtBHyFTcQcZGiZ5iV951od6aFEp8VvW5eN/k+fyfqEbEcEzrJdW0sj+DKgRUGwUEwUyKMSDhW2r8mFr0wlWDvOJDpVl1VYjSxp2yhwjg0H1uTjGZhf9G1GcWwJHnD3U54ZrzgtqGiEvqK64qIl1koGXG5ww5mu4QJBAO4CZfw8lF+wD2+YlT1x4e4ku4NyI9awihadV4LN3NiHs1Ubm2RuW4ca/hcH5oToRrRmypmOT8bxyWMMkrj5CIUCQQCSt8itnsDfxyWdhEX1ecyn+25bkZQo1fn+ujFxc6ZmGI0vym22HZji/ghKUAug+i6Owtn896/O80m5V/ZZ5EC1AkEAiWAjA2Ln9Q8G6c+1HEEWOcFD5gvEec9t9L2eXCZ8eRJiRRZpK5+y/plq3Vo3CLGU1d2axOTqURcPuTbxnQhIjQJAUpQ80HQVTR7S7iigE719UmMzRzjWMnHVZuk3oQqd8sMI3IhMXf+kqMagter90JpgEBxeA4MJoirPKRH4Z7oQLQJAJm5Fol7pjrCAVin5P1yxpD5ZZqPU4vzyk4tOomFYShtjV+6GQrNQNS6jmCZ2ARz4k0b0LrMnk+Iv9JQXFsDKiw=="
+  cost-fee: 50
+  min-order-amount: 500
+  order-notify: http://127.0.0.1:6001/quick/api/ff/pay/orderNotify
+  withdraw-notify: http://127.0.0.1:6001/quick/api/ff/mch/withdrawNotify
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/quick_pay?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: root
+    password: 648c064a886c800f
+    filters: wall,mergeStat
+    #data-source-name: gunsdb
+
+logging:
+  level.root: info
+  level.com.stylefeng: debug
+  path: logs/
+  file: quick-agent.log
+  file.max-size: 50MB
+
+#多数据源情况的配置
+

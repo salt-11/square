@@ -1,0 +1,157 @@
+2021-07-12 13:51:22.698  INFO 25948 --- [restartedMain] cn.hawy.quick.GunsApplication            : Starting GunsApplication on DESKTOP-1CG5MRD with PID 25948 (E:\ideaProjects\square\quick\target\classes started by Administrator in E:\ideaProjects\square)
+2021-07-12 13:51:22.701  INFO 25948 --- [restartedMain] cn.hawy.quick.GunsApplication            : The following profiles are active: dev
+2021-07-12 13:51:22.734  INFO 25948 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2021-07-12 13:51:22.734  INFO 25948 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2021-07-12 13:51:24.074  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TBankCardBinMapper' and 'cn.hawy.quick.modular.api.mapper.TBankCardBinMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TCardAuthMapper' and 'cn.hawy.quick.modular.api.mapper.TCardAuthMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TDeptAccountFlowMapper' and 'cn.hawy.quick.modular.api.mapper.TDeptAccountFlowMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TDeptBankCardMapper' and 'cn.hawy.quick.modular.api.mapper.TDeptBankCardMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TDeptCashFlowMapper' and 'cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TDeptOrderReportMapper' and 'cn.hawy.quick.modular.api.mapper.TDeptOrderReportMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TDeptRateChannelMapper' and 'cn.hawy.quick.modular.api.mapper.TDeptRateChannelMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TFestivalHolidayMapper' and 'cn.hawy.quick.modular.api.mapper.TFestivalHolidayMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMchCardChannelMapper' and 'cn.hawy.quick.modular.api.mapper.TMchCardChannelMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.075  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMchCardMapper' and 'cn.hawy.quick.modular.api.mapper.TMchCardMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMchCashFlowMapper' and 'cn.hawy.quick.modular.api.mapper.TMchCashFlowMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMchImgMapper' and 'cn.hawy.quick.modular.api.mapper.TMchImgMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMchInfoChannelMapper' and 'cn.hawy.quick.modular.api.mapper.TMchInfoChannelMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMchInfoMapper' and 'cn.hawy.quick.modular.api.mapper.TMchInfoMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMchRateChannelMapper' and 'cn.hawy.quick.modular.api.mapper.TMchRateChannelMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TMerPoolMapper' and 'cn.hawy.quick.modular.api.mapper.TMerPoolMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TPayOrderBcMapper' and 'cn.hawy.quick.modular.api.mapper.TPayOrderBcMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'TPayOrderMapper' and 'cn.hawy.quick.modular.api.mapper.TPayOrderMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'deptMapper' and 'cn.hawy.quick.modular.system.mapper.DeptMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'dictMapper' and 'cn.hawy.quick.modular.system.mapper.DictMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.076  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'fileInfoMapper' and 'cn.hawy.quick.modular.system.mapper.FileInfoMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.077  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'loginLogMapper' and 'cn.hawy.quick.modular.system.mapper.LoginLogMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.077  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'menuMapper' and 'cn.hawy.quick.modular.system.mapper.MenuMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.077  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'noticeMapper' and 'cn.hawy.quick.modular.system.mapper.NoticeMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.077  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'operationLogMapper' and 'cn.hawy.quick.modular.system.mapper.OperationLogMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.077  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'relationMapper' and 'cn.hawy.quick.modular.system.mapper.RelationMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.077  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'roleMapper' and 'cn.hawy.quick.modular.system.mapper.RoleMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.077  WARN 25948 --- [restartedMain] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'userMapper' and 'cn.hawy.quick.modular.system.mapper.UserMapper' mapperInterface. Bean already defined with the same name!
+2021-07-12 13:51:24.110  INFO 25948 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2021-07-12 13:51:24.112  INFO 25948 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2021-07-12 13:51:24.150  INFO 25948 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 31ms. Found 0 repository interfaces.
+2021-07-12 13:51:24.323  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'shiroConfig' of type [cn.hawy.quick.config.web.ShiroConfig$$EnhancerBySpringCGLIB$$1e4e3732] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.354  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'rememberMeCookie' of type [org.apache.shiro.web.servlet.SimpleCookie] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.510  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'rememberMeManager' of type [org.apache.shiro.web.mgt.CookieRememberMeManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.513  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'ehCacheConfig' of type [cn.hawy.quick.config.EhCacheConfig$$EnhancerBySpringCGLIB$$d64c513a] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.514  INFO 25948 --- [restartedMain] o.s.c.ehcache.EhCacheManagerFactoryBean  : Initializing EhCache CacheManager
+2021-07-12 13:51:24.595  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'ehcache' of type [org.springframework.cache.ehcache.EhCacheManagerFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.597  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'getCacheShiroManager' of type [org.apache.shiro.cache.ehcache.EhCacheManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.610  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'gunsProperties' of type [cn.hawy.quick.config.properties.GunsProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.614  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'defaultWebSessionManager' of type [cn.hawy.quick.core.shiro.AngWebSessionManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.622  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'shiroDbRealm' of type [cn.hawy.quick.core.shiro.ShiroDbRealm] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.623  INFO 25948 --- [restartedMain] o.a.shiro.cache.ehcache.EhCacheManager   : Cache with name 'cn.hawy.quick.core.shiro.ShiroDbRealm.authorizationCache' does not yet exist.  Creating now.
+2021-07-12 13:51:24.627  INFO 25948 --- [restartedMain] o.a.shiro.cache.ehcache.EhCacheManager   : Added EhCache named [cn.hawy.quick.core.shiro.ShiroDbRealm.authorizationCache]
+2021-07-12 13:51:24.628  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'securityManager' of type [org.apache.shiro.web.mgt.DefaultWebSecurityManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.630  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodInvokingFactoryBean' of type [org.springframework.beans.factory.config.MethodInvokingFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.638  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'webConfig' of type [cn.hawy.quick.config.web.WebConfig$$EnhancerBySpringCGLIB$$65216275] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.743  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'authorizationAttributeSourceAdvisor' of type [org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.746  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'druidStatPointcut' of type [org.springframework.aop.support.JdkRegexpMethodPointcut] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.750  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'druidStatInterceptor' of type [com.alibaba.druid.support.spring.stat.DruidStatInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.750  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'druidStatAdvisor' of type [org.springframework.aop.support.DefaultPointcutAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:24.786  INFO 25948 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$eab0100f] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-07-12 13:51:25.180  INFO 25948 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8010 (http)
+2021-07-12 13:51:25.192  INFO 25948 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-07-12 13:51:25.192  INFO 25948 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/9.0.13
+2021-07-12 13:51:25.196  INFO 25948 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [D:\Program Files\Java\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;D:\Program Files\apache-maven-3.3.9\bin;D:\Program Files\Java\jdk1.8.0_191\bin;D:\Program Files\Java\jdk1.8.0_191\jre\bin;D:\Program Files\nodejs\;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;D:\Program Files (x86)\IDM Computer Solutions\UltraEdit\;C:\Users\Administrator\AppData\Roaming\npm;.]
+2021-07-12 13:51:25.268  INFO 25948 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-07-12 13:51:25.268  INFO 25948 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2496 ms
+2021-07-12 13:51:25.653  INFO 25948 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2021-07-12 13:51:25.792  INFO 25948 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2021-07-12 13:51:26.398  INFO 25948 --- [restartedMain] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2021-07-12 13:51:28.808  INFO 25948 --- [restartedMain] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2021-07-12 13:51:29.449  INFO 25948 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2021-07-12 13:51:29.528  INFO 25948 --- [restartedMain] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-07-12 13:51:29.540  INFO 25948 --- [restartedMain] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-07-12 13:51:29.566  INFO 25948 --- [restartedMain] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-07-12 13:51:29.655  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: balanceQueryUsingPOST_1
+2021-07-12 13:51:29.664  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: registerUsingPOST_1
+2021-07-12 13:51:29.667  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: withdrawUsingPOST_1
+2021-07-12 13:51:29.670  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: withdrawQueryUsingPOST_1
+2021-07-12 13:51:29.671  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: orderNotifyUsingPOST_1
+2021-07-12 13:51:29.673  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: queryUsingPOST_1
+2021-07-12 13:51:29.675  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: rechargeUsingPOST_1
+2021-07-12 13:51:29.680  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: bindCardUsingPOST_1
+2021-07-12 13:51:29.683  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: bindCardConfirmUsingPOST_1
+2021-07-12 13:51:29.691  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: balanceQueryUsingPOST_2
+2021-07-12 13:51:29.693  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: bindCardUsingPOST_2
+2021-07-12 13:51:29.696  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: registerUsingPOST_2
+2021-07-12 13:51:29.699  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: withdrawUsingPOST_2
+2021-07-12 13:51:29.701  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: withdrawNotifyUsingPOST_1
+2021-07-12 13:51:29.703  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: withdrawQueryUsingPOST_2
+2021-07-12 13:51:29.705  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: orderNotifyUsingPOST_2
+2021-07-12 13:51:29.707  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: queryUsingPOST_2
+2021-07-12 13:51:29.708  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: rechargeUsingPOST_2
+2021-07-12 13:51:29.750  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: queryUsingPOST_3
+2021-07-12 13:51:29.751  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: testUsingPOST_1
+2021-07-12 13:51:29.756  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: binkCardUsingPOST_1
+2021-07-12 13:51:29.759  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: registerUsingPOST_3
+2021-07-12 13:51:29.767  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: orderNotifyUsingPOST_3
+2021-07-12 13:51:29.769  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: queryUsingPOST_4
+2021-07-12 13:51:29.770  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: testUsingPOST_2
+2021-07-12 13:51:29.774  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: balanceQueryUsingPOST_3
+2021-07-12 13:51:29.777  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: bindCardConfirmUsingPOST_2
+2021-07-12 13:51:29.779  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: binkCardUsingPOST_2
+2021-07-12 13:51:29.788  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: registerUsingPOST_4
+2021-07-12 13:51:29.798  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: withdrawUsingPOST_3
+2021-07-12 13:51:29.801  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: withdrawQueryUsingPOST_3
+2021-07-12 13:51:29.805  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: orderNotifyUsingPOST_4
+2021-07-12 13:51:29.807  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: queryUsingPOST_5
+2021-07-12 13:51:29.810  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: rechargeUsingPOST_3
+2021-07-12 13:51:29.811  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: mqTestUsingPOST_1
+2021-07-12 13:51:29.812  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: orderNotifyUsingPOST_5
+2021-07-12 13:51:29.813  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: queryUsingPOST_6
+2021-07-12 13:51:29.814  INFO 25948 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: rechargeUsingPOST_4
+2021-07-12 13:51:29.863  INFO 25948 --- [restartedMain] o.apache.activemq.broker.BrokerService   : Loaded the Bouncy Castle security provider.
+2021-07-12 13:51:29.897  INFO 25948 --- [restartedMain] o.apache.activemq.broker.BrokerService   : Using Persistence Adapter: MemoryPersistenceAdapter
+2021-07-12 13:51:29.900  INFO 25948 --- [JMX connector] o.a.a.broker.jmx.ManagementContext       : JMX consoles can connect to service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi
+2021-07-12 13:51:30.025  INFO 25948 --- [restartedMain] o.apache.activemq.broker.BrokerService   : Apache ActiveMQ 5.15.8 (localhost, ID:DESKTOP-1CG5MRD-52764-1626069089902-0:1) is starting
+2021-07-12 13:51:30.028  INFO 25948 --- [restartedMain] o.apache.activemq.broker.BrokerService   : Apache ActiveMQ 5.15.8 (localhost, ID:DESKTOP-1CG5MRD-52764-1626069089902-0:1) started
+2021-07-12 13:51:30.028  INFO 25948 --- [restartedMain] o.apache.activemq.broker.BrokerService   : For help or more information please see: http://activemq.apache.org
+2021-07-12 13:51:30.048  INFO 25948 --- [restartedMain] o.a.activemq.broker.TransportConnector   : Connector vm://localhost started
+2021-07-12 13:51:30.106  INFO 25948 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8010 (http) with context path ''
+2021-07-12 13:51:30.110  INFO 25948 --- [restartedMain] cn.hawy.quick.GunsApplication            : Started GunsApplication in 7.911 seconds (JVM running for 8.899)
+2021-07-12 13:51:30.114  INFO 25948 --- [restartedMain] cn.hawy.quick.GunsApplication            : GunsApplication is success!
+2021-07-12 13:51:45.846  INFO 25948 --- [http-nio-8010-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-07-12 13:51:45.846  INFO 25948 --- [http-nio-8010-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-07-12 13:51:45.855  INFO 25948 --- [http-nio-8010-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 9 ms
+2021-07-12 13:51:45.863  INFO 25948 --- [http-nio-8010-exec-1] a.s.s.m.AbstractValidatingSessionManager : Enabling session validation scheduler...
+2021-07-12 14:06:45.868  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 14:06:45.869  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 14:21:45.874  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 14:21:45.875  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 14:36:45.874  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 14:36:45.874  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 14:51:45.869  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 14:51:45.869  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 15:06:45.868  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 15:06:45.869  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  [1] sessions were stopped.
+2021-07-12 15:21:45.878  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 15:21:45.878  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 15:36:45.865  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 15:36:45.865  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 15:51:45.865  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 15:51:45.865  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 16:06:45.874  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 16:06:45.874  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 16:21:45.872  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 16:21:45.872  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 16:36:45.878  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 16:36:45.878  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 16:51:45.871  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 16:51:45.871  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 17:06:45.867  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 17:06:45.867  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 17:21:45.878  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 17:21:45.878  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 17:36:45.870  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 17:36:45.870  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 17:51:45.874  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 17:51:45.874  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 18:06:45.877  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 18:06:45.877  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2021-07-12 18:21:45.873  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2021-07-12 18:21:45.873  INFO 25948 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.

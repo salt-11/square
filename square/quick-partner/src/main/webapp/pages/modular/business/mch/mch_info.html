@@ -1,0 +1,46 @@
+@layout("/common/_container.html",{js:["/assets/modular/business/mch/mch_info.js"]}){
+
+<div class="layui-body-header">
+    <span class="layui-body-header-title">商户信息</span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <input id="beginTime" class="layui-input" type="text" placeholder="开始时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="endTime" class="layui-input" type="text" placeholder="结束时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="mchId" class="layui-input" type="text" placeholder="商户号"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="mchName" class="layui-input" type="text" placeholder="商户名称"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="deptId" class="layui-input" type="text" placeholder="渠道号"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="mobile" class="layui-input" type="text" placeholder="手机号"/>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="mchInfoTable" lay-filter="mchInfoTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="tableBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">详情</a>
+</script>
+@}
