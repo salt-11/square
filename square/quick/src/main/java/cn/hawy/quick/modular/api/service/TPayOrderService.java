@@ -1,13 +1,7 @@
 package cn.hawy.quick.modular.api.service;
 
-import cn.hawy.quick.modular.api.entity.PayOrderContact;
-import cn.hawy.quick.modular.api.entity.TDeptAccountFlow;
-import cn.hawy.quick.modular.api.entity.TMchCashFlow;
-import cn.hawy.quick.modular.api.entity.TPayOrder;
-import cn.hawy.quick.modular.api.mapper.TDeptAccountFlowMapper;
-import cn.hawy.quick.modular.api.mapper.TMchCashFlowMapper;
-import cn.hawy.quick.modular.api.mapper.TPayOrderBcMapper;
-import cn.hawy.quick.modular.api.mapper.TPayOrderMapper;
+import cn.hawy.quick.modular.api.entity.*;
+import cn.hawy.quick.modular.api.mapper.*;
 import cn.hawy.quick.modular.system.entity.Dept;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -35,12 +29,15 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 
 	@Autowired
 	TDeptAccountFlowMapper deptAccountFlowMapper;
-
 	@Autowired
 	TMchCashFlowMapper mchCashFlowMapper;
-
 	@Autowired
 	TPayOrderBcMapper payOrderBcMapper;
+	@Autowired
+	TDeptInfoMapper deptInfoMapper;
+	@Autowired
+	TAgentInfoMapper agentInfoMapper;
+
 
 	public TPayOrder findByMchIdAndOutTradeNo(String mchId,String outTradeNo) {
 		TPayOrder payOrder = new TPayOrder();
@@ -50,14 +47,15 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 	}
 
 	@Transactional
-	public boolean updateOrderStatusSuccess(TPayOrder payOrder,Dept dept) {
+	public boolean updateOrderStatusSuccess(TPayOrder payOrder) {
 		int count = this.baseMapper.updateOrderStatus(payOrder.getOrderId(), 2);
 		if(count == 1) {
 			if(payOrder.getDeptAmount()>0) {
+				TDeptInfo dept = deptInfoMapper.selectById(payOrder.getDeptId());
 				//增加渠道商账户流水
 				TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
-				deptAccountFlow.setDeptId(payOrder.getDeptId());
-				deptAccountFlow.setDeptName(dept.getSimpleName());
+				deptAccountFlow.setDeptId(dept.getId());
+				deptAccountFlow.setDeptName(dept.getDeptName());
 				deptAccountFlow.setBalance(dept.getBalance());
 				deptAccountFlow.setAmount(payOrder.getDeptAmount());
 				deptAccountFlow.setBizType(1);
@@ -66,7 +64,22 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptAccountFlowMapper.addBalance(payOrder.getDeptId(), payOrder.getDeptAmount());
+				deptInfoMapper.addBalance(dept.getId(), payOrder.getDeptAmount());
+			}
+			if(payOrder.getAgentAmount() > 0 ){
+				TAgentInfo agent = agentInfoMapper.selectById(payOrder.getAgentId());
+				//增加渠道商账户流水
+				TAgentAccountFlow agentAccountFlow = new TAgentAccountFlow();
+				agentAccountFlow.setAgentId(agent.getId());
+				agentAccountFlow.setAgentName(agent.getAgentName());
+				agentAccountFlow.setBalance(agent.getBalance());
+				agentAccountFlow.setAmount(payOrder.getDeptAmount());
+				agentAccountFlow.setBizType(1);
+				agentAccountFlow.setDirection(1);
+				agentAccountFlow.setTradeNo(payOrder.getOrderId());
+				agentAccountFlow.setCreateTime(LocalDateTime.now());
+				//增加代理商账户余额
+				agentInfoMapper.addBalance(agent.getId(),payOrder.getAgentAmount());
 			}
 			return true;
 		}else {
@@ -75,14 +88,15 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 	}
 
 	@Transactional
-	public boolean updateOrderStatusSuccess(TPayOrder payOrder,Dept dept,String returnMsg) {
+	public boolean updateOrderStatusSuccess(TPayOrder payOrder,String returnMsg) {
 		int count = this.baseMapper.updateOrderStatusAndReturnMsg(payOrder.getOrderId(), 2, returnMsg);
 		if(count == 1) {
 			if(payOrder.getDeptAmount()>0) {
+				TDeptInfo dept = deptInfoMapper.selectById(payOrder.getDeptId());
 				//增加渠道商账户流水
 				TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
-				deptAccountFlow.setDeptId(payOrder.getDeptId());
-				deptAccountFlow.setDeptName(dept.getSimpleName());
+				deptAccountFlow.setDeptId(dept.getId());
+				deptAccountFlow.setDeptName(dept.getDeptName());
 				deptAccountFlow.setBalance(dept.getBalance());
 				deptAccountFlow.setAmount(payOrder.getDeptAmount());
 				deptAccountFlow.setBizType(1);
@@ -91,7 +105,22 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptAccountFlowMapper.addBalance(payOrder.getDeptId(), payOrder.getDeptAmount());
+				deptInfoMapper.addBalance(dept.getId(), payOrder.getDeptAmount());
+			}
+			if(payOrder.getAgentAmount() > 0 ){
+				TAgentInfo agent = agentInfoMapper.selectById(payOrder.getAgentId());
+				//增加渠道商账户流水
+				TAgentAccountFlow agentAccountFlow = new TAgentAccountFlow();
+				agentAccountFlow.setAgentId(agent.getId());
+				agentAccountFlow.setAgentName(agent.getAgentName());
+				agentAccountFlow.setBalance(agent.getBalance());
+				agentAccountFlow.setAmount(payOrder.getDeptAmount());
+				agentAccountFlow.setBizType(1);
+				agentAccountFlow.setDirection(1);
+				agentAccountFlow.setTradeNo(payOrder.getOrderId());
+				agentAccountFlow.setCreateTime(LocalDateTime.now());
+				//增加代理商账户余额
+				agentInfoMapper.addBalance(agent.getId(),payOrder.getAgentAmount());
 			}
 			return true;
 		}else {
@@ -100,15 +129,16 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 	}
 
 	@Transactional
-	public boolean updateOrderStatusSuccessOfSumBt(TPayOrder payOrder,TMchCashFlow mchCashFlow,Dept dept) {
+	public boolean updateOrderStatusSuccessOfSumBt(TPayOrder payOrder,TMchCashFlow mchCashFlow) {
 		int count = this.baseMapper.updateOrderStatusOfSumBt(payOrder.getOrderId(), 2);
 		int cashCount = mchCashFlowMapper.updateCashStatus(mchCashFlow.getCashId(), 2);
 		if(count == 1 && cashCount == 1) {
 			if(payOrder.getDeptAmount()>0) {
+				TDeptInfo dept = deptInfoMapper.selectById(payOrder.getDeptId());
 				//增加渠道商账户流水
 				TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
-				deptAccountFlow.setDeptId(payOrder.getDeptId());
-				deptAccountFlow.setDeptName(dept.getSimpleName());
+				deptAccountFlow.setDeptId(dept.getId());
+				deptAccountFlow.setDeptName(dept.getDeptName());
 				deptAccountFlow.setBalance(dept.getBalance());
 				deptAccountFlow.setAmount(payOrder.getDeptAmount());
 				deptAccountFlow.setBizType(1);
@@ -117,13 +147,29 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptAccountFlowMapper.addBalance(payOrder.getDeptId(), payOrder.getDeptAmount());
+				deptInfoMapper.addBalance(payOrder.getDeptId(), payOrder.getDeptAmount());
+			}
+			if(payOrder.getAgentAmount() > 0 ){
+				TAgentInfo agent = agentInfoMapper.selectById(payOrder.getAgentId());
+				//增加渠道商账户流水
+				TAgentAccountFlow agentAccountFlow = new TAgentAccountFlow();
+				agentAccountFlow.setAgentId(agent.getId());
+				agentAccountFlow.setAgentName(agent.getAgentName());
+				agentAccountFlow.setBalance(agent.getBalance());
+				agentAccountFlow.setAmount(payOrder.getDeptAmount());
+				agentAccountFlow.setBizType(1);
+				agentAccountFlow.setDirection(1);
+				agentAccountFlow.setTradeNo(payOrder.getOrderId());
+				agentAccountFlow.setCreateTime(LocalDateTime.now());
+				//增加代理商账户余额
+				agentInfoMapper.addBalance(agent.getId(),payOrder.getAgentAmount());
 			}
 			if(mchCashFlow.getDeptAmount()>0) {
+				TDeptInfo dept = deptInfoMapper.selectById(payOrder.getDeptId());
 				//增加渠道商账户流水
 				TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
-				deptAccountFlow.setDeptId(payOrder.getDeptId());
-				deptAccountFlow.setDeptName(dept.getSimpleName());
+				deptAccountFlow.setDeptId(dept.getId());
+				deptAccountFlow.setDeptName(dept.getDeptName());
 				deptAccountFlow.setBalance(dept.getBalance());
 				deptAccountFlow.setAmount(mchCashFlow.getDeptAmount());
 				deptAccountFlow.setBizType(2);
@@ -132,7 +178,7 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptAccountFlowMapper.addBalance(payOrder.getDeptId(), mchCashFlow.getDeptAmount());
+				deptInfoMapper.addBalance(dept.getId(), mchCashFlow.getDeptAmount());
 			}
 			return true;
 		}else {

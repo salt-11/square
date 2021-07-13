@@ -11,8 +11,6 @@ public class RegisterDto {
 	
 	private String realName;
 	
-	private String mchRate;
-	
 	private String idNo;
 	
 	private String idStartDate;

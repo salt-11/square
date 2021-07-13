@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hawy.quick.modular.api.entity.*;
+import cn.hawy.quick.modular.api.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,21 +42,6 @@ import cn.hawy.quick.modular.api.dto.sum.SignNotifyDto;
 import cn.hawy.quick.modular.api.dto.sum.UploadImgDto;
 import cn.hawy.quick.modular.api.dto.sum.WithdrawDto;
 import cn.hawy.quick.modular.api.dto.sum.WithdrawQueryDto;
-import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
-import cn.hawy.quick.modular.api.entity.TMchCard;
-import cn.hawy.quick.modular.api.entity.TMchCardChannel;
-import cn.hawy.quick.modular.api.entity.TMchCashFlow;
-import cn.hawy.quick.modular.api.entity.TMchImg;
-import cn.hawy.quick.modular.api.entity.TMchInfo;
-import cn.hawy.quick.modular.api.entity.TMchInfoChannel;
-import cn.hawy.quick.modular.api.service.TBankCardBinService;
-import cn.hawy.quick.modular.api.service.TDeptRateChannelService;
-import cn.hawy.quick.modular.api.service.TMchCardChannelService;
-import cn.hawy.quick.modular.api.service.TMchCardService;
-import cn.hawy.quick.modular.api.service.TMchCashFlowService;
-import cn.hawy.quick.modular.api.service.TMchImgService;
-import cn.hawy.quick.modular.api.service.TMchInfoChannelService;
-import cn.hawy.quick.modular.api.service.TMchInfoService;
 import cn.hawy.quick.modular.api.validate.sum.SumMchValidate;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.service.DeptService;
@@ -68,8 +55,11 @@ import cn.hutool.core.util.StrUtil;
 public class SumMchController {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+
+	private static final String Channel = "sum";
+
 	@Autowired
-	DeptService deptService;
+	TDeptInfoService deptInfoService;
 	@Autowired
 	SumChannel sumChannel;
 	@Autowired
@@ -92,6 +82,9 @@ public class SumMchController {
 	TDeptRateChannelService deptRateChannelService;
 	@Autowired
 	SumProperties sumProperties;
+	@Autowired
+	TPlatformRateChannelService platformRateChannelService;
+
 
 	/**
 	 * 注册
@@ -104,7 +97,7 @@ public class SumMchController {
 		log.info("下游请求报文-register:request={}",JSON.toJSONString(registerDto));
 		SumMchValidate.register(registerDto);
 		//渠道商信息
-		Dept dept = deptService.getById(registerDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(registerDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -113,23 +106,16 @@ public class SumMchController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, registerDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, registerDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(registerDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(registerDto.getPartnerId(), "TTS", "sum");
+
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
-		}
-		//商户费率不能低于渠道商费率
-//		if(NumberUtil.compare(Double.parseDouble(registerDto.getMchRate()),Double.parseDouble(deptRateChannel.getCostRate())) < 0) {
-//			throw new RestException(401, "商户费率不能低于渠道商费率!");
-//		}
+
 		TMchImg idCardFrontMchImg = mchImgService.getById(registerDto.getIdCardFront());
 		if(idCardFrontMchImg == null) {
 			throw new RestException(401, "身份证正面地址错误!");
@@ -141,7 +127,7 @@ public class SumMchController {
 		}
 		registerDto.setIdCardBack(idCardBackMchImg.getImgPath());
 		//通道调用
-		String outMchId = sumChannel.register(registerDto,deptRateChannel.getChannelMerAppId(),deptRateChannel.getChannelNo());
+		String outMchId = sumChannel.register(registerDto,platformRateChannel.getChannelMerAppId(),platformRateChannel.getChannelNo());
 		//插入数据
 		String mchId = IdGenerator.getId();
 		TMchInfo mchInfo = new TMchInfo();
@@ -164,7 +150,7 @@ public class SumMchController {
 		//通道
 		TMchInfoChannel mchInfoChannel = new TMchInfoChannel();
 		mchInfoChannel.setMchId(mchId);
-		mchInfoChannel.setChannel("sum");
+		mchInfoChannel.setChannel(Channel);
 		mchInfoChannel.setOutMchId(outMchId);
 		//mchInfoChannel.setMchRate(registerDto.getMchRate());
 		mchInfoChannel.setCreateTime(LocalDateTime.now());
@@ -190,9 +176,18 @@ public class SumMchController {
 		log.info("下游请求报文-mchInfo:request={}",JSON.toJSONString(mchInfoDto));
 		SumMchValidate.mchInfo(mchInfoDto);
 		//渠道商信息
-		Dept dept = deptService.getById(mchInfoDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(mchInfoDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
+		}
+		//签名信息校验
+		Map<String,Object> checkSignMap = BeanUtil.beanToMap(mchInfoDto);
+		checkSignMap.remove("signature");
+		checkSignMap = MapUtils.removeStrNull(checkSignMap);
+		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
+		Boolean flag = RSA.checkSign(checkSignContent, mchInfoDto.getSignature(), dept.getDeptPublickey());
+		if(!flag) {
+			throw new RestException(401, "签名验证错误!");
 		}
 		TMchInfo mchInfo = mchInfoService.findByIdentNoAndDeptId(mchInfoDto.getIdNo(), mchInfoDto.getPartnerId());
 		if(mchInfo == null) {
@@ -218,7 +213,7 @@ public class SumMchController {
 		log.info("下游请求报文-queryMchStatus:request={}",JSON.toJSONString(queryMchStatusDto));
 		SumMchValidate.queryMchStatus(queryMchStatusDto);
 		//渠道商信息
-		Dept dept = deptService.getById(queryMchStatusDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(queryMchStatusDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -227,28 +222,23 @@ public class SumMchController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, queryMchStatusDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, queryMchStatusDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(queryMchStatusDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(queryMchStatusDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(queryMchStatusDto.getPartnerId(), queryMchStatusDto.getMchId());
 		if(mchInfo == null) {
 			throw new RestException(401, "商户信息错误!");
 		}
-		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(queryMchStatusDto.getMchId(), "sum");
+		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(queryMchStatusDto.getMchId(), Channel);
 		if(mchInfoChannel == null) {
 			throw new RestException(401, "商户信息渠道错误!");
 		}
-		Map<String,String> respMap = sumChannel.queryUserStatus(deptRateChannel.getChannelMerAppId(), deptRateChannel.getChannelNo(),mchInfoChannel.getOutMchId());
+		Map<String,String> respMap = sumChannel.queryUserStatus(platformRateChannel.getChannelMerAppId(), platformRateChannel.getChannelNo(),mchInfoChannel.getOutMchId());
 		//组装返回报文
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("partnerId", queryMchStatusDto.getPartnerId());
@@ -268,7 +258,7 @@ public class SumMchController {
 		log.info("下游请求报文-modifyMchInfo:request={}",JSON.toJSONString(modifyMchInfoDto));
 		SumMchValidate.modifyMchInfo(modifyMchInfoDto);
 		//渠道商信息
-		Dept dept = deptService.getById(modifyMchInfoDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(modifyMchInfoDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -277,24 +267,19 @@ public class SumMchController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, modifyMchInfoDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, modifyMchInfoDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(modifyMchInfoDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(modifyMchInfoDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(modifyMchInfoDto.getPartnerId(), modifyMchInfoDto.getMchId());
 		if(mchInfo == null) {
 			throw new RestException(401, "商户信息错误!");
 		}
-		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(modifyMchInfoDto.getMchId(), "sum");
+		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(modifyMchInfoDto.getMchId(), Channel);
 		if(mchInfoChannel == null) {
 			throw new RestException(401, "商户信息渠道错误!");
 		}
@@ -312,7 +297,7 @@ public class SumMchController {
 			}
 			modifyMchInfoDto.setIdCardBack(idCardBackMchImg.getImgPath());
 		}
-		sumChannel.modifyUserInfo(modifyMchInfoDto, deptRateChannel.getChannelMerAppId(), deptRateChannel.getChannelNo(),mchInfoChannel.getOutMchId());
+		sumChannel.modifyUserInfo(modifyMchInfoDto, platformRateChannel.getChannelMerAppId(), platformRateChannel.getChannelNo(),mchInfoChannel.getOutMchId());
 		mchInfo.setMobile(StrUtil.isEmpty(modifyMchInfoDto.getMobile())? mchInfo.getMobile():modifyMchInfoDto.getMobile());
 		mchInfo.setMchAddress(StrUtil.isEmpty(modifyMchInfoDto.getAddress())? mchInfo.getMchAddress():modifyMchInfoDto.getAddress());
 		mchInfoService.updateById(mchInfo);
@@ -327,277 +312,6 @@ public class SumMchController {
 		return RestResponse.success(map);
 	}
 
-	/**
-	 * 绑卡
-	 * @param bindCardDto
-	 * @return
-	 */
-	/*@RequestMapping(value = "/binkCardOld",method = RequestMethod.POST)
-	@ResponseBody
-	public Object binkCardOld(BindCardDto bindCardDto) {
-		log.info("下游请求报文-binkCard:request={}",JSON.toJSONString(bindCardDto));
-		SumMchValidate.binkCard(bindCardDto);
-		//渠道商信息
-		Dept dept = deptService.getById(bindCardDto.getPartnerId());
-		if(dept == null) {
-			throw new RestException(401, "渠道商信息错误!");
-		}
-		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(bindCardDto.getPartnerId(),"sum");
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
-		}
-		//签名信息校验
-		Map<String,Object> checkSignMap = BeanUtil.beanToMap(bindCardDto);
-		checkSignMap.remove("signature");
-		checkSignMap = MapUtils.removeStrNull(checkSignMap);
-		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, bindCardDto.getSignature(), dept.getPartnerPublickey());
-		if(!flag) {
-			throw new RestException(401, "签名验证错误!");
-		}
-		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(bindCardDto.getPartnerId(), bindCardDto.getMchId());
-		if(mchInfo == null) {
-			throw new RestException(401, "商户信息错误!");
-		}
-		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(bindCardDto.getMchId(), "sum");
-		if(mchInfoChannel == null) {
-			throw new RestException(401, "商户信息渠道错误!");
-		}
-		TMchCard mchCard = mchCardService.findBybankCardNo(bindCardDto.getMchId(), bindCardDto.getCardNo());
-		if(mchCard != null) {
-			mchCardChannelService.updateStatusFail(mchCard.getId(), "sum");
-			TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),2,"sum");
-			if(mchCardChannel != null) {
-				throw new RestException(401, "已绑卡成功，不能重复绑卡!");
-			}
-		}else {
-			mchCard = new TMchCard();
-		}
-
-		String orderNo = IdGenerator.getId();
-		String form = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
-
-		mchCard.setMchId(bindCardDto.getMchId());
-		mchCard.setBankCardNo(bindCardDto.getCardNo());
-		mchCard.setBankCardType(bindCardDto.getCardType());
-		mchCard.setExpired(bindCardDto.getValidYear()+bindCardDto.getValidMonth());
-		mchCard.setCvn(bindCardDto.getCvv());
-		mchCard.setBankCode(bindCardDto.getBankCode());
-		mchCard.setMobile(bindCardDto.getMobile());
-		mchCard.setCreateTime(LocalDateTime.now());
-
-		//TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),1,"sum");
-		//if(mchCardChannel == null) {
-		TMchCardChannel	mchCardChannel = new TMchCardChannel();
-		mchCardChannel.setOutMchId(mchInfoChannel.getOutMchId());
-		mchCardChannel.setStatus(1);
-		mchCardChannel.setChannel("sum");
-		//}
-		mchCardChannel.setSmsNo(orderNo);
-		mchCardChannel.setCreateTime(LocalDateTime.now());
-		mchCardService.bindCard(mchCard, mchCardChannel);
-		//组装返回报文
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("partnerId", bindCardDto.getPartnerId());
-		map.put("mchId", bindCardDto.getMchId());
-		map.put("cardNo", bindCardDto.getCardNo());
-		map.put("form", form);
-		String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-		String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-		map.put("signature", signature);
-		log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-		return RestResponse.success(map);
-	}*/
-
-	/**
-	 * 绑卡
-	 * @param bindCardDto
-	 * @return
-	 */
-//	@RequestMapping(value = "/bindCard",method = RequestMethod.POST)
-//	@ResponseBody
-//	public Object binkCard(BindCardDto bindCardDto) {
-//		log.info("下游请求报文-binkCard:request={}",JSON.toJSONString(bindCardDto));
-//		SumMchValidate.binkCard(bindCardDto);
-//		//渠道商信息
-//		Dept dept = deptService.getById(bindCardDto.getPartnerId());
-//		if(dept == null) {
-//			throw new RestException(401, "渠道商信息错误!");
-//		}
-//		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(bindCardDto.getPartnerId(),"sum");
-//		if(deptRateChannel == null) {
-//			throw new RestException(401, "未找到渠道信息");
-//		}
-//		//签名信息校验
-//		Map<String,Object> checkSignMap = BeanUtil.beanToMap(bindCardDto);
-//		checkSignMap.remove("signature");
-//		checkSignMap = MapUtils.removeStrNull(checkSignMap);
-//		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-//		Boolean flag = RSA.checkSign(checkSignContent, bindCardDto.getSignature(), dept.getPartnerPublickey());
-//		if(!flag) {
-//			throw new RestException(401, "签名验证错误!");
-//		}
-//		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(bindCardDto.getPartnerId(), bindCardDto.getMchId());
-//		if(mchInfo == null) {
-//			throw new RestException(401, "商户信息错误!");
-//		}
-//		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(bindCardDto.getMchId(), "sum");
-//		if(mchInfoChannel == null) {
-//			throw new RestException(401, "商户信息渠道错误!");
-//		}
-//		String orderNo = IdGenerator.getId();
-//		TMchCard mchCard = mchCardService.findBybankCardNo(bindCardDto.getMchId(), bindCardDto.getCardNo());
-//		if(mchCard != null) {
-//			TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),"sum");
-//			if(mchCardChannel != null) {
-//				if(mchCardChannel.getStatus() == 1) {
-//					String bindCardId = sumChannel.avaliableBank(mchCardChannel.getOutMchId(), mchCard.getBankCode(), bindCardDto.getCardNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
-//					if(bindCardId != null) {
-//						mchCardChannel.setStatus(2);
-//						mchCardChannel.setProtocol(bindCardId);
-//						mchCardChannelService.bindCardConfirm(mchCardChannel);
-//						//组装返回报文
-//						Map<String,Object> map = new HashMap<String,Object>();
-//						map.put("partnerId", bindCardDto.getPartnerId());
-//						map.put("mchId", bindCardDto.getMchId());
-//						map.put("cardNo", bindCardDto.getCardNo());
-//						map.put("status", "2");//绑卡成功
-//						String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-//						String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-//						map.put("signature", signature);
-//						log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-//						return RestResponse.success(map);
-//					}else {
-//						Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
-//						mchCard.setBankCardType(bindCardDto.getCardType());
-//						mchCard.setExpired(bindCardDto.getValidYear()+bindCardDto.getValidMonth());
-//						mchCard.setCvn(bindCardDto.getCvv());
-//						mchCard.setBankCode(bindCardDto.getBankCode());
-//						mchCard.setMobile(bindCardDto.getMobile());
-//
-//						if(respMap.get("sign_code").equals("2")) {
-//							mchCardChannel.setStatus(2);
-//							mchCardChannel.setProtocol(respMap.get("bind_card_id"));
-//						}
-//						mchCardChannel.setSmsNo(orderNo);
-//						mchCardService.bindCard(mchCard, mchCardChannel);
-//						//组装返回报文
-//						Map<String,Object> map = new HashMap<String,Object>();
-//						map.put("partnerId", bindCardDto.getPartnerId());
-//						map.put("mchId", bindCardDto.getMchId());
-//						map.put("cardNo", bindCardDto.getCardNo());
-//						if(respMap.get("sign_code").equals("2")) {
-//							map.put("status", "2");
-//						}else {
-//							map.put("status", "1");
-//						}
-//						map.put("form", respMap.get("form"));
-//						String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-//						String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-//						map.put("signature", signature);
-//						log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-//						return RestResponse.success(map);
-//					}
-//				}else if(mchCardChannel.getStatus() == 2){
-//					//组装返回报文
-//					Map<String,Object> map = new HashMap<String,Object>();
-//					map.put("partnerId", bindCardDto.getPartnerId());
-//					map.put("mchId", bindCardDto.getMchId());
-//					map.put("cardNo", bindCardDto.getCardNo());
-//					map.put("status", "2");//绑卡成功
-//					String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-//					String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-//					map.put("signature", signature);
-//					log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-//					return RestResponse.success(map);
-//				}else {
-//					throw new RestException(401, "状态异常，请联系管理人员!");
-//				}
-//			}else {
-//				Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
-//
-//				mchCard.setBankCardType(bindCardDto.getCardType());
-//				mchCard.setExpired(bindCardDto.getValidYear()+bindCardDto.getValidMonth());
-//				mchCard.setCvn(bindCardDto.getCvv());
-//				mchCard.setBankCode(bindCardDto.getBankCode());
-//				mchCard.setMobile(bindCardDto.getMobile());
-//
-//
-//				mchCardChannel = new TMchCardChannel();
-//				mchCardChannel.setOutMchId(mchInfoChannel.getOutMchId());
-//				if(respMap.get("sign_code").equals("2")) {
-//					mchCardChannel.setStatus(2);
-//					mchCardChannel.setProtocol(respMap.get("bind_card_id"));
-//				}else {
-//					mchCardChannel.setStatus(1);
-//				}
-//
-//				mchCardChannel.setChannel("sum");
-//				mchCardChannel.setSmsNo(orderNo);
-//				mchCardChannel.setCreateTime(LocalDateTime.now());
-//				mchCardService.bindCard(mchCard, mchCardChannel);
-//				//组装返回报文
-//				Map<String,Object> map = new HashMap<String,Object>();
-//				map.put("partnerId", bindCardDto.getPartnerId());
-//				map.put("mchId", bindCardDto.getMchId());
-//				if(respMap.get("sign_code").equals("2")) {
-//					map.put("status", "2");
-//				}else {
-//					map.put("status", "1");
-//				}
-//				map.put("cardNo", bindCardDto.getCardNo());
-//				map.put("form", respMap.get("form"));
-//				String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-//				String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-//				map.put("signature", signature);
-//				log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-//				return RestResponse.success(map);
-//			}
-//		}else {
-//			Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
-//
-//			mchCard = new TMchCard();
-//			mchCard.setMchId(bindCardDto.getMchId());
-//			mchCard.setBankCardNo(bindCardDto.getCardNo());
-//			mchCard.setBankCardType(bindCardDto.getCardType());
-//			mchCard.setExpired(bindCardDto.getValidYear()+bindCardDto.getValidMonth());
-//			mchCard.setCvn(bindCardDto.getCvv());
-//			mchCard.setBankCode(bindCardDto.getBankCode());
-//			mchCard.setMobile(bindCardDto.getMobile());
-//			mchCard.setCreateTime(LocalDateTime.now());
-//
-//			TMchCardChannel	mchCardChannel = new TMchCardChannel();
-//			mchCardChannel.setOutMchId(mchInfoChannel.getOutMchId());
-//			if(respMap.get("sign_code").equals("2")) {
-//				mchCardChannel.setStatus(2);
-//				mchCardChannel.setProtocol(respMap.get("bind_card_id"));
-//			}else {
-//				mchCardChannel.setStatus(1);
-//			}
-//
-//			mchCardChannel.setChannel("sum");
-//			mchCardChannel.setSmsNo(orderNo);
-//			mchCardChannel.setCreateTime(LocalDateTime.now());
-//			mchCardService.bindCard(mchCard, mchCardChannel);
-//			//组装返回报文
-//			Map<String,Object> map = new HashMap<String,Object>();
-//			map.put("partnerId", bindCardDto.getPartnerId());
-//			map.put("mchId", bindCardDto.getMchId());
-//			if(respMap.get("sign_code").equals("2")) {
-//				map.put("status", "2");
-//			}else {
-//				map.put("status", "1");
-//			}
-//			map.put("cardNo", bindCardDto.getCardNo());
-//			map.put("form", respMap.get("form"));
-//			String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-//			String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-//			map.put("signature", signature);
-//			log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-//			return RestResponse.success(map);
-//		}
-//	}
-
 
 	@RequestMapping(value = "/bindCard",method = RequestMethod.POST)
 	@ResponseBody
@@ -605,93 +319,69 @@ public class SumMchController {
 		log.info("下游请求报文-binkCard:request={}",JSON.toJSONString(bindCardDto));
 		SumMchValidate.binkCard(bindCardDto);
 		//渠道商信息
-		Dept dept = deptService.getById(bindCardDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(bindCardDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
-		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(bindCardDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(bindCardDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
 		}
 		//签名信息校验
 		Map<String,Object> checkSignMap = BeanUtil.beanToMap(bindCardDto);
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, bindCardDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, bindCardDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
+		}
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(bindCardDto.getPartnerId(), bindCardDto.getMchId());
 		if(mchInfo == null) {
 			throw new RestException(401, "商户信息错误!");
 		}
-		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(bindCardDto.getMchId(), "sum");
+		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(bindCardDto.getMchId(), Channel);
 		if(mchInfoChannel == null) {
 			throw new RestException(401, "商户信息渠道错误!");
 		}
 		String orderNo = IdGenerator.getId();
 		TMchCard mchCard = mchCardService.findBybankCardNo(bindCardDto.getMchId(), bindCardDto.getCardNo());
 		if(mchCard != null) {
-			TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),"sum");
+			TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),Channel);
 			if(mchCardChannel != null) {
-				//if(mchCardChannel.getStatus() == 1) {
+				Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
+				mchCard.setBankCardType(bindCardDto.getCardType());
+				mchCard.setExpired(bindCardDto.getValidYear()+bindCardDto.getValidMonth());
+				mchCard.setCvn(bindCardDto.getCvv());
+				mchCard.setBankCode(bindCardDto.getBankCode());
+				mchCard.setMobile(bindCardDto.getMobile());
+				if(respMap.get("sign_code").equals("2")) {
+					mchCardChannel.setStatus(2);
+					mchCardChannel.setProtocol(respMap.get("bind_card_id"));
+				}else {
+					mchCardChannel.setStatus(1);
+				}
+				mchCardChannel.setSmsNo(orderNo);
+				mchCardService.bindCard(mchCard, mchCardChannel);
 
-					Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
-					mchCard.setBankCardType(bindCardDto.getCardType());
-					mchCard.setExpired(bindCardDto.getValidYear()+bindCardDto.getValidMonth());
-					mchCard.setCvn(bindCardDto.getCvv());
-					mchCard.setBankCode(bindCardDto.getBankCode());
-					mchCard.setMobile(bindCardDto.getMobile());
-					if(respMap.get("sign_code").equals("2")) {
-						mchCardChannel.setStatus(2);
-						mchCardChannel.setProtocol(respMap.get("bind_card_id"));
-					}else {
-						mchCardChannel.setStatus(1);
-					}
-					mchCardChannel.setSmsNo(orderNo);
-					mchCardService.bindCard(mchCard, mchCardChannel);
-
-					Map<String,Object> map = new HashMap<String,Object>();
-					if(respMap.get("sign_code").equals("2")) {
-						map.put("status", "2");
-					}else {
-						map.put("status", "1");
-					}
-					map.put("signCode", respMap.get("sign_code"));
-					map.put("form", respMap.get("form"));
-					map.put("partnerId", bindCardDto.getPartnerId());
-					map.put("mchId", bindCardDto.getMchId());
-					map.put("cardNo", bindCardDto.getCardNo());
-					String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-					String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-					map.put("signature", signature);
-					log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-					return RestResponse.success(map);
-//				}else if(mchCardChannel.getStatus() == 2){
-//					//组装返回报文
-//					Map<String,Object> map = new HashMap<String,Object>();
-//					map.put("partnerId", bindCardDto.getPartnerId());
-//					map.put("mchId", bindCardDto.getMchId());
-//					map.put("cardNo", bindCardDto.getCardNo());
-//					map.put("status", "2");//绑卡成功
-//					map.put("signCode", "2");
-//					map.put("form", "");
-//					String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-//					String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-//					map.put("signature", signature);
-//					log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
-//					return RestResponse.success(map);
-//				}else {
-//					throw new RestException(401, "状态异常，请联系管理人员!");
-//				}
+				Map<String,Object> map = new HashMap<String,Object>();
+				if(respMap.get("sign_code").equals("2")) {
+					map.put("status", "2");
+				}else {
+					map.put("status", "1");
+				}
+				map.put("signCode", respMap.get("sign_code"));
+				map.put("form", respMap.get("form"));
+				map.put("partnerId", bindCardDto.getPartnerId());
+				map.put("mchId", bindCardDto.getMchId());
+				map.put("cardNo", bindCardDto.getCardNo());
+				String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
+				String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
+				map.put("signature", signature);
+				log.info("下游返回报文-bindCard:response={}",JSON.toJSONString(map));
+				return RestResponse.success(map);
 			}else {
-				Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+				Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
 
 				mchCard.setBankCardType(bindCardDto.getCardType());
 				mchCard.setExpired(bindCardDto.getValidYear()+bindCardDto.getValidMonth());
@@ -708,7 +398,7 @@ public class SumMchController {
 				}else {
 					mchCardChannel.setStatus(1);
 				}
-				mchCardChannel.setChannel("sum");
+				mchCardChannel.setChannel(Channel);
 				mchCardChannel.setSmsNo(orderNo);
 				mchCardChannel.setCreateTime(LocalDateTime.now());
 				mchCardService.bindCard(mchCard, mchCardChannel);
@@ -731,7 +421,7 @@ public class SumMchController {
 				return RestResponse.success(map);
 			}
 		}else {
-			Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+			Map<String,String> respMap = sumChannel.sendMessage(bindCardDto,mchInfoChannel.getOutMchId(), orderNo, mchInfo.getCustomerName(), mchInfo.getCustomerIdentNo(),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
 
 			mchCard = new TMchCard();
 			mchCard.setMchId(bindCardDto.getMchId());
@@ -752,7 +442,7 @@ public class SumMchController {
 				mchCardChannel.setStatus(1);
 			}
 
-			mchCardChannel.setChannel("sum");
+			mchCardChannel.setChannel(Channel);
 			mchCardChannel.setSmsNo(orderNo);
 			mchCardChannel.setCreateTime(LocalDateTime.now());
 			mchCardService.bindCard(mchCard, mchCardChannel);
@@ -786,27 +476,22 @@ public class SumMchController {
 		log.info("下游请求报文-bindCardConfirm:request={}",JSON.toJSONString(bindCardConfirmDto));
 		SumMchValidate.binkCardConfirm(bindCardConfirmDto);
 		//渠道商信息
-		Dept dept = deptService.getById(bindCardConfirmDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(bindCardConfirmDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
-		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(bindCardConfirmDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(bindCardConfirmDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
 		}
 		//签名信息校验
 		Map<String,Object> checkSignMap = BeanUtil.beanToMap(bindCardConfirmDto);
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, bindCardConfirmDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, bindCardConfirmDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
+		}
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		//查询商户信息
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(bindCardConfirmDto.getPartnerId(), bindCardConfirmDto.getMchId());
@@ -817,11 +502,11 @@ public class SumMchController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),1,"sum");
+		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),1,Channel);
 		if(mchCardChannel == null) {
 			throw new RestException(401, "商户卡信息渠道错误");
 		}
-		String bindCardId = sumChannel.validMessage(bindCardConfirmDto.getVerifyCode(), mchCardChannel.getOutMchId(), mchCardChannel.getSmsNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+		String bindCardId = sumChannel.validMessage(bindCardConfirmDto.getVerifyCode(), mchCardChannel.getOutMchId(), mchCardChannel.getSmsNo(),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
 		mchCardChannel.setStatus(2);
 		mchCardChannel.setProtocol(bindCardId);
 		mchCardChannelService.bindCardConfirm(mchCardChannel,null);
@@ -849,27 +534,22 @@ public class SumMchController {
 		log.info("下游请求报文-signConfirm:request={}",JSON.toJSONString(signConfirmDto));
 		SumMchValidate.signConfirm(signConfirmDto);
 		//渠道商信息
-		Dept dept = deptService.getById(signConfirmDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(signConfirmDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
-		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(signConfirmDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(signConfirmDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
 		}
 		//签名信息校验
 		Map<String,Object> checkSignMap = BeanUtil.beanToMap(signConfirmDto);
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, signConfirmDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, signConfirmDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
+		}
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		//查询商户信息
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(signConfirmDto.getPartnerId(), signConfirmDto.getMchId());
@@ -880,11 +560,11 @@ public class SumMchController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),1,"sum");
+		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),1,Channel);
 		if(mchCardChannel == null) {
 			throw new RestException(401, "未找到需要绑卡的信息");
 		}
-		String bindCardId = sumChannel.avaliableBank(mchCardChannel.getOutMchId(), mchCard.getBankCode(), signConfirmDto.getCardNo(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+		String bindCardId = sumChannel.avaliableBank(mchCardChannel.getOutMchId(), mchCard.getBankCode(), signConfirmDto.getCardNo(),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
 		mchCardChannel.setStatus(2);
 		mchCardChannel.setProtocol(bindCardId);
 		mchCardChannelService.bindCardConfirm(mchCardChannel);
@@ -907,27 +587,22 @@ public class SumMchController {
 		log.info("下游请求报文-balanceQuery:request={}",JSON.toJSONString(balanceQueryDto));
 		SumMchValidate.balanceQuery(balanceQueryDto);
 		//渠道商信息
-		Dept dept = deptService.getById(balanceQueryDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(balanceQueryDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
-		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(balanceQueryDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(balanceQueryDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
 		}
 		//签名信息校验
 		Map<String,Object> checkSignMap = BeanUtil.beanToMap(balanceQueryDto);
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, balanceQueryDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, balanceQueryDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
+		}
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		//查询商户信息
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(balanceQueryDto.getPartnerId(), balanceQueryDto.getMchId());
@@ -938,11 +613,11 @@ public class SumMchController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),2,"sum");
+		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),2,Channel);
 		if(mchCardChannel == null) {
 			throw new RestException(401, "商户卡信息渠道错误");
 		}
-		String availableBalance = sumChannel.queryAvaliableAmount(balanceQueryDto, mchCardChannel.getOutMchId(), mchCardChannel.getProtocol(),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+		String availableBalance = sumChannel.queryAvaliableAmount(balanceQueryDto, mchCardChannel.getOutMchId(), mchCardChannel.getProtocol(),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
 		//组装返回报文
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("partnerId", balanceQueryDto.getPartnerId());
@@ -963,16 +638,21 @@ public class SumMchController {
 		log.info("下游请求报文-modifyMchRate:request={}",JSON.toJSONString(modifyMchRateDto));
 		SumMchValidate.modifyMchRate(modifyMchRateDto);
 		//渠道商信息
-		Dept dept = deptService.getById(modifyMchRateDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(modifyMchRateDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(modifyMchRateDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(modifyMchRateDto.getPartnerId(), "TTS", "sum");
+
+		//签名信息校验
+		Map<String,Object> checkSignMap = BeanUtil.beanToMap(modifyMchRateDto);
+		checkSignMap.remove("signature");
+		checkSignMap = MapUtils.removeStrNull(checkSignMap);
+		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
+		Boolean flag = RSA.checkSign(checkSignContent, modifyMchRateDto.getSignature(), dept.getDeptPublickey());
+		if(!flag) {
+			throw new RestException(401, "签名验证错误!");
 		}
+		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(modifyMchRateDto.getPartnerId(),Channel);
 		if(deptRateChannel == null) {
 			throw new RestException(401, "未找到渠道信息");
 		}
@@ -980,21 +660,12 @@ public class SumMchController {
 		if(NumberUtil.compare(Double.parseDouble(modifyMchRateDto.getMchRate()),Double.parseDouble(deptRateChannel.getCostRate())) < 0) {
 			throw new RestException(401, "商户费率不能低于渠道商费率!");
 		}
-		//签名信息校验
-		Map<String,Object> checkSignMap = BeanUtil.beanToMap(modifyMchRateDto);
-		checkSignMap.remove("signature");
-		checkSignMap = MapUtils.removeStrNull(checkSignMap);
-		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, modifyMchRateDto.getSignature(), dept.getPartnerPublickey());
-		if(!flag) {
-			throw new RestException(401, "签名验证错误!");
-		}
 		//查询商户信息
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(modifyMchRateDto.getPartnerId(), modifyMchRateDto.getMchId());
 		if(mchInfo == null) {
 			throw new RestException(401, "商户信息错误!");
 		}
-		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(modifyMchRateDto.getMchId(), "sum");
+		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(modifyMchRateDto.getMchId(), Channel);
 		if(mchInfoChannel == null) {
 			throw new RestException(401, "商户信息渠道错误!");
 		}
@@ -1022,54 +693,53 @@ public class SumMchController {
 	@RequestMapping(value = "uploadImg",method = RequestMethod.POST)
 	@ResponseBody
 	public RestResponse uploadImg(@RequestParam("picture") MultipartFile picture,UploadImgDto uploadImgDto) throws Exception {
-			log.info("图片上传-uploadImg:request={}",JSON.toJSONString(uploadImgDto));
-			SumMchValidate.uploadImg(uploadImgDto);
-			//渠道商信息
-			Dept dept = deptService.getById(uploadImgDto.getPartnerId());
-			if(dept == null) {
-				throw new RestException(401, "渠道商信息错误!");
-			}
-			//签名校验
-			//签名信息校验
-			Map<String,Object> checkSignMap = BeanUtil.beanToMap(uploadImgDto);
-			checkSignMap.remove("signature");
-			checkSignMap = MapUtils.removeStrNull(checkSignMap);
-			String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-			Boolean flag = RSA.checkSign(checkSignContent, uploadImgDto.getSignature(), dept.getPartnerPublickey());
-			if(!flag) {
-				throw new RestException(401, "签名验证错误!");
-			}
-			//图片信息
-			String prefix = picture.getOriginalFilename().substring(picture.getOriginalFilename().lastIndexOf("."));
-			byte[] data = picture.getBytes();
-			String fileName = IdGenerator.getId()+prefix;
-			String pathFile = restProperties.getImgPath()+"/"+uploadImgDto.getPartnerId();
-			File filePath = new File(pathFile);
-			if (!filePath.exists()){
-				filePath.mkdir();
-			}
-			String pathName = pathFile+"/"+fileName;
-			String imgUrl = restProperties.getImgUrl()+"/"+uploadImgDto.getPartnerId()+"/"+fileName;
-			File imageFile = new File(pathName);
-			FileOutputStream outStream = new FileOutputStream(imageFile);
-			outStream.write(data);
-			outStream.close();
-			//插入图片
-			TMchImg mchImg = new TMchImg();
-			mchImg.setImgId(IdGenerator.getId());
-			mchImg.setImgUrl(imgUrl);
-			mchImg.setImgPath(pathName);
-			mchImgService.save(mchImg);
-			//组装返回报文
-			Map<String,Object> map = new HashMap<String,Object>();
-			map.put("partnerId", uploadImgDto.getPartnerId());
-			map.put("imgId", mchImg.getImgId());
-			String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
-			String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
-			map.put("signature", signature);
-			log.info("下游返回报文-uploadImg:map={}",JSON.toJSONString(map));
-			return RestResponse.success(map);
-
+		log.info("图片上传-uploadImg:request={}",JSON.toJSONString(uploadImgDto));
+		SumMchValidate.uploadImg(uploadImgDto);
+		//渠道商信息
+		TDeptInfo dept = deptInfoService.getById(uploadImgDto.getPartnerId());
+		if(dept == null) {
+			throw new RestException(401, "渠道商信息错误!");
+		}
+		//签名校验
+		//签名信息校验
+		Map<String,Object> checkSignMap = BeanUtil.beanToMap(uploadImgDto);
+		checkSignMap.remove("signature");
+		checkSignMap = MapUtils.removeStrNull(checkSignMap);
+		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
+		Boolean flag = RSA.checkSign(checkSignContent, uploadImgDto.getSignature(), dept.getDeptPublickey());
+		if(!flag) {
+			throw new RestException(401, "签名验证错误!");
+		}
+		//图片信息
+		String prefix = picture.getOriginalFilename().substring(picture.getOriginalFilename().lastIndexOf("."));
+		byte[] data = picture.getBytes();
+		String fileName = IdGenerator.getId()+prefix;
+		String pathFile = restProperties.getImgPath()+"/"+uploadImgDto.getPartnerId();
+		File filePath = new File(pathFile);
+		if (!filePath.exists()){
+			filePath.mkdir();
+		}
+		String pathName = pathFile+"/"+fileName;
+		String imgUrl = restProperties.getImgUrl()+"/"+uploadImgDto.getPartnerId()+"/"+fileName;
+		File imageFile = new File(pathName);
+		FileOutputStream outStream = new FileOutputStream(imageFile);
+		outStream.write(data);
+		outStream.close();
+		//插入图片
+		TMchImg mchImg = new TMchImg();
+		mchImg.setImgId(IdGenerator.getId());
+		mchImg.setImgUrl(imgUrl);
+		mchImg.setImgPath(pathName);
+		mchImgService.save(mchImg);
+		//组装返回报文
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("partnerId", uploadImgDto.getPartnerId());
+		map.put("imgId", mchImg.getImgId());
+		String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(map), "&", "=");
+		String signature = RSA.sign(signContent, dept.getPlatformPrivatekey());
+		map.put("signature", signature);
+		log.info("下游返回报文-uploadImg:map={}",JSON.toJSONString(map));
+		return RestResponse.success(map);
 	}
 
 	/**
@@ -1084,31 +754,30 @@ public class SumMchController {
 		//参数校验
 		SumMchValidate.withdraw(withdrawDto);
 		//渠道商信息
-		Dept dept = deptService.getById(withdrawDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(withdrawDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
-		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(withdrawDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(withdrawDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
-		}
-		Long cashFee = NumberUtil.parseLong(withdrawDto.getCashFee());
-		if(cashFee < NumberUtil.parseLong(deptRateChannel.getCashRate())) {
-			throw new RestException(401, "提现手续费不能小于提现成本手续费!");
 		}
 		//签名信息校验
 		Map<String,Object> checkSignMap = BeanUtil.beanToMap(withdrawDto);
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, withdrawDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, withdrawDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
+		}
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
+		}
+		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(withdrawDto.getPartnerId(), Channel);
+		if(deptRateChannel == null) {
+			throw new RestException(401, "未找到渠道信息");
+		}
+		Long cashFee = NumberUtil.parseLong(withdrawDto.getCashFee());
+		if(cashFee < NumberUtil.parseLong(deptRateChannel.getCashRate())) {
+			throw new RestException(401, "提现手续费不能小于渠道提现手续费!");
 		}
 		//查询商户信息
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(withdrawDto.getPartnerId(), withdrawDto.getMchId());
@@ -1119,7 +788,7 @@ public class SumMchController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),2,"sum");
+		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),2,Channel);
 		if(mchCardChannel == null) {
 			throw new RestException(401, "商户卡信息渠道错误");
 		}
@@ -1129,9 +798,9 @@ public class SumMchController {
 		}
 		Long cashAmount = NumberUtil.parseLong(withdrawDto.getCashAmount());
 		Long deptAmount = cashFee - NumberUtil.parseLong(deptRateChannel.getCashRate());
-		Long costAmount = NumberUtil.parseLong(deptRateChannel.getCashRate()) - NumberUtil.parseLong(sumProperties.getCostFee());
+		Long costAmount = NumberUtil.parseLong(deptRateChannel.getCashRate()) - NumberUtil.parseLong(platformRateChannel.getCashRate());
 		Long outAmount = cashAmount - cashFee;
-		Long shareAmount = cashFee - NumberUtil.parseLong(sumProperties.getCostFee());
+		Long shareAmount = cashFee - NumberUtil.parseLong(platformRateChannel.getCashRate());
 		Long cashId = IdGenerator.getIdLong();
 		mchCashFlow = new TMchCashFlow();
 		mchCashFlow.setCashId(cashId);
@@ -1148,13 +817,13 @@ public class SumMchController {
 		mchCashFlow.setReturnMsg("");
 		mchCashFlow.setCashRate(deptRateChannel.getCashRate());
 		mchCashFlow.setDeptAmount(deptAmount);
-		mchCashFlow.setCostFee(sumProperties.getCostFee());
+		mchCashFlow.setCostFee(platformRateChannel.getCashRate());
 		mchCashFlow.setCostAmount(costAmount);
 		mchCashFlow.setNotifyUrl(withdrawDto.getNotifyUrl());
 		mchCashFlow.setNotifyCount(0);
 		mchCashFlow.setCreateTime(LocalDateTime.now());
 		mchCashFlowService.save(mchCashFlow);
-		Map<String,String> resMap = sumChannel.withdraw(String.valueOf(cashId), String.valueOf(outAmount), mchCardChannel.getOutMchId(), mchCardChannel.getProtocol(), withdrawDto.getPayPassword(),String.valueOf(shareAmount),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+		Map<String,String> resMap = sumChannel.withdraw(String.valueOf(cashId), String.valueOf(outAmount), mchCardChannel.getOutMchId(), mchCardChannel.getProtocol(), withdrawDto.getPayPassword(),String.valueOf(shareAmount),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
 
 		//组装返回报文
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -1168,7 +837,7 @@ public class SumMchController {
 		if("1".equals(resMap.get("orderStatus"))) {
 			//不做处理
 		}else if("2".equals(resMap.get("orderStatus"))) {
-			boolean orderStatusFlag = mchCashFlowService.updateCashStatusSuccess(mchCashFlow, dept, resMap.get("returnMsg"));
+			boolean orderStatusFlag = mchCashFlowService.updateCashStatusSuccess(mchCashFlow, resMap.get("returnMsg"));
 			if(orderStatusFlag) {
 				map.put("cashStatus", "2");
 				map.put("returnMsg", resMap.get("returnMsg"));
@@ -1202,27 +871,22 @@ public class SumMchController {
 		//参数校验
 		SumMchValidate.withdrawQuery(withdrawQueryDto);
 		//渠道商信息
-		Dept dept = deptService.getById(withdrawQueryDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(withdrawQueryDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
-		}
-		TDeptRateChannel deptRateChannel = null;
-		if(dept.getChannelType() == 1){
-			deptRateChannel = deptRateChannelService.findByDeptIdAndChannel(withdrawQueryDto.getPartnerId(), "sum");
-		}else {
-			deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(withdrawQueryDto.getPartnerId(), "TTS", "sum");
-		}
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道信息");
 		}
 		//签名信息校验
 		Map<String,Object> checkSignMap = BeanUtil.beanToMap(withdrawQueryDto);
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, withdrawQueryDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, withdrawQueryDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
+		}
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel(Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		//查询商户信息
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(withdrawQueryDto.getPartnerId(), withdrawQueryDto.getMchId());
@@ -1242,11 +906,11 @@ public class SumMchController {
 		map.put("cashStatus", String.valueOf(mchCashFlow.getCashStatus()));
 		map.put("returnMsg", mchCashFlow.getReturnMsg());
 		if(mchCashFlow.getCashStatus() == 1) {
-			Map<String,String> resMap = sumChannel.queryOrderStatus(String.valueOf(mchCashFlow.getCashId()),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+			Map<String,String> resMap = sumChannel.queryOrderStatus(String.valueOf(mchCashFlow.getCashId()),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
 			if("1".equals(resMap.get("orderStatus"))) {
 				//不做处理
 			}else if("2".equals(resMap.get("orderStatus"))) {
-				boolean orderStatusFlag = mchCashFlowService.updateCashStatusSuccess(mchCashFlow, dept, "交易成功");
+				boolean orderStatusFlag = mchCashFlowService.updateCashStatusSuccess(mchCashFlow, "交易成功");
 				if(orderStatusFlag) {
 					map.put("cashStatus", "2");
 					map.put("returnMsg", "交易成功");

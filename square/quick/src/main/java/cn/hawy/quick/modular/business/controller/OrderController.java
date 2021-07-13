@@ -24,16 +24,9 @@ import cn.hawy.quick.core.util.PayUtil;
 import cn.hawy.quick.modular.api.channel.EfpsChannel;
 import cn.hawy.quick.modular.api.channel.SumBtChannel;
 import cn.hawy.quick.modular.api.channel.SumChannel;
-import cn.hawy.quick.modular.api.entity.PayOrderContact;
-import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
-import cn.hawy.quick.modular.api.entity.TMchCard;
-import cn.hawy.quick.modular.api.entity.TMchCashFlow;
-import cn.hawy.quick.modular.api.entity.TPayOrder;
+import cn.hawy.quick.modular.api.entity.*;
 import cn.hawy.quick.modular.api.mq.MqPayNotify;
-import cn.hawy.quick.modular.api.service.TDeptRateChannelService;
-import cn.hawy.quick.modular.api.service.TMchCardService;
-import cn.hawy.quick.modular.api.service.TMchCashFlowService;
-import cn.hawy.quick.modular.api.service.TPayOrderService;
+import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
 import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
 import cn.hawy.quick.modular.business.warpper.OrderWrapper;
@@ -88,6 +81,8 @@ public class OrderController extends BaseController {
 	TMchCashFlowService mchCashFlowService;
     @Autowired
 	EfpsChannel efpsChannel;
+    @Autowired
+    TPlatformRateChannelService platformRateChannelService;
 
 
     /**
@@ -313,52 +308,35 @@ public class OrderController extends BaseController {
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
-    	if("000000000".equals(payOrder.getChannelNo())) {//
-    		int orderStatus = efpsChannel.paymentQuery(String.valueOf(payOrder.getOrderId()));
-			if(orderStatus == 1) {
-			}else if(orderStatus == 2) {
-				payOrderService.updateOrderStatusSuccess(payOrder, dept);
-			}else if(orderStatus == 3) {
-				payOrderService.updateOrderStatusFail(payOrder.getOrderId());
-			}else {
-				throw new RestException(401, "订单查询失败!");
-			}
-    	}else if("101243663".equals(payOrder.getChannelNo()) || "101243664".equals(payOrder.getChannelNo()) || "101733657".equals(payOrder.getChannelNo())) {
-            TMchCard mchCard = mchCardService.findBybankCardNo(payOrder.getMchId(), payOrder.getBankCardNo());
-            if(mchCard == null) {
-                throw new RestException(401, "商户卡信息错误");
-            }
-            TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(payOrder.getDeptId(), mchCard.getBankCode(), "sum");
-            if(deptRateChannel == null) {
-                throw new RestException(401, "未找到渠道费率信息");
-            }
-    		Map<String,String> resMap = sumChannel.queryOrderStatus(String.valueOf(payOrder.getOrderId()),deptRateChannel.getChannelNo(),deptRateChannel.getChannelMerAppId());
+        TMchCard mchCard = mchCardService.findBybankCardNo(payOrder.getMchId(), payOrder.getBankCardNo());
+        if(mchCard == null) {
+            throw new RestException(401, "商户卡信息错误");
+        }
+        TPlatformRateChannel platformRateChannel = platformRateChannelService.findByChannel("sum");
+        if(platformRateChannel == null) {
+            throw new RestException(401, "未找到平台信息");
+        }
+    	if("101243663".equals(payOrder.getChannelNo()) || "101243664".equals(payOrder.getChannelNo()) || "101733657".equals(payOrder.getChannelNo())) {
+    		Map<String,String> resMap = sumChannel.queryOrderStatus(String.valueOf(payOrder.getOrderId()),platformRateChannel.getChannelNo(),platformRateChannel.getChannelMerAppId());
     		if("1".equals(resMap.get("orderStatus"))) {
 				//不做处理
 			}else if("2".equals(resMap.get("orderStatus"))) {
-				payOrderService.updateOrderStatusSuccess(payOrder, dept,resMap.get("returnMsg"));
+				payOrderService.updateOrderStatusSuccess(payOrder,resMap.get("returnMsg"));
 			}else if("3".equals(resMap.get("orderStatus"))) {
 				payOrderService.updateOrderStatusFail(payOrder.getOrderId(),resMap.get("returnMsg"));
 			}else {
 				throw new RestException(401, "订单查询失败!");
 			}
     	}else if("101553668".equals(payOrder.getChannelNo()) || "101713675".equals(payOrder.getChannelNo()) || "102423765".equals(payOrder.getChannelNo())) {
-    		TMchCard mchCard = mchCardService.findBybankCardNo(payOrder.getMchId(), payOrder.getBankCardNo());
-    		if(mchCard == null) {
-    			throw new RestException(401, "商户卡信息错误");
-    		}
-    		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(payOrder.getDeptId(), mchCard.getBankCode(), "sumbt");
-    		if(deptRateChannel == null) {
-    			throw new RestException(401, "未找到渠道费率信息");
-    		}
+
     		TMchCashFlow mchCashFlow = mchCashFlowService.getById(payOrder.getOrderId());
     		if(mchCashFlow == null) {
     			throw new RestException(401, "提现单号不存在!");
     		}
-    		Map<String,String> resMap = sumbtChannel.query(String.valueOf(payOrder.getOrderId()),deptRateChannel.getChannelNo());
+    		Map<String,String> resMap = sumbtChannel.query(String.valueOf(payOrder.getOrderId()),platformRateChannel.getChannelNo());
 			if("1".equals(resMap.get("orderStatus"))) {
 			}else if("2".equals(resMap.get("orderStatus"))) {
-				payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow, dept);
+				payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow);
 			}else if("3".equals(resMap.get("orderStatus"))) {
 				payOrderService.updateOrderStatusFailOfSumBt(payOrder.getOrderId(),resMap.get("returnMsg"));
 			}else if("4".equals(resMap.get("orderStatus"))) {

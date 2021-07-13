@@ -1,9 +1,12 @@
 package cn.hawy.quick.modular.api.service;
 
 import cn.hawy.quick.modular.api.entity.TDeptAccountFlow;
+import cn.hawy.quick.modular.api.entity.TDeptInfo;
 import cn.hawy.quick.modular.api.entity.TMchCashFlow;
 import cn.hawy.quick.modular.api.entity.TPayOrder;
+import cn.hawy.quick.modular.api.mapper.TAgentInfoMapper;
 import cn.hawy.quick.modular.api.mapper.TDeptAccountFlowMapper;
+import cn.hawy.quick.modular.api.mapper.TDeptInfoMapper;
 import cn.hawy.quick.modular.api.mapper.TMchCashFlowMapper;
 import cn.hawy.quick.modular.system.entity.Dept;
 
@@ -32,6 +35,10 @@ public class TMchCashFlowService extends ServiceImpl<TMchCashFlowMapper, TMchCas
 
 	@Autowired
 	TDeptAccountFlowMapper deptAccountFlowMapper;
+	@Autowired
+	TDeptInfoMapper deptInfoMapper;
+	@Autowired
+	TAgentInfoMapper agentInfoMapper;
 	
 	public TMchCashFlow findByMchIdAndOutTradeNo(String mchId,String outTradeNo) {
 		TMchCashFlow mchCashFlow = new TMchCashFlow();
@@ -41,14 +48,15 @@ public class TMchCashFlowService extends ServiceImpl<TMchCashFlowMapper, TMchCas
 	}
 	
 	@Transactional
-	public boolean updateCashStatusSuccess(TMchCashFlow mchCashFlow,Dept dept) {
+	public boolean updateCashStatusSuccess(TMchCashFlow mchCashFlow) {
 		int count = this.baseMapper.updateCashStatus(mchCashFlow.getCashId(), 2);
 		if(count == 1) {
 			if(mchCashFlow.getDeptAmount()>0) {
+				TDeptInfo dept = deptInfoMapper.selectById(mchCashFlow.getDeptId());
 				//增加渠道商账户流水
 				TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
 				deptAccountFlow.setDeptId(mchCashFlow.getDeptId());
-				deptAccountFlow.setDeptName(dept.getSimpleName());
+				deptAccountFlow.setDeptName(mchCashFlow.getDeptId());
 				deptAccountFlow.setBalance(dept.getBalance());
 				deptAccountFlow.setAmount(mchCashFlow.getDeptAmount());
 				deptAccountFlow.setBizType(2);
@@ -57,7 +65,7 @@ public class TMchCashFlowService extends ServiceImpl<TMchCashFlowMapper, TMchCas
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptAccountFlowMapper.addBalance(mchCashFlow.getDeptId(), mchCashFlow.getDeptAmount());
+				deptInfoMapper.addBalance(mchCashFlow.getDeptId(), mchCashFlow.getDeptAmount());
 			}
 			return true;
 		}else {
@@ -66,14 +74,15 @@ public class TMchCashFlowService extends ServiceImpl<TMchCashFlowMapper, TMchCas
 	}
 	
 	@Transactional
-	public boolean updateCashStatusSuccess(TMchCashFlow mchCashFlow,Dept dept,String returnMsg) {
+	public boolean updateCashStatusSuccess(TMchCashFlow mchCashFlow,String returnMsg) {
 		int count = this.baseMapper.updateCashStatusAndReturnMsg(mchCashFlow.getCashId(), 2, returnMsg);
 		if(count == 1) {
 			if(mchCashFlow.getDeptAmount()>0) {
+				TDeptInfo dept = deptInfoMapper.selectById(mchCashFlow.getDeptId());
 				//增加渠道商账户流水
 				TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
 				deptAccountFlow.setDeptId(mchCashFlow.getDeptId());
-				deptAccountFlow.setDeptName(dept.getSimpleName());
+				deptAccountFlow.setDeptName(dept.getDeptName());
 				deptAccountFlow.setBalance(dept.getBalance());
 				deptAccountFlow.setAmount(mchCashFlow.getDeptAmount());
 				deptAccountFlow.setBizType(2);
@@ -82,7 +91,7 @@ public class TMchCashFlowService extends ServiceImpl<TMchCashFlowMapper, TMchCas
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptAccountFlowMapper.addBalance(mchCashFlow.getDeptId(), mchCashFlow.getDeptAmount());
+				deptInfoMapper.addBalance(mchCashFlow.getDeptId(), mchCashFlow.getDeptAmount());
 			}
 			return true;
 		}else {
