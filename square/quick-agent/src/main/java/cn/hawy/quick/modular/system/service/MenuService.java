@@ -249,12 +249,11 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
     /**
      * 根据角色获取菜单
      *
-     * @param roleIds
      * @return
      * @date 2017年2月19日 下午10:35:40
      */
-    public List<MenuNode> getMenusByRoleIds(List<Long> roleIds) {
-        List<MenuNode> menus = this.baseMapper.getMenusByRoleIds(roleIds);
+    public List<MenuNode> getMenusByRoleIds() {
+        List<MenuNode> menus = this.baseMapper.getMenusByRoleIds();
 
         //给所有的菜单url加上ctxPath
         for (MenuNode menuItem : menus) {
