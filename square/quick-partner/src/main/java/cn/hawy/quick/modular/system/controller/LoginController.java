@@ -56,16 +56,16 @@ public class LoginController extends BaseController {
     public String index(Model model) {
 
         //获取当前用户角色列表
-        ShiroUser user = ShiroKit.getUserNotNull();
+//        ShiroUser user = ShiroKit.getUserNotNull();
+//
+//        List<Long> roleList = user.getRoleList();
+//        if (roleList == null || roleList.size() == 0) {
+//            ShiroKit.getSubject().logout();
+//            model.addAttribute("tips", "该用户没有角色，无法登陆");
+//            return "/login.html";
+//        }
 
-        List<Long> roleList = user.getRoleList();
-        if (roleList == null || roleList.size() == 0) {
-            ShiroKit.getSubject().logout();
-            model.addAttribute("tips", "该用户没有角色，无法登陆");
-            return "/login.html";
-        }
-
-        List<MenuNode> menus = userService.getUserMenuNodes(roleList);
+        List<MenuNode> menus = userService.getUserMenuNodes();
         model.addAttribute("menus", menus);
 
         return "/index.html";

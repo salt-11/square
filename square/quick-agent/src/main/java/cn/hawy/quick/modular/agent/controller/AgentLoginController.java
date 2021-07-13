@@ -68,7 +68,7 @@ public class AgentLoginController extends BaseController {
             return PREFIX + "/login.html";
         }
 
-        List<MenuNode> menus = userService.getUserMenuNodes(roleList);
+        List<MenuNode> menus = userService.getUserMenuNodes();
         model.addAttribute("menus", menus);
 
         return PREFIX + "/index.html";

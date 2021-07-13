@@ -15,9 +15,7 @@
  */
 package cn.hawy.quick.core.shiro.service.impl;
 
-import cn.hutool.core.convert.Convert;
 import cn.hawy.quick.core.common.constant.factory.ConstantFactory;
-import cn.hawy.quick.core.common.constant.state.ManagerStatus;
 import cn.hawy.quick.core.shiro.ShiroKit;
 import cn.hawy.quick.core.shiro.ShiroUser;
 import cn.hawy.quick.core.shiro.service.UserAuthService;
@@ -27,7 +25,6 @@ import cn.hawy.quick.modular.system.mapper.UserMapper;
 import cn.hawy.quick.modular.system.service.UserService;
 import cn.stylefeng.roses.core.util.SpringContextHolder;
 import org.apache.shiro.authc.CredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.util.ByteSource;
@@ -36,7 +33,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,9 +63,9 @@ public class UserAuthServiceServiceImpl implements UserAuthService {
             throw new CredentialsException();
         }
         // 账号被冻结
-        if (!user.getStatus().equals(ManagerStatus.OK.getCode())) {
-            throw new LockedAccountException();
-        }
+//        if (!user.getStatus().equals(ManagerStatus.OK.getCode())) {
+//            throw new LockedAccountException();
+//        }
         return user;
     }
 
@@ -79,17 +75,17 @@ public class UserAuthServiceServiceImpl implements UserAuthService {
         ShiroUser shiroUser = ShiroKit.createShiroUser(user);
 
         //用户角色数组
-        Long[] roleArray = Convert.toLongArray(user.getRoleId());
+//        Long[] roleArray = Convert.toLongArray(user.getRoleId());
 
         //获取用户角色列表
-        List<Long> roleList = new ArrayList<>();
-        List<String> roleNameList = new ArrayList<>();
-        for (Long roleId : roleArray) {
-            roleList.add(roleId);
-            roleNameList.add(ConstantFactory.me().getSingleRoleName(roleId));
-        }
-        shiroUser.setRoleList(roleList);
-        shiroUser.setRoleNames(roleNameList);
+//        List<Long> roleList = new ArrayList<>();
+//        List<String> roleNameList = new ArrayList<>();
+//        for (Long roleId : roleArray) {
+//            roleList.add(roleId);
+//            roleNameList.add(ConstantFactory.me().getSingleRoleName(roleId));
+//        }
+//        shiroUser.setRoleList(roleList);
+//        shiroUser.setRoleNames(roleNameList);
 
         return shiroUser;
     }
@@ -111,7 +107,7 @@ public class UserAuthServiceServiceImpl implements UserAuthService {
         // 密码加盐处理
         String source = user.getSalt();
         ByteSource credentialsSalt = new Md5Hash(source);
-        return new SimpleAuthenticationInfo(shiroUser, credentials, credentialsSalt, realmName);
+        return new SimpleAuthenticationInfo(shiroUser, credentials,credentialsSalt, realmName);
     }
 
 }

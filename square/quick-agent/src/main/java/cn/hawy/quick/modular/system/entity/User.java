@@ -14,7 +14,7 @@ import java.util.Date;
  * @author stylefeng
  * @since 2018-12-07
  */
-@TableName("sys_user")
+@TableName("t_agent_info")
 @Data
 public class User implements Serializable {
 

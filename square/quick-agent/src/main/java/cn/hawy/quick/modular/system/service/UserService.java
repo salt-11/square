@@ -170,14 +170,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      * @author fengshuonan
      * @Date 2018/12/24 22:46
      */
-    public List<MenuNode> getUserMenuNodes(List<Long> roleList) {
-        if (roleList == null || roleList.size() == 0) {
-            return new ArrayList<>();
-        } else {
-            List<MenuNode> menus = menuService.getMenusByRoleIds(roleList);
+    public List<MenuNode> getUserMenuNodes() {
+//        if (roleList == null || roleList.size() == 0) {
+//            return new ArrayList<>();
+//        } else {
+            List<MenuNode> menus = menuService.getMenusByRoleIds();
             List<MenuNode> titles = MenuNode.buildTitle(menus);
             return ApiMenuFilter.build(titles);
-        }
+//        }
 
     }
 

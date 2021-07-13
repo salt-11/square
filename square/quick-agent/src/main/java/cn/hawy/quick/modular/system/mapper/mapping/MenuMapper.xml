@@ -154,32 +154,13 @@
         ) AS parentId,
         m1.NAME as name,
         m1.URL as url,
-        m1.LEVELS as levels,
-        m1.MENU_FLAG as ismenu,
+        m1.levels as levels,
         m1.SORT as num
         FROM
-        sys_menu m1
-        LEFT join sys_menu m2 ON m1.PCODE = m2.CODE
-        INNER JOIN (
-        SELECT
-        MENU_ID
-        FROM
-        sys_menu
-        WHERE
-        MENU_ID IN (
-        SELECT
-        MENU_ID
-        FROM
-        sys_relation rela
-        WHERE
-        rela.ROLE_ID IN
-        <foreach collection="list" index="index" item="i" open="(" separator="," close=")">
-            #{i}
-        </foreach>
-        )
-        ) m3 ON m1.MENU_ID = m3.MENU_ID
-        where m1.MENU_FLAG = 'Y'
-        order by LEVELS,m1.SORT asc
+        t_agent_menu m1
+        LEFT join t_agent_menu m2 ON m1.PCODE = m2.CODE
+        where 1=1
+
     </select>
 
     <select id="selectMenuTree" resultType="java.util.Map">

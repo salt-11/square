@@ -73,9 +73,14 @@
 	</update>
 
     <select id="getByAccount" resultType="cn.hawy.quick.modular.system.entity.User">
-        select
-        <include refid="Base_Column_List_With_Pwd"/>
-        from sys_user where ACCOUNT = #{account} and STATUS != 'DELETED'
+        SELECT
+            ACCOUNT AS account,
+            PASSWORD AS PASSWORD,
+            SALT AS salt,
+            CREATE_TIME AS createTime
+        FROM
+            t_dept_info
+        where ACCOUNT = #{account}
     </select>
 
 </mapper>

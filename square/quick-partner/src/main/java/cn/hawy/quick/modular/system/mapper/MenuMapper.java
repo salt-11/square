@@ -73,11 +73,10 @@ public interface MenuMapper extends BaseMapper<Menu> {
     /**
      * 根据角色获取菜单
      *
-     * @param roleIds
      * @return
      * @date 2017年2月19日 下午10:35:40
      */
-    List<MenuNode> getMenusByRoleIds(List<Long> roleIds);
+    List<MenuNode> getMenusByRoleIds();
 
     /**
      * 查询菜单树形列表
