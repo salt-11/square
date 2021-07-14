@@ -28,7 +28,7 @@ public interface TMchCashFlowMapper extends BaseMapper<TMchCashFlow> {
 	
 	List<Map<String, Object>> findAll(@Param("page") Page page, @Param("id") String id, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashId") String cashId, @Param("outTradeNo") String outTradeNo, @Param("cashStatus") String cashStatus, @Param("mchName") String mchName, @Param("bankCardNo") String bankCardNo);
 
-	List<TMchCashFlow> find(@Param("join") String join, @Param("deptId") String deptId, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashId") String cashId, @Param("outTradeNo") String outTradeNo, @Param("cashStatus") String cashStatus, @Param("mchName") String mchName, @Param("bankCardNo") String bankCardNo);
+	List<TMchCashFlow> find(@Param("deptId") String id, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashId") String cashId, @Param("outTradeNo") String outTradeNo, @Param("cashStatus") String cashStatus, @Param("mchName") String mchName, @Param("bankCardNo") String bankCardNo);
 
 	Map<String, Object> tongji(@Param("beginTime") String beginTime, @Param("endTime") String endTime,@Param("deptId") String deptId,@Param("cashStatus")  Integer cashStatus);
 }

@@ -217,7 +217,6 @@ public class MchController extends BaseController {
     @ResponseBody
     public void payOrderExcelList(@RequestParam(required = false) String beginTime,
                                   @RequestParam(required = false) String endTime,
-                                  @RequestParam(required = false) String deptId,
                                   @RequestParam(required = false) String cashId,
                                   @RequestParam(required = false) String outTradeNo,
                                   @RequestParam(required = false) String cashStatus,
@@ -233,14 +232,16 @@ public class MchController extends BaseController {
             int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = {"提现号", "商户号", "商户名称", "银行卡号", "渠道号", "提现金额", "提现状态", "错误原因", "提现手续费", "渠道提现成本", "渠道利润", "出款金额", "外部提现号", "创建时间"};
             List<MchCashExcel> dataVals = new ArrayList<MchCashExcel>();
-            if (ShiroKit.isAdmin()) {
-                List<TMchCashFlow> pay = mchCashFlowService.find(null, deptId, beginTime, endTime, cashId, outTradeNo, cashStatus, mchName, bankCardNo);
+//            if (ShiroKit.isAdmin()) {
+//                List<TMchCashFlow> pay = mchCashFlowService.find(null, deptId, beginTime, endTime, cashId, outTradeNo, cashStatus, mchName, bankCardNo);
+//                dataVals.addAll(this.transForMchExport(pay));
+//            } else {
+//                String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
+                ShiroUser shiroUser = ShiroKit.getUser();
+                User user = userService.getByAccount(shiroUser.getAccount());
+                List<TMchCashFlow> pay = mchCashFlowService.find(user.getId().toString(), beginTime, endTime, cashId, outTradeNo, cashStatus, mchName, bankCardNo);
                 dataVals.addAll(this.transForMchExport(pay));
-            } else {
-                String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
-                List<TMchCashFlow> pay = mchCashFlowService.find(join, null, beginTime, endTime, cashId, outTradeNo, cashStatus, mchName, bankCardNo);
-                dataVals.addAll(this.transForMchExport(pay));
-            }
+//            }
 
             // List<UserContact> dataVals = user.getContactsList();
             // OutputStream outps = new FileOutputStream("D://stud.xls"); //

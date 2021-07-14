@@ -14,8 +14,10 @@ import javax.annotation.Resource;
  */
 public class UserTest extends BaseJunit {
 
-    @Resource
-    UserMapper userMapper;
+
+    public static void main(String[] args) {
+
+    }
 
     @Test
     public void userTest() throws Exception {

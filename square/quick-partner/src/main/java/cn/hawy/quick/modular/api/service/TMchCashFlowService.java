@@ -121,8 +121,8 @@ public class TMchCashFlowService extends ServiceImpl<TMchCashFlowMapper, TMchCas
 		return this.baseMapper.findAll(page, deptId, beginTime, endTime,cashId, outTradeNo, cashStatus, mchName, bankCardNo);
 	}
 
-	public List<TMchCashFlow> find(String join, String deptId, String beginTime, String endTime,String cashId, String outTradeNo, String cashStatus, String mchName, String bankCardNo){
-		return this.baseMapper.find(join, deptId, beginTime, endTime,cashId, outTradeNo, cashStatus, mchName, bankCardNo);
+	public List<TMchCashFlow> find(String deptId, String beginTime, String endTime,String cashId, String outTradeNo, String cashStatus, String mchName, String bankCardNo){
+		return this.baseMapper.find(deptId, beginTime, endTime,cashId, outTradeNo, cashStatus, mchName, bankCardNo);
 	}
 	
 	public Map<String, Object> tongji(String beginTime, String endTime,String deptId,Integer cashStatus) {

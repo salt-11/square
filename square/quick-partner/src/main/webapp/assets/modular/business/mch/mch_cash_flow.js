@@ -23,7 +23,7 @@ layui.use(['layer', 'table', 'ax', 'laydate'], function () {
             {field: 'mchId', align: 'center', width:180, title: '商户号'},
             {field: 'mchName', align: 'center', title: '商户名称'},
             {field: 'bankCardNo', align: 'center', width:180, title: '银行卡号'},
-            {field: 'deptId', align: 'center', width:100, title: '渠道号'},
+            // {field: 'deptId', align: 'center', width:100, title: '渠道号'},
             {field: 'cashAmount', align: 'center', width:100, title: '提现金额'},
             {field: 'cashStatusName', align: 'center', width:100, title: '提现状态'},
             {field: 'returnMsg', align: 'center', width:100, title: '错误原因'},
@@ -59,7 +59,7 @@ layui.use(['layer', 'table', 'ax', 'laydate'], function () {
     MchCashFlow.exportExcel = function () {
         DownLoadFile({
             url: Feng.ctxPath + '/business/mch/mchCashExcelList?beginTime=' + $("#beginTime").val() + '&endTime=' + $("#endTime").val()
-                + '&deptId=' + $("#deptId").val() + '&cashId=' + $("#cashId").val() + '&outTradeNo=' + $("#outTradeNo").val() + '&cashStatus=' + $("#cashStatus").val()
+                + '&cashId=' + $("#cashId").val() + '&outTradeNo=' + $("#outTradeNo").val() + '&cashStatus=' + $("#cashStatus").val()
                 + '&mchName=' + $("#mchName").val() + '&bankCardNo=' + $("#bankCardNo").val()
         });
     };
