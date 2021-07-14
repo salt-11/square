@@ -1,11 +1,12 @@
 package cn.hawy.quick.modular.api.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -15,14 +16,14 @@ import java.io.Serializable;
  * @author hawy
  * @since 2019-07-15
  */
-public class TDeptRateChannel implements Serializable {
+public class TAgentRateChannel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String deptId;
+    private String agentId;
 
     private String channel;
 
@@ -31,10 +32,6 @@ public class TDeptRateChannel implements Serializable {
     private String bankCode;
 
     private String costRate;
-
-    private String cashRate;
-
-    private String cardAuthRate;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -48,12 +45,12 @@ public class TDeptRateChannel implements Serializable {
         this.id = id;
     }
 
-    public String getDeptId() {
-        return deptId;
+    public String getAgentId() {
+        return agentId;
     }
 
-    public void setDeptId(String deptId) {
-        this.deptId = deptId;
+    public void setAgentId(String agentId) {
+        this.agentId = agentId;
     }
 
     public String getBankName() {
@@ -89,6 +86,7 @@ public class TDeptRateChannel implements Serializable {
         this.createTime = createTime;
     }
 
+
     public String getChannel() {
 		return channel;
 	}
@@ -97,27 +95,13 @@ public class TDeptRateChannel implements Serializable {
 		this.channel = channel;
 	}
 
-	public String getCashRate() {
-		return cashRate;
-	}
 
-	public void setCashRate(String cashRate) {
-		this.cashRate = cashRate;
-	}
-
-    public String getCardAuthRate() {
-        return cardAuthRate;
-    }
-
-    public void setCardAuthRate(String cardAuthRate) {
-        this.cardAuthRate = cardAuthRate;
-    }
 
     @Override
     public String toString() {
-        return "TDeptRateChannel{" +
+        return "TAgentRateChannel{" +
         "id=" + id +
-        ", deptId=" + deptId +
+        ", agentId=" + agentId +
         ", bankName=" + bankName +
         ", costRate=" + costRate +
         ", createTime=" + createTime +

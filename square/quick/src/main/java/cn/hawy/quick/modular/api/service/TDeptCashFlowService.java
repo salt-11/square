@@ -2,8 +2,10 @@ package cn.hawy.quick.modular.api.service;
 
 import cn.hawy.quick.modular.api.entity.TDeptAccountFlow;
 import cn.hawy.quick.modular.api.entity.TDeptCashFlow;
+import cn.hawy.quick.modular.api.entity.TDeptInfo;
 import cn.hawy.quick.modular.api.mapper.TDeptAccountFlowMapper;
 import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
+import cn.hawy.quick.modular.api.mapper.TDeptInfoMapper;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.mapper.DeptMapper;
 
@@ -35,7 +37,7 @@ public class TDeptCashFlowService extends ServiceImpl<TDeptCashFlowMapper, TDept
 	TDeptAccountFlowMapper deptAccountFlowMapper;
 	
 	@Autowired
-	DeptMapper deptMapper;
+	TDeptInfoMapper deptMapper;
 	
 	public List<Map<String, Object>> findAll(Page page, String join, String beginTime, String endTime, String deptType, String cashStatusName, String deptId, String name){
 		return this.baseMapper.findAll(page, join, beginTime, endTime, deptType, cashStatusName, deptId, name);
@@ -61,11 +63,11 @@ public class TDeptCashFlowService extends ServiceImpl<TDeptCashFlowMapper, TDept
         updateWrapper.eq("cash_status", 1);
         Boolean flag = this.update(deptCashFlow, updateWrapper);
         if(flag) {
-        	Dept dept = deptMapper.selectById(deptCashFlow.getDeptId());
+        	TDeptInfo dept = deptMapper.selectById(deptCashFlow.getDeptId());
             //增加渠道商账户流水
     		TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
     		deptAccountFlow.setDeptId(deptCashFlow.getDeptId());
-    		deptAccountFlow.setDeptName(deptCashFlow.getDeptName());
+    		deptAccountFlow.setDeptName(dept.getDeptName());
     		deptAccountFlow.setBalance(dept.getBalance());
     		deptAccountFlow.setAmount(deptCashFlow.getCashAmount());
     		deptAccountFlow.setBizType(4);
@@ -74,7 +76,7 @@ public class TDeptCashFlowService extends ServiceImpl<TDeptCashFlowMapper, TDept
     		deptAccountFlow.setCreateTime(LocalDateTime.now());
     		deptAccountFlowMapper.insert(deptAccountFlow);
     		//增加渠道商账户余额
-    		deptAccountFlowMapper.addBalance(deptCashFlow.getDeptId(), deptCashFlow.getCashAmount());
+			deptMapper.addBalance(deptCashFlow.getDeptId(), deptCashFlow.getCashAmount());
         }
         
 	}

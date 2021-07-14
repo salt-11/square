@@ -86,11 +86,11 @@ public class SumBtPayValidate {
 		if(!NumberUtil.isLong(orderAppleyDto.getFeeAmount())) {
 			throw new RestException(401, "feeAmount格式错误!");
 		}
-		if(!StrUtil.isEmpty(orderAppleyDto.getMchRate())) {
-			if(!NumberUtil.isDouble(orderAppleyDto.getMchRate())) {
-				throw new RestException(401, "mchRate格式错误!");
-			}
-			//throw new RestException(401, "validMonth不能为空!");
+		if(StrUtil.isEmpty(orderAppleyDto.getMchRate())) {
+			throw new RestException(401, "mchRate不能为空!");
+		}
+		if(!NumberUtil.isDouble(orderAppleyDto.getMchRate())) {
+			throw new RestException(401, "mchRate格式错误!");
 		}
 		if(StrUtil.isEmpty(orderAppleyDto.getSignature())) {
 			throw new RestException(401, "signature不能为空!");

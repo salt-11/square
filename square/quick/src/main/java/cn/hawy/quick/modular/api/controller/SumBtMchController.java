@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hawy.quick.modular.api.entity.*;
+import cn.hawy.quick.modular.api.service.*;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.slf4j.Logger;
@@ -26,15 +28,6 @@ import cn.hawy.quick.modular.api.channel.SumBtChannel;
 import cn.hawy.quick.modular.api.dto.sumbt.BindCardDto;
 import cn.hawy.quick.modular.api.dto.sumbt.CardAuthDto;
 import cn.hawy.quick.modular.api.dto.sumbt.RegisterDto;
-import cn.hawy.quick.modular.api.entity.TCardAuth;
-import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
-import cn.hawy.quick.modular.api.entity.TMchCard;
-import cn.hawy.quick.modular.api.entity.TMchInfo;
-import cn.hawy.quick.modular.api.entity.TMchInfoChannel;
-import cn.hawy.quick.modular.api.service.TCardAuthService;
-import cn.hawy.quick.modular.api.service.TDeptRateChannelService;
-import cn.hawy.quick.modular.api.service.TMchCardService;
-import cn.hawy.quick.modular.api.service.TMchInfoService;
 import cn.hawy.quick.modular.api.validate.sumbt.SumBtMchValidate;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.service.DeptService;
@@ -48,8 +41,11 @@ public class SumBtMchController {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private static final String Channel = "sumbt";
+	private static final String PlatformCode = "tts";
+
 	@Autowired
-	DeptService deptService;
+	TDeptInfoService deptInfoService;
 	@Autowired
 	TDeptRateChannelService deptRateChannelService;
 	@Autowired
@@ -60,6 +56,12 @@ public class SumBtMchController {
 	TCardAuthService cardAuthService;
 	@Autowired
 	SumBtChannel sumBtChannel;
+	@Autowired
+	TAgentInfoService agentInfoService;
+	@Autowired
+	TPlatformRateChannelService platformRateChannelService;
+	@Autowired
+	TAgentRateChannelService agentRateChannelService;
 
 	@RequestMapping(value = "/register",method = RequestMethod.POST)
 	@ResponseBody
@@ -67,7 +69,7 @@ public class SumBtMchController {
 		log.info("下游请求报文-register:request={}",JSON.toJSONString(registerDto));
 		SumBtMchValidate.register(registerDto);
 		//渠道商信息
-		Dept dept = deptService.getById(registerDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(registerDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -76,18 +78,11 @@ public class SumBtMchController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, registerDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, registerDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
-		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(registerDto.getPartnerId(), "TTS", "sumbt");
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道费率信息");
-		}
-		//商户费率不能低于渠道商费率
-		if(NumberUtil.compare(Double.parseDouble(registerDto.getMchRate()),Double.parseDouble(deptRateChannel.getCostRate())) < 0) {
-			throw new RestException(401, "商户费率不能低于渠道商费率!");
-		}
+
 		String mchId = IdGenerator.getId();
 		//插入数据
 		TMchInfo mchInfo = new TMchInfo();
@@ -110,9 +105,8 @@ public class SumBtMchController {
 		//通道
 		TMchInfoChannel mchInfoChannel = new TMchInfoChannel();
 		mchInfoChannel.setMchId(mchId);
-		mchInfoChannel.setChannel("sumbt");
+		mchInfoChannel.setChannel(Channel);
 		mchInfoChannel.setOutMchId("00000000");
-		mchInfoChannel.setMchRate(registerDto.getMchRate());
 		mchInfoChannel.setCreateTime(LocalDateTime.now());
 		mchInfoService.addMerchant(mchInfo, mchInfoChannel);
 		//组装返回报文
@@ -137,7 +131,7 @@ public class SumBtMchController {
 		log.info("下游请求报文-binkCard:request={}",JSON.toJSONString(bindCardDto));
 		SumBtMchValidate.binkCard(bindCardDto);
 		//渠道商信息
-		Dept dept = deptService.getById(bindCardDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(bindCardDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -146,7 +140,7 @@ public class SumBtMchController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, bindCardDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, bindCardDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
@@ -187,7 +181,7 @@ public class SumBtMchController {
 	}
 
 	/**
-	 * 鉴权
+	 * 鉴权  无成本
 	 * @param cardAuthDto
 	 * @return
 	 */
@@ -197,7 +191,7 @@ public class SumBtMchController {
 		log.info("下游请求报文-cardAuth:request={}",JSON.toJSONString(cardAuthDto));
 		SumBtMchValidate.cardAuth(cardAuthDto);
 		//渠道商信息
-		Dept dept = deptService.getById(cardAuthDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(cardAuthDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -206,22 +200,22 @@ public class SumBtMchController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, cardAuthDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, cardAuthDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
-//		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(cardAuthDto.getPartnerId(), cardAuthDto.getMchId());
-//		if(mchInfo == null) {
-//			throw new RestException(401, "商户信息错误!");
-//		}
-		if(dept.getBalance()<NumberUtil.parseLong(dept.getCardAuthRate())){
+		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankCodeAndChannel(cardAuthDto.getPartnerId(), PlatformCode, Channel);
+		if(deptRateChannel == null) {
+			throw new RestException(401, "未找到渠道费率信息");
+		}
+		if(dept.getBalance()<NumberUtil.parseLong(deptRateChannel.getCardAuthRate())){
 			throw new RestException(401, "渠道商余额不足!");
 		}
 		TCardAuth cardAuth = new TCardAuth();
 		BeanUtil.copyProperties(cardAuthDto, cardAuth);
 		cardAuth.setDeptId(cardAuthDto.getPartnerId());
 		cardAuth.setStatus(0);
-		cardAuth.setAmount(NumberUtil.parseLong(dept.getCardAuthRate()));
+		cardAuth.setAmount(NumberUtil.parseLong(deptRateChannel.getCardAuthRate()));
 		cardAuth.setCreateTime(LocalDateTime.now());
 		cardAuthService.save(cardAuth);
 		//组装返回报文

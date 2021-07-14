@@ -48,10 +48,13 @@ public class SumBtPayController {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private static final String Channel = "sumbt";
+	private static final String PlatformCode = "tts";
+
 	@Autowired
 	SumBtProperties sumbtProperties;
 	@Autowired
-	DeptService deptService;
+	TDeptInfoService deptInfoService;
 	@Autowired
 	TMchInfoService mchInfoService;
 	@Autowired
@@ -74,6 +77,12 @@ public class SumBtPayController {
 	MqPayNotify mqPayNotify;
 	@Autowired
 	TMerPoolService merPoolServic;
+	@Autowired
+	TAgentInfoService agentInfoService;
+	@Autowired
+	TPlatformRateChannelService platformRateChannelService;
+	@Autowired
+	TAgentRateChannelService agentRateChannelService;
 
 	@RequestMapping(value = "/orderAppley",method = RequestMethod.POST)
 	@ResponseBody
@@ -81,41 +90,28 @@ public class SumBtPayController {
 		log.info("下游请求报文-orderAppley:request={}",JSON.toJSONString(orderAppleyDto));
 		//参数校验
 		SumBtPayValidate.orderAppley(orderAppleyDto);
-		if(NumberUtil.compare(Double.parseDouble(orderAppleyDto.getOrderAmount()),Double.parseDouble(sumbtProperties.getMinOrderAmount())) < 0) {
-			throw new RestException(401, "支付金额不能低于最低交易限额!");
-		}
 		//渠道商信息
-		Dept dept = deptService.getById(orderAppleyDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(orderAppleyDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
-		if(!StrUtil.isEmpty(orderAppleyDto.getMchRate())) {
-			TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(orderAppleyDto.getPartnerId(), "TTS", "sumbt");
-			if(deptRateChannel == null) {
-				throw new RestException(401, "未找到渠道费率信息");
-			}
-			//商户费率不能低于渠道商费率
-			if(NumberUtil.compare(Double.parseDouble(orderAppleyDto.getMchRate()),Double.parseDouble(deptRateChannel.getCostRate())) < 0) {
-				throw new RestException(401, "商户费率不能低于渠道商费率!");
-			}
-		}
-
-
 		//签名信息校验
 		Map<String,Object> checkSignMap = BeanUtil.beanToMap(orderAppleyDto);
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, orderAppleyDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, orderAppleyDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
-
+		if(NumberUtil.compare(Double.parseDouble(orderAppleyDto.getOrderAmount()),Double.parseDouble(sumbtProperties.getMinOrderAmount())) < 0) {
+			throw new RestException(401, "支付金额不能低于最低交易限额!");
+		}
 		TMchInfo mchInfo = mchInfoService.findByDeptIdAndMchId(orderAppleyDto.getPartnerId(),orderAppleyDto.getMchId());
 		if(mchInfo == null) {
 			throw new RestException(401, "商户信息错误!");
 		}
-		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(orderAppleyDto.getMchId(), "sumbt");
+		TMchInfoChannel mchInfoChannel = mchInfoChannelService.findByMchIdAndChannel(orderAppleyDto.getMchId(), Channel);
 		if(mchInfoChannel == null) {
 			throw new RestException(401, "商户信息渠道错误!");
 		}
@@ -123,52 +119,39 @@ public class SumBtPayController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-
-		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(orderAppleyDto.getPartnerId(), mchCard.getBankCode(), "sumbt");
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByBankCodeAndChannel(mchCard.getBankCode(),Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
+		}
+		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankCodeAndChannel(orderAppleyDto.getPartnerId(), mchCard.getBankCode(), Channel);
 		if(deptRateChannel == null) {
 			throw new RestException(401, "未找到渠道费率信息");
 		}
 		if(NumberUtil.compare(Double.parseDouble(orderAppleyDto.getFeeAmount()),Double.parseDouble(deptRateChannel.getCashRate())) < 0) {
 			throw new RestException(401, "提现手续费不能低于渠道成本手续费!");
 		}
+		//商户费率不能低于渠道商费率
+		if(NumberUtil.compare(Double.parseDouble(orderAppleyDto.getMchRate()),Double.parseDouble(deptRateChannel.getCostRate())) < 0) {
+			throw new RestException(401, "商户费率不能低于渠道商费率!");
+		}
 		TPayOrder payOrder = payOrderService.findByMchIdAndOutTradeNo(orderAppleyDto.getMchId(), orderAppleyDto.getOutTradeNo());
 		if(payOrder != null) {
 			throw new RestException(401, "订单号已存在!");
 		}
 
-		//调用已绑卡接口绑定绑卡id
-		TMchCardChannel mchCardChannel = mchCardChannelService.findByCardIdAndChannel(mchCard.getId(),2,"sumbt");
 		String bandCardId  = null;
-//		if(mchCardChannel == null) {
-//			bandCardId = sumbtChannel.avaliableBank(orderAppleyDto.getMchId(), mchCard.getBankCode(), mchCard.getBankCardNo(), deptRateChannel.getChannelNo());
-//			if(bandCardId != null) {
-//				mchCardChannel = new TMchCardChannel();
-//				mchCardChannel.setCardId(mchCard.getId());
-//				mchCardChannel.setOutMchId(orderAppleyDto.getMchId());
-//				mchCardChannel.setChannel("sumbt");
-//				mchCardChannel.setProtocol(bandCardId);
-//				mchCardChannel.setStatus(2);
-//				mchCardChannel.setCreateTime(LocalDateTime.now());
-//				mchCardChannelService.save(mchCardChannel);
-//			}
-//		}
 		String channelMerNo = "";
 		String userIpAddr = "";
 		String longitude = "";
 		String latitude = "";
-		Integer orderStatus = 1;
-		String returnMsg = "";
-		if(deptRateChannel.getLuod() != 0){
-			//if(StrUtil.isNotEmpty(orderAppleyDto.getProvinceCode())){
+		if(platformRateChannel.getLuod() != 0){
 				List<TMerPool> merPoolList = null;
-				if(deptRateChannel.getLuod() == 1) {
+				if(platformRateChannel.getLuod() == 1) {
 					merPoolList = merPoolServic.findByPC(orderAppleyDto.getProvinceCode(), orderAppleyDto.getCityCode(),1);
-				}else if(deptRateChannel.getLuod() == 2){
+				}else if(platformRateChannel.getLuod() == 2){
 					merPoolList = merPoolServic.findByPC(orderAppleyDto.getProvinceCode(), orderAppleyDto.getCityCode(),2);
 				}
 				if(merPoolList.size() == 0) {
-					//orderStatus = orderStatus==1?3:orderStatus;
-					//returnMsg = returnMsg==""?"订单上送的地区码交易不支持":returnMsg;
 					throw new RestException(401, "订单上送的地区码交易不支持!");
 				}else {
 					TMerPool merPool = merPoolList.get(0); //正常随机，不计算权重
@@ -177,7 +160,6 @@ public class SumBtPayController {
 					longitude = merPool.getLongitude();
 					latitude = merPool.getLatitude();
 				}
-			//}
 		}
 
 
@@ -192,31 +174,40 @@ public class SumBtPayController {
 		Long cashFee = NumberUtil.parseLong(orderAppleyDto.getFeeAmount());
 		//计算方式和后端通道保持一致
 		//商户
-		//Long mchFee = NumberUtil.parseLong(NumberUtil.roundStr(orderAmount*(Double.valueOf(mchInfoChannel.getMchRate())), 0,RoundingMode.UP));
 		Long mchFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), mchRate),0).longValue();
 		Long mchAmount = orderAmount-mchFee;
 		//渠道
-		//Long deptFee = NumberUtil.parseLong(NumberUtil.roundStr(orderAmount*(Double.valueOf(deptRateChannel.getCostRate())), 0,RoundingMode.UP));
 		Long deptFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), deptRateChannel.getCostRate()),0).longValue();
 		Long deptAmount = mchFee - deptFee;
 		//代理
+		String agentRate = "";
 		Long agentFee = 0L;
 		Long agentAmount = 0L;
+		//平台
 		Long costFee = 0L;
 		Long costAmount = 0L;
 		if(StrUtil.isEmpty(dept.getAgentId())){ //没有代理,则平台利润是渠道差
 			//平台利润
-			costFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), deptRateChannel.getChannelCostRate()),0).longValue();
+			costFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), platformRateChannel.getCostRate()),0).longValue();
 			costAmount = deptFee -  costFee;
 		}else{ //有代理，则平台利润是代理差
-			if(StrUtil.isEmpty(deptRateChannel.getAgentRate())){
+			TAgentInfo agent = agentInfoService.getById(dept.getAgentId());
+			if(agent == null) {
+				throw new RestException(401, "代理商信息错误!");
+			}
+			TAgentRateChannel agentRateChannel = agentRateChannelService.findByAgentIdAndChannel(dept.getAgentId(), Channel);
+			if(agentRateChannel == null) {
+				throw new RestException(401, "未找到代理商信息");
+			}
+			if(StrUtil.isEmpty(agentRateChannel.getCostRate())){
 				throw new RestException(401, "代理商费率为空!");
 			}
+			agentRate = agentRateChannel.getCostRate();
 			//代理利润
-			agentFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), deptRateChannel.getAgentRate()),0).longValue();
+			agentFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), agentRate),0).longValue();
 			agentAmount = deptFee - agentFee;
 			//平台利润
-			costFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), deptRateChannel.getChannelCostRate()),0).longValue();
+			costFee = NumberUtil.round(NumberUtil.mul(orderAppleyDto.getOrderAmount(), platformRateChannel.getCostRate()),0).longValue();
 			costAmount = agentFee -  costFee;
 		}
 
@@ -226,8 +217,8 @@ public class SumBtPayController {
 		payOrder.setMchId(orderAppleyDto.getMchId());
 		payOrder.setMchName(mchInfo.getMchName());
 		payOrder.setDeptId(orderAppleyDto.getPartnerId());
-		payOrder.setChannel("sumbt");
-		payOrder.setChannelNo(deptRateChannel.getChannelNo());
+		payOrder.setChannel(Channel);
+		payOrder.setChannelNo(platformRateChannel.getChannelNo());
 		payOrder.setBankCardNo(orderAppleyDto.getCardNo());
 		payOrder.setOutTradeNo(orderAppleyDto.getOutTradeNo());
 		payOrder.setOrderAmount(orderAmount);
@@ -238,21 +229,19 @@ public class SumBtPayController {
 		payOrder.setDeptRate(deptRateChannel.getCostRate());
 		payOrder.setDeptAmount(deptAmount);
 		payOrder.setAgentId(dept.getAgentId());
-		payOrder.setAgentRate(deptRateChannel.getAgentRate());
+		payOrder.setAgentRate(agentRate);
 		payOrder.setAgentAmount(agentAmount);
-		payOrder.setCostRate(deptRateChannel.getChannelCostRate());
+		payOrder.setCostRate(platformRateChannel.getCostRate());
 		payOrder.setCostAmount(costAmount);
 		payOrder.setOrderStatus(1);
 		payOrder.setSplitStatus(1);
 		payOrder.setNotifyUrl(orderAppleyDto.getNotifyUrl());
 		payOrder.setNotifyCount(0);
-		//payOrder.setCashAmount(cashAmount);
 		payOrder.setOrderTime(LocalDateTime.now());
 
 		Long cashDeptAmount = cashFee - NumberUtil.parseLong(deptRateChannel.getCashRate());
-		Long cashCostAmount = NumberUtil.parseLong(deptRateChannel.getCashRate()) - NumberUtil.parseLong(sumbtProperties.getCostFee());
+		Long cashCostAmount = NumberUtil.parseLong(deptRateChannel.getCashRate()) - NumberUtil.parseLong(platformRateChannel.getCashRate());
 		TMchCashFlow mchCashFlow = new TMchCashFlow();
-		//Long cashId = IdGenerator.getIdLong();
 		mchCashFlow.setCashId(orderId);
 		mchCashFlow.setMchId(orderAppleyDto.getMchId());
 		mchCashFlow.setMchName(mchInfo.getMchName());
@@ -267,7 +256,7 @@ public class SumBtPayController {
 		mchCashFlow.setReturnMsg("");
 		mchCashFlow.setCashRate(deptRateChannel.getCashRate());
 		mchCashFlow.setDeptAmount(cashDeptAmount);
-		mchCashFlow.setCostFee(sumbtProperties.getCostFee());
+		mchCashFlow.setCostFee(platformRateChannel.getCashRate());
 		mchCashFlow.setCostAmount(cashCostAmount);
 		mchCashFlow.setNotifyUrl("www.xxx.com");
 		mchCashFlow.setNotifyCount(0);
@@ -279,11 +268,11 @@ public class SumBtPayController {
 		map.put("mchId", orderAppleyDto.getMchId());
 		map.put("cardNo", orderAppleyDto.getCardNo());
 		map.put("outTradeNo", orderAppleyDto.getOutTradeNo());
-		Map<String,String> resMap = sumbtChannel.orderAppley(orderAppleyDto, String.valueOf(orderId), mchCard, mchInfo,mchRate,deptRateChannel.getChannelNo(),bandCardId,channelMerNo,userIpAddr,longitude,latitude);
+		Map<String,String> resMap = sumbtChannel.orderAppley(orderAppleyDto, String.valueOf(orderId), mchCard, mchInfo,mchRate,platformRateChannel.getChannelNo(),bandCardId,channelMerNo,userIpAddr,longitude,latitude);
 		if("1".equals(resMap.get("orderStatus"))) {
 			map.put("orderStatus", "1");
 		}else if("2".equals(resMap.get("orderStatus"))) {
-			boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow, dept);
+			boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow);
 			map.put("orderStatus", orderStatusFlag?"2":"1");
 		}else if("3".equals(resMap.get("orderStatus"))) {
 			boolean orderStatusFlag = payOrderService.updateOrderStatusFail(payOrder.getOrderId(),resMap.get("returnMsg"));
@@ -314,7 +303,7 @@ public class SumBtPayController {
 		//参数校验
 		SumBtPayValidate.verifyMessage(verifyMessageDto);
 		//渠道商信息
-		Dept dept = deptService.getById(verifyMessageDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(verifyMessageDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -323,7 +312,7 @@ public class SumBtPayController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, verifyMessageDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, verifyMessageDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
@@ -343,9 +332,9 @@ public class SumBtPayController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(verifyMessageDto.getPartnerId(), mchCard.getBankCode(), "sumbt");
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道费率信息");
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByBankCodeAndChannel(PlatformCode,Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -355,11 +344,11 @@ public class SumBtPayController {
 		map.put("orderStatus", String.valueOf(payOrder.getOrderStatus()));
 		map.put("returnMsg", payOrder.getReturnMsg());
 		if(payOrder.getOrderStatus() == 1) {
-			Map<String,String> resMap = sumbtChannel.verifyMessage(String.valueOf(payOrder.getOrderId()), verifyMessageDto.getVerifyCode(),deptRateChannel.getChannelNo());
+			Map<String,String> resMap = sumbtChannel.verifyMessage(String.valueOf(payOrder.getOrderId()), verifyMessageDto.getVerifyCode(),platformRateChannel.getChannelNo());
 			if("1".equals(resMap.get("orderStatus"))) {
 				map.put("orderStatus", "1");
 			}else if("2".equals(resMap.get("orderStatus"))) {
-				boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow, dept);
+				boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow);
 				map.put("orderStatus", orderStatusFlag?"2":"1");
 			}else if("3".equals(resMap.get("orderStatus"))) {
 				boolean orderStatusFlag = payOrderService.updateOrderStatusFail(payOrder.getOrderId(),resMap.get("returnMsg"));
@@ -390,7 +379,7 @@ public class SumBtPayController {
 		//参数校验
 		SumBtPayValidate.changeAgentCard(changeAgentCardDto);
 		//渠道商信息
-		Dept dept = deptService.getById(changeAgentCardDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(changeAgentCardDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -399,7 +388,7 @@ public class SumBtPayController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, changeAgentCardDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, changeAgentCardDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
@@ -422,27 +411,22 @@ public class SumBtPayController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(changeAgentCardDto.getPartnerId(), mchCard.getBankCode(), "sumbt");
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道费率信息");
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByBankCodeAndChannel(PlatformCode,Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
-		/*TPayOrderBc payOrderBc = new TPayOrderBc();
-		payOrderBc.setOrderId(payOrder.getOrderId());
-		payOrderBc.setBankCode(changeAgentCardDto.getBankCode());
-		payOrderBc.setCardNo(changeAgentCardDto.getCardNo());
-		payOrderBc.setCreateTime(LocalDateTime.now());
-		payOrderBcService.save(payOrderBc);*/
+
 		mchCashFlow.setBankCardNo(changeAgentCardDto.getCardNo());
 		//mchCashFlowService.updateById(mchCashFlow);
 		Map<String,Object> map = new HashMap<String,Object>();
 		payOrderService.changeAgentCard(payOrder,mchCashFlow);
 		map.put("orderStatus", "1");
 		map.put("returnMsg", "");
-		Map<String,String> resMap = sumbtChannel.changeAgentCard(String.valueOf(payOrder.getOrderId()), changeAgentCardDto.getBankCode(), changeAgentCardDto.getCardNo(),deptRateChannel.getChannelNo());
+		Map<String,String> resMap = sumbtChannel.changeAgentCard(String.valueOf(payOrder.getOrderId()), changeAgentCardDto.getBankCode(), changeAgentCardDto.getCardNo(),platformRateChannel.getChannelNo());
 		if("1".equals(resMap.get("orderStatus"))) {
 			map.put("orderStatus", "1");
 		}else if("2".equals(resMap.get("orderStatus"))) {
-			boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow, dept);
+			boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow);
 			map.put("orderStatus", orderStatusFlag?"2":"1");
 		}else if("3".equals(resMap.get("orderStatus"))) {
 			boolean orderStatusFlag = payOrderService.updateOrderStatusFailOfSumBt(payOrder.getOrderId(),resMap.get("returnMsg"));
@@ -474,7 +458,7 @@ public class SumBtPayController {
 		//参数校验
 		SumBtPayValidate.query(queryDto);
 		//渠道商信息
-		Dept dept = deptService.getById(queryDto.getPartnerId());
+		TDeptInfo dept = deptInfoService.getById(queryDto.getPartnerId());
 		if(dept == null) {
 			throw new RestException(401, "渠道商信息错误!");
 		}
@@ -483,7 +467,7 @@ public class SumBtPayController {
 		checkSignMap.remove("signature");
 		checkSignMap = MapUtils.removeStrNull(checkSignMap);
 		String checkSignContent = MapUtil.joinIgnoreNull(MapUtil.sort(checkSignMap), "&", "=");
-		Boolean flag = RSA.checkSign(checkSignContent, queryDto.getSignature(), dept.getPartnerPublickey());
+		Boolean flag = RSA.checkSign(checkSignContent, queryDto.getSignature(), dept.getDeptPublickey());
 		if(!flag) {
 			throw new RestException(401, "签名验证错误!");
 		}
@@ -503,19 +487,19 @@ public class SumBtPayController {
 		if(mchCard == null) {
 			throw new RestException(401, "商户卡信息错误");
 		}
-		TDeptRateChannel deptRateChannel = deptRateChannelService.findByDeptIdAndBankNameAndChannel(queryDto.getPartnerId(), mchCard.getBankCode(), "sumbt");
-		if(deptRateChannel == null) {
-			throw new RestException(401, "未找到渠道费率信息");
+		TPlatformRateChannel platformRateChannel = platformRateChannelService.findByBankCodeAndChannel(PlatformCode,Channel);
+		if(platformRateChannel == null) {
+			throw new RestException(401, "未找到平台信息");
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("orderStatus", String.valueOf(payOrder.getOrderStatus()));
 		map.put("returnMsg", payOrder.getReturnMsg());
 		if(payOrder.getOrderStatus() == 1 || payOrder.getOrderStatus() == 5) {
-			Map<String,String> resMap = sumbtChannel.query(String.valueOf(payOrder.getOrderId()),deptRateChannel.getChannelNo());
+			Map<String,String> resMap = sumbtChannel.query(String.valueOf(payOrder.getOrderId()),platformRateChannel.getChannelNo());
 			if("1".equals(resMap.get("orderStatus"))) {
 				map.put("orderStatus", "1");
 			}else if("2".equals(resMap.get("orderStatus"))) {
-				boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow, dept);
+				boolean orderStatusFlag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder,mchCashFlow);
 				map.put("orderStatus", orderStatusFlag?"2":"1");
 			}else if("3".equals(resMap.get("orderStatus"))) {
 				boolean orderStatusFlag = payOrderService.updateOrderStatusFailOfSumBt(payOrder.getOrderId(),resMap.get("returnMsg"));
@@ -568,7 +552,7 @@ public class SumBtPayController {
 			return restMap;
 		}
 		//渠道商信息
-		Dept dept = deptService.getById(payOrder.getDeptId());
+		TDeptInfo dept = deptInfoService.getById(payOrder.getDeptId());
 		if(dept == null) {
 			restMap.put("resp_code", "0001");
 			restMap.put("resp_msg", "订单渠道异常");
@@ -586,7 +570,7 @@ public class SumBtPayController {
 		map.put("orderStatus", String.valueOf(payOrder.getOrderStatus()));
 		if(payOrder.getOrderStatus() == 1) {
 			if(orderNotifyDto.getStatus().equals("1")) {
-				boolean flag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder, mchCashFlow, dept);
+				boolean flag = payOrderService.updateOrderStatusSuccessOfSumBt(payOrder, mchCashFlow);
 				if(flag) {
 					map.put("orderStatus", "2");
 				}else {

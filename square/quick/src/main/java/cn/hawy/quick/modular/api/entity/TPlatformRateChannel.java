@@ -1,11 +1,12 @@
 package cn.hawy.quick.modular.api.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -15,14 +16,12 @@ import java.io.Serializable;
  * @author hawy
  * @since 2019-07-15
  */
-public class TDeptRateChannel implements Serializable {
+public class TPlatformRateChannel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
-    private String deptId;
 
     private String channel;
 
@@ -34,7 +33,11 @@ public class TDeptRateChannel implements Serializable {
 
     private String cashRate;
 
-    private String cardAuthRate;
+    private String channelNo;
+
+    private String channelMerAppId;
+
+    private Integer luod;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -46,14 +49,6 @@ public class TDeptRateChannel implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(String deptId) {
-        this.deptId = deptId;
     }
 
     public String getBankName() {
@@ -88,7 +83,7 @@ public class TDeptRateChannel implements Serializable {
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
-
+    
     public String getChannel() {
 		return channel;
 	}
@@ -105,19 +100,36 @@ public class TDeptRateChannel implements Serializable {
 		this.cashRate = cashRate;
 	}
 
-    public String getCardAuthRate() {
-        return cardAuthRate;
+
+    public String getChannelNo() {
+        return channelNo;
     }
 
-    public void setCardAuthRate(String cardAuthRate) {
-        this.cardAuthRate = cardAuthRate;
+    public void setChannelNo(String channelNo) {
+        this.channelNo = channelNo;
     }
+
+    public String getChannelMerAppId() {
+        return channelMerAppId;
+    }
+
+    public void setChannelMerAppId(String channelMerAppId) {
+        this.channelMerAppId = channelMerAppId;
+    }
+
+    public Integer getLuod() {
+        return luod;
+    }
+
+    public void setLuod(Integer luod) {
+        this.luod = luod;
+    }
+
 
     @Override
     public String toString() {
         return "TDeptRateChannel{" +
         "id=" + id +
-        ", deptId=" + deptId +
         ", bankName=" + bankName +
         ", costRate=" + costRate +
         ", createTime=" + createTime +

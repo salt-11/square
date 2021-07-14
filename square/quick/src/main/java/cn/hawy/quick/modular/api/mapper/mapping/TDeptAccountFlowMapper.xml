@@ -19,11 +19,7 @@
     <sql id="Base_Column_List">
         id as id, dept_id as deptId, dept_name as deptName, balance as balance, amount as amount, biz_type as bizType, direction as direction, trade_no as tradeNo, create_time as createTime
     </sql>
-    
-    <update id="addBalance">
-    	update sys_dept set balance=balance + #{balance} where dept_id = #{deptId}
-    </update>
-    
+
     <select id="findAll" resultType="map">
     	select
         <include refid="Base_Column_List"/>

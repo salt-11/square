@@ -48,12 +48,6 @@ public class SumBtMchValidate {
 		if(StrUtil.isEmpty(registerDto.getRealName())) {
 			throw new RestException(401, "realName不能为空!");
 		}
-		if(StrUtil.isEmpty(registerDto.getMchRate())) {
-			throw new RestException(401, "mchRate不能为空!");
-		}
-		if(!NumberUtil.isDouble(registerDto.getMchRate())) {
-			throw new RestException(401, "mchRate格式错误!");
-		}
 		if(StrUtil.isEmpty(registerDto.getIdNo())) {
 			throw new RestException(401, "idNo不能为空!");
 		}

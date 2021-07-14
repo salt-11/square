@@ -20,7 +20,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  */
 public interface TDeptAccountFlowMapper extends BaseMapper<TDeptAccountFlow> {
 
-	int addBalance(@Param("deptId") String deptId,@Param("balance") Long balance);
 	
 	List<Map<String, Object>> findAll(@Param("page") Page page,@Param("join") String join, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("deptId") String deptId, @Param("deptType") String deptType, @Param("bizTypeName") String bizTypeName, @Param("directionName") String directionName);
 
