@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.hawy.quick.modular.api.entity.TDeptInfo">
-        <id column="dept_id" property="deptId" />
+        <id column="id" property="id" />
         <result column="dept_name" property="deptName" />
         <result column="account" property="account" />
         <result column="password" property="password" />
@@ -19,11 +19,11 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        dept_id, dept_name, account, password, salt, balance, agent_id, dept_publickey, platform_privatekey, platform_publickey, create_time
+        id, dept_name, account, password, salt, balance, agent_id, dept_publickey, platform_privatekey, platform_publickey, create_time
     </sql>
 
     <update id="addBalance">
-        update t_dept_info set balance=balance + #{balance} where dept_id = #{deptId}
+        update t_dept_info set balance=balance + #{balance} where id = #{deptId}
     </update>
 
 </mapper>

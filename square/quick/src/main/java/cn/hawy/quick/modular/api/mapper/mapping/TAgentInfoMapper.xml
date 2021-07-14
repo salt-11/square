@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.hawy.quick.modular.api.entity.TAgentInfo">
-        <id column="agent_id" property="agentId" />
+        <id column="id" property="id" />
         <result column="agent_name" property="agentName" />
         <result column="account" property="account" />
         <result column="password" property="password" />
@@ -17,11 +17,11 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        agent_id, agent_name, account, password, salt, balance, name, card_no, create_time
+        id, agent_name, account, password, salt, balance, name, card_no, create_time
     </sql>
 
     <update id="addBalance">
-        update t_agent_info set balance=balance + #{balance} where agent_id = #{agentId}
+        update t_agent_info set balance=balance + #{balance} where id = #{agentId}
     </update>
 
 </mapper>
