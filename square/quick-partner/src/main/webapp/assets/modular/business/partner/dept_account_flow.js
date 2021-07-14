@@ -38,10 +38,8 @@ layui.use(['layer', 'table', 'ax', 'admin', 'laydate'], function () {
         var queryData = {};
         queryData['beginTime'] = $("#beginTime").val();
         queryData['endTime'] = $("#endTime").val();
-        queryData['deptId'] = $("#deptId").val();
         queryData['bizTypeName'] = $("#bizTypeName").val();
         queryData['directionName'] = $("#directionName").val();
-        queryData['deptType'] = $("#deptType").val();
         table.reload(DeptAccountFlow.tableId, {where: queryData});
     };
 

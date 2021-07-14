@@ -48,9 +48,6 @@
     	select
         <include refid="Base_Column_List"/>
      	from t_mch_cash_flow where 1=1
-     	<if test="deptId != null and deptId !=''">
-            and dept_id = #{deptId}
-        </if>
         <if test="cashId != null and cashId !=''">
             and cash_id = #{cashId}
         </if>
@@ -72,8 +69,8 @@
         <if test="endTime != null and endTime != ''">
         	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-     	<if test="join != null and join !=''">
-            and dept_id = ${join}
+     	<if test="id != null and id !=''">
+            and dept_id = ${id}
         </if>
         order by create_time  desc
     </select>

@@ -84,7 +84,6 @@ public class TMchInfo implements Serializable {
      */
     private Integer cardKind;
 
-    private String deviceInfo;
 
     /**
      * 创建时间
@@ -221,14 +220,6 @@ public class TMchInfo implements Serializable {
         this.createTime = createTime;
     }
 
-
-    public String getDeviceInfo() {
-        return deviceInfo;
-    }
-
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
-    }
 
     @Override
     public String toString() {

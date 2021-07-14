@@ -72,8 +72,8 @@ public class TMchInfoService extends ServiceImpl<TMchInfoMapper, TMchInfo> {
 		mchInfoChannelMapper.insert(mchInfoChannel);
 	}
 	
-	public List<Map<String, Object>> findAll(Page page, String join, String mchId, String beginTime, String endTime, String mchName, String deptId, String mobile){
-		return this.baseMapper.findAll(page, join, mchId, beginTime, endTime, mchName, deptId, mobile);
+	public List<Map<String, Object>> findAll(Page page, String mchId, String beginTime, String endTime, String mchName, String id, String mobile){
+		return this.baseMapper.findAll(page, mchId, beginTime, endTime, mchName, id, mobile);
 	}
 
 }

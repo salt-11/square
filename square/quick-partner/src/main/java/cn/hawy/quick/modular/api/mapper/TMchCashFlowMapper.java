@@ -26,7 +26,7 @@ public interface TMchCashFlowMapper extends BaseMapper<TMchCashFlow> {
 
 	int updateNotifyCount(@Param("cashId") Long cashId, @Param("notifyCount") int notifyCount,@Param("notifyResult") String notifyResult);
 	
-	List<Map<String, Object>> findAll(@Param("page") Page page, @Param("join") String join, @Param("deptId") String deptId, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashId") String cashId, @Param("outTradeNo") String outTradeNo, @Param("cashStatus") String cashStatus, @Param("mchName") String mchName, @Param("bankCardNo") String bankCardNo);
+	List<Map<String, Object>> findAll(@Param("page") Page page, @Param("id") String id, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashId") String cashId, @Param("outTradeNo") String outTradeNo, @Param("cashStatus") String cashStatus, @Param("mchName") String mchName, @Param("bankCardNo") String bankCardNo);
 
 	List<TMchCashFlow> find(@Param("join") String join, @Param("deptId") String deptId, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashId") String cashId, @Param("outTradeNo") String outTradeNo, @Param("cashStatus") String cashStatus, @Param("mchName") String mchName, @Param("bankCardNo") String bankCardNo);
 

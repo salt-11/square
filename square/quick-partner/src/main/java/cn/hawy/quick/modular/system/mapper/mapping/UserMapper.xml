@@ -74,6 +74,7 @@
 
     <select id="getByAccount" resultType="cn.hawy.quick.modular.system.entity.User">
         SELECT
+            id as id,
             ACCOUNT AS account,
             PASSWORD AS PASSWORD,
             SALT AS salt,

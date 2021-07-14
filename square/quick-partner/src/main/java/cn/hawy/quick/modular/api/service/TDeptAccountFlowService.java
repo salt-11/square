@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TDeptAccountFlowService extends ServiceImpl<TDeptAccountFlowMapper, TDeptAccountFlow> {
 
-	public List<Map<String, Object>> findAll(Page page, String join, String beginTime, String endTime, String deptId, String deptType, String bizTypeName, String directionName){
-		return this.baseMapper.findAll(page, join, beginTime, endTime, deptId, deptType, bizTypeName, directionName);
+	public List<Map<String, Object>> findAll(Page page,  String beginTime, String endTime, String id, String bizTypeName, String directionName){
+		return this.baseMapper.findAll(page, beginTime, endTime, id, bizTypeName, directionName);
 	}
 
 	public List<TDeptAccountFlow> find(String join, String beginTime, String endTime, String deptId, String deptType, String bizTypeName, String directionName){

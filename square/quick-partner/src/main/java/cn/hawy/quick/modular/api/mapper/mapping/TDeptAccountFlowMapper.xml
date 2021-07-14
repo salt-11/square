@@ -28,26 +28,20 @@
     	select
         <include refid="Base_Column_List"/>
      	from t_dept_account_flow where 1=1
-     	<if test="join != null and join !=''">
-            and dept_id in (${join})
-        </if>
      	<if test="beginTime != null and beginTime !=''">
             and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
         </if>
         <if test="endTime != null and endTime != ''">
         	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="deptId != null and deptId != ''">
-        	and dept_id = #{deptId}
+        <if test="id != null and id != ''">
+        	and dept_id = #{id}
         </if>
         <if test="bizTypeName != null and bizTypeName != ''">
         	and biz_type = #{bizTypeName}
         </if>
         <if test="directionName != null and directionName != ''">
         	and direction = #{directionName}
-        </if>
-        <if test="deptType != null and deptType != ''">
-        	and dept_id like CONCAT(#{deptType},'%')
         </if>
         order by create_time  desc
     </select>

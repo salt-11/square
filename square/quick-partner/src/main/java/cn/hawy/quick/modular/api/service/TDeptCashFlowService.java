@@ -37,8 +37,8 @@ public class TDeptCashFlowService extends ServiceImpl<TDeptCashFlowMapper, TDept
 	@Autowired
 	DeptMapper deptMapper;
 	
-	public List<Map<String, Object>> findAll(Page page, String join, String beginTime, String endTime, String deptType, String cashStatusName, String deptId, String name){
-		return this.baseMapper.findAll(page, join, beginTime, endTime, deptType, cashStatusName, deptId, name);
+	public List<Map<String, Object>> findAll(Page page, String beginTime, String endTime, String cashStatusName, String id, String name){
+		return this.baseMapper.findAll(page, beginTime, endTime, cashStatusName, id, name);
 	}
 
 	public List<TDeptCashFlow> find(String join, String beginTime, String endTime, String deptType, String cashStatusName, String deptId, String name){

@@ -21,7 +21,7 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
             {type: 'checkbox'},
             {field: 'mchId', width: 180, title: '商户号'},
             {field: 'mchName', title: '商户名称'},
-            {field: 'deptId', title: '渠道号'},
+            // {field: 'deptId', title: '渠道号'},
             {field: 'mobile', title: '手机号'},
             {field: 'mchAddress', title: '商户地址'},
             {field: 'createTime', width: 180, title: '创建时间'},
@@ -38,7 +38,7 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
         queryData['endTime'] = $("#endTime").val();
         queryData['mchId'] = $("#mchId").val();
         queryData['mchName'] = $("#mchName").val();
-        queryData['deptId'] = $("#deptId").val();
+        // queryData['deptId'] = $("#deptId").val();
         queryData['mobile'] = $("#mobile").val();
         table.reload(MchInfo.tableId, {where: queryData});
     };

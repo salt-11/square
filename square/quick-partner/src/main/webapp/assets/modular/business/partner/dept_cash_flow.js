@@ -38,8 +38,6 @@ layui.use(['layer', 'table', 'ax', 'laydate'], function () {
         var queryData = {};
         queryData['beginTime'] = $("#beginTime").val();
         queryData['endTime'] = $("#endTime").val();
-        queryData['deptId'] = $("#deptId").val();
-        queryData['deptType'] = $("#deptType").val();
         queryData['cashStatusName'] = $("#cashStatusName").val();
         queryData['name'] = $("#name").val();
         table.reload(DeptCashFlow.tableId, {where: queryData});

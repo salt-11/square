@@ -117,8 +117,8 @@ public class TMchCashFlowService extends ServiceImpl<TMchCashFlowMapper, TMchCas
 	}
 	
 	
-	public List<Map<String, Object>> findAll(Page page, String join, String deptId, String beginTime, String endTime,String cashId, String outTradeNo, String cashStatus, String mchName, String bankCardNo){
-		return this.baseMapper.findAll(page, join, deptId, beginTime, endTime,cashId, outTradeNo, cashStatus, mchName, bankCardNo);
+	public List<Map<String, Object>> findAll(Page page, String deptId, String beginTime, String endTime,String cashId, String outTradeNo, String cashStatus, String mchName, String bankCardNo){
+		return this.baseMapper.findAll(page, deptId, beginTime, endTime,cashId, outTradeNo, cashStatus, mchName, bankCardNo);
 	}
 
 	public List<TMchCashFlow> find(String join, String deptId, String beginTime, String endTime,String cashId, String outTradeNo, String cashStatus, String mchName, String bankCardNo){
