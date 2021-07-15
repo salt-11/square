@@ -386,7 +386,8 @@ public class ConstantFactory implements IConstantFactory {
 		return getDictsByCode("DeptDirection", direction);
 	}
 	
-	@Cacheable(value = Cache.CONSTANT, key = "methodName +#cashStatus")
+	@Override
+    @Cacheable(value = Cache.CONSTANT, key = "methodName +#cashStatus")
 	public String getMchCashStatusName(String cashStatus) {
 		// TODO Auto-generated method stub
 		return getDictsByCode("MchCashStatus", cashStatus);

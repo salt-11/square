@@ -19,5 +19,5 @@ spring:
 
 
 mybatis-plus:
-  typeAliasesPackage: cn.hawy.quick.modular.system.model
+  typeAliasesPackage: cn.hawy.quick.partner.modular.system.model
 

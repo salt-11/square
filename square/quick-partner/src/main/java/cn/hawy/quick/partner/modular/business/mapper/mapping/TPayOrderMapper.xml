@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hawy.quick.partner.modular.business.mapper.TPayOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hawy.quick.partner.modular.business.entity.TPayOrder">
+        <id column="order_id" property="orderId" />
+        <result column="mch_id" property="mchId" />
+        <result column="mch_name" property="mchName" />
+        <result column="dept_id" property="deptId" />
+        <result column="channel" property="channel" />
+        <result column="out_trade_no" property="outTradeNo" />
+        <result column="order_amount" property="orderAmount" />
+        <result column="out_mch_id" property="outMchId" />
+        <result column="mer_pool_no" property="merPoolNo" />
+        <result column="mch_rate" property="mchRate" />
+        <result column="mch_fee" property="mchFee" />
+        <result column="mch_amount" property="mchAmount" />
+        <result column="dept_rate" property="deptRate" />
+        <result column="dept_amount" property="deptAmount" />
+        <result column="agent_id" property="agentId" />
+        <result column="agent_rate" property="agentRate" />
+        <result column="agent_amount" property="agentAmount" />
+        <result column="cost_rate" property="costRate" />
+        <result column="cost_amount" property="costAmount" />
+        <result column="order_status" property="orderStatus" />
+        <result column="return_msg" property="returnMsg"/>
+        <result column="split_status" property="splitStatus" />
+        <result column="order_time" property="orderTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        order_id as orderId, mch_id as mchId, mch_name as mchName, dept_id as deptId, channel,channel_no as channelNo,bank_card_no as bankCardNo, out_trade_no as outTradeNo, order_amount as orderAmount, out_mch_id as outMchId, mer_pool_no as merPoolNo, mch_rate as mchRate, mch_fee as mchFee, mch_amount as mchAmount, dept_rate as deptRate, dept_amount as deptAmount,agent_id as agentId,agent_rate as agentRate,agent_amount as agentAmount, cost_rate as costRate, cost_amount as costAmount, order_status as orderStatus, return_msg as returnMsg, split_status as splitStatus, order_time as orderTime
+    </sql>
+
+    <select id="findAll" resultType="map">
+    	select
+        <include refid="Base_Column_List"/>
+     	from t_pay_order where 1=1
+     	<if test="join != null and join !=''">
+            and dept_id in (${join})
+        </if>
+     	<if test="beginTime != null and beginTime !=''">
+            and order_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+        	and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="deptId != null and deptId !=''">
+            and dept_id = #{deptId}
+        </if>
+        <if test="orderId != null and orderId !=''">
+            and order_id = #{orderId}
+        </if>
+     	<if test="outTradeNo != null and outTradeNo !=''">
+            and out_trade_no = #{outTradeNo}
+        </if>
+        <if test="mchId != null and mchId !=''">
+            and mch_id = #{mchId}
+        </if>
+        <if test="orderStatus != null and orderStatus !=''">
+            and order_status = #{orderStatus}
+        </if>
+        <if test="channelNo != null and channelNo !=''">
+            and channel_no =  #{channelNo}
+        </if>
+        order by order_time  desc
+    </select>
+
+    <select id="findHistoryAll" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_pay_order_history where 1=1
+        <if test="join != null and join !=''">
+            and dept_id in (${join})
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            and order_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="deptId != null and deptId !=''">
+            and dept_id = #{deptId}
+        </if>
+        <if test="orderId != null and orderId !=''">
+            and order_id = #{orderId}
+        </if>
+        <if test="outTradeNo != null and outTradeNo !=''">
+            and out_trade_no = #{outTradeNo}
+        </if>
+        <if test="mchId != null and mchId !=''">
+            and mch_id = #{mchId}
+        </if>
+        <if test="orderStatus != null and orderStatus !=''">
+            and order_status = #{orderStatus}
+        </if>
+        <if test="channelNo != null and channelNo !=''">
+            and channel_no =  #{channelNo}
+        </if>
+        order by order_time  desc
+    </select>
+
+    <select id="findExcel" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_pay_order where 1=1
+        <if test="join != null and join !=''">
+            and dept_id in (${join})
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            and order_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="deptId != null and deptId !=''">
+            and dept_id = #{deptId}
+        </if>
+        <if test="orderId != null and orderId !=''">
+            and order_id = #{orderId}
+        </if>
+        <if test="outTradeNo != null and outTradeNo !=''">
+            and out_trade_no = #{outTradeNo}
+        </if>
+        <if test="mchId != null and mchId !=''">
+            and mch_id = #{mchId}
+        </if>
+        <if test="orderStatus != null and orderStatus !=''">
+            and order_status = #{orderStatus}
+        </if>
+        <if test="channelNo != null and channelNo !=''">
+            and channel_no =  #{channelNo}
+        </if>
+        order by order_time  desc
+    </select>
+
+    <select id="find" resultMap="BaseResultMap" resultType="cn.hawy.quick.partner.modular.business.entity.PayOrderContact">
+        select * from t_pay_order
+        where 1=1
+        <if test="join != null and join !=''">
+            and dept_id in (${join})
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            and order_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="deptId != null and deptId !=''">
+            and dept_id = #{deptId}
+        </if>
+        <if test="orderId != null and orderId !=''">
+            and order_id = #{orderId}
+        </if>
+        <if test="outTradeNo != null and outTradeNo !=''">
+            and out_trade_no = #{outTradeNo}
+        </if>
+        <if test="mchId != null and mchId !=''">
+            and mch_id = #{mchId}
+        </if>
+        <if test="orderStatus != null and orderStatus !=''">
+            and order_status = #{orderStatus}
+        </if>
+        <if test="channelNo != null and channelNo !=''">
+            and channel_no =  #{channelNo}
+        </if>
+        order by order_time  desc
+    </select>
+
+    <select id="tongji" resultType="map">
+    	select
+        count(*) as orderNum,sum(order_amount) as orderAmount,
+        sum(dept_amount) as deptAmount,sum(cost_amount) as costAmount
+     	from t_pay_order where 1=1
+     	<if test="beginTime != null and beginTime !=''">
+            and order_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+        	and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="deptId != null and deptId !=''">
+            and dept_id = #{deptId}
+        </if>
+        <if test="orderStatus != null and orderStatus !=''">
+            and order_status = #{orderStatus}
+        </if>
+        <if test="channelNo != null and channelNo !=''">
+            and channel_no =  #{channelNo}
+        </if>
+    </select>
+
+
+</mapper>

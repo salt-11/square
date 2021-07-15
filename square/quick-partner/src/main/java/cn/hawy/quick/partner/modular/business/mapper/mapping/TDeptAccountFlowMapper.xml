@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hawy.quick.partner.modular.business.mapper.TDeptAccountFlowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hawy.quick.partner.modular.business.entity.TDeptAccountFlow">
+        <id column="id" property="id" />
+        <result column="dept_id" property="deptId" />
+        <result column="dept_name" property="deptName" />
+        <result column="balance" property="balance" />
+        <result column="amount" property="amount" />
+        <result column="biz_type" property="bizType" />
+        <result column="direction" property="direction" />
+        <result column="trade_no" property="tradeNo" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id as id, dept_id as deptId, dept_name as deptName, balance as balance, amount as amount, biz_type as bizType, direction as direction, trade_no as tradeNo, create_time as createTime
+    </sql>
+    
+    <select id="findAll" resultType="map">
+    	select
+        <include refid="Base_Column_List"/>
+     	from t_dept_account_flow where 1=1
+     	<if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+        	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="id != null and id != ''">
+        	and dept_id = #{id}
+        </if>
+        <if test="bizTypeName != null and bizTypeName != ''">
+        	and biz_type = #{bizTypeName}
+        </if>
+        <if test="directionName != null and directionName != ''">
+        	and direction = #{directionName}
+        </if>
+        order by create_time  desc
+    </select>
+
+    <select id="find" resultType="cn.hawy.quick.partner.modular.business.entity.TDeptAccountFlow">
+    	select
+        <include refid="Base_Column_List"/>
+     	from t_dept_account_flow where 1=1
+     	<if test="join != null and join !=''">
+            and dept_id in (${join})
+        </if>
+     	<if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+        	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="deptId != null and deptId != ''">
+        	and dept_id = #{deptId}
+        </if>
+        <if test="bizTypeName != null and bizTypeName != ''">
+        	and biz_type = #{bizTypeName}
+        </if>
+        <if test="directionName != null and directionName != ''">
+        	and direction = #{directionName}
+        </if>
+        <if test="deptType != null and deptType != ''">
+        	and dept_id like CONCAT(#{deptType},'%')
+        </if>
+        order by create_time  desc
+    </select>
+
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hawy.quick.partner.modular.business.mapper.TMchCashFlowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hawy.quick.partner.modular.business.entity.TMchCashFlow">
+        <id column="cash_id" property="cashId" />
+        <result column="mch_id" property="mchId" />
+        <result column="mch_name" property="mchName" />
+        <result column="dept_id" property="deptId" />
+        <result column="bank_card_no" property="bankCardNo" />
+        <result column="out_trade_no" property="outTradeNo" />
+        <result column="cash_amount" property="cashAmount" />
+        <result column="cash_fee" property="cashFee" />
+        <result column="out_amount" property="outAmount" />
+        <result column="cash_status" property="cashStatus" />
+        <result column="return_msg" property="returnMsg" />
+        <result column="cash_rate" property="cashRate" />
+        <result column="dept_amount" property="deptAmount" />
+        <result column="cost_fee" property="costFee" />
+        <result column="cost_amount" property="costAmount" />
+        <result column="notify_url" property="notifyUrl" />
+        <result column="notify_count" property="notifyCount" />
+        <result column="notify_result" property="notifyResult" />
+        <result column="notify_time" property="notifyTime" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        cash_id as cashId, mch_id as mchId, mch_name as mchName, dept_id as deptId, bank_card_no as bankCardNo, out_trade_no as outTradeNo, cash_amount cashAmount, cash_fee as cashFee, out_amount as outAmount, cash_status as cashStatus, return_msg as returnMsg, cash_rate as cashRate, dept_amount as deptAmount, cost_fee as costFee, cost_amount as costAmount, create_time as createTime
+    </sql>
+
+
+    <select id="findAll" resultType="map">
+    	select
+        <include refid="Base_Column_List"/>
+     	from t_mch_cash_flow where 1=1
+        <if test="cashId != null and cashId !=''">
+            and cash_id = #{cashId}
+        </if>
+        <if test="outTradeNo != null and outTradeNo !=''">
+            and out_trade_no = #{outTradeNo}
+        </if>
+        <if test="cashStatus != null and cashStatus !=''">
+            and cash_status = #{cashStatus}
+        </if>
+        <if test="mchName != null and mchName !=''">
+            and mch_name = #{mchName}
+        </if>
+        <if test="bankCardNo != null and bankCardNo !=''">
+            and bank_card_no = #{bankCardNo}
+        </if>
+     	<if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+        	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+     	<if test="id != null and id !=''">
+            and dept_id = ${id}
+        </if>
+        order by create_time  desc
+    </select>
+
+    <select id="find" resultType="cn.hawy.quick.partner.modular.business.entity.TMchCashFlow">
+    	select
+        <include refid="Base_Column_List"/>
+     	from t_mch_cash_flow where 1=1
+     	<if test="deptId != null and deptId !=''">
+            and dept_id = #{deptId}
+        </if>
+        <if test="cashId != null and cashId !=''">
+            and cash_id = #{cashId}
+        </if>
+        <if test="outTradeNo != null and outTradeNo !=''">
+            and out_trade_no = #{outTradeNo}
+        </if>
+        <if test="cashStatus != null and cashStatus !=''">
+            and cash_status = #{cashStatus}
+        </if>
+        <if test="mchName != null and mchName !=''">
+            and mch_name = #{mchName}
+        </if>
+        <if test="bankCardNo != null and bankCardNo !=''">
+            and bank_card_no = #{bankCardNo}
+        </if>
+     	<if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+        	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        order by create_time  desc
+    </select>
+    
+    <select id="tongji" resultType="map">
+    	select
+        count(*) as cashNum,sum(cash_amount) as cashAmount,
+        sum(dept_amount) as deptAmount,sum(cost_amount) as costAmount
+     	from t_mch_cash_flow where 1=1
+     	<if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+        	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="deptId != null and deptId !=''">
+            and dept_id = #{deptId}
+        </if>
+        <if test="cashStatus != null and cashStatus !=''">
+            and cash_status = #{cashStatus}
+        </if>
+    </select>
+
+</mapper>
