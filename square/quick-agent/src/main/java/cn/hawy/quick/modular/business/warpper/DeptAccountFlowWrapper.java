@@ -46,10 +46,10 @@ public class DeptAccountFlowWrapper extends BaseControllerWrapper {
     	map.put("bizTypeName", ConstantFactory.me().getDeptBizTypeName(String.valueOf(map.get("bizType"))));
     	map.put("balance", PayUtil.transFenToYuan(String.valueOf(map.get("balance"))));
     	map.put("amount", PayUtil.transFenToYuan(String.valueOf(map.get("amount"))));
-        if (map.get("deptId").toString().startsWith("20006")) {
-            map.put("deptType", "20006");
-        } else if (map.get("deptId").toString().startsWith("20007")){
-            map.put("deptType", "20007");
-        }
+//        if (map.get("deptId").toString().startsWith("20006")) {
+//            map.put("deptType", "20006");
+//        } else if (map.get("deptId").toString().startsWith("20007")){
+//            map.put("deptType", "20007");
+//        }
     }
 }

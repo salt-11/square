@@ -19,6 +19,7 @@ import cn.hawy.quick.core.common.annotion.Permission;
 import cn.hawy.quick.core.common.exception.BizExceptionEnum;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
 import cn.hawy.quick.core.shiro.ShiroKit;
+import cn.hawy.quick.core.shiro.ShiroUser;
 import cn.hawy.quick.core.util.CollectionKit;
 import cn.hawy.quick.core.util.IdGenerator;
 import cn.hawy.quick.core.util.PayUtil;
@@ -64,7 +65,6 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 日志管理的控制器
- *
  */
 @Controller
 @RequestMapping("/partner")
@@ -73,7 +73,7 @@ public class PartnerController extends BaseController {
     private static String PREFIX = "/modular/business/partner/";
 
     @Autowired
-	DeptService deptService;
+    DeptService deptService;
     @Autowired
     TDeptCashFlowService deptCashFlowService;
     @Autowired
@@ -88,20 +88,16 @@ public class PartnerController extends BaseController {
 
     /**
      * 跳转到渠道提现的首页
-     *
      */
     @RequestMapping("/deptCashFlow")
-    @Permission
     public String deptCashFlow() {
         return PREFIX + "dept_cash_flow.html";
     }
 
     /**
      * 跳转到渠道提现的列表
-     *
      */
     @RequestMapping("/deptCashFlowList")
-    @Permission
     @ResponseBody
     public Object deptCashFlowList(@RequestParam(required = false) String beginTime,
                                    @RequestParam(required = false) String endTime,
@@ -109,21 +105,22 @@ public class PartnerController extends BaseController {
                                    @RequestParam(required = false) String cashStatusName,
                                    @RequestParam(required = false) String deptId,
                                    @RequestParam(required = false) String name) {
-    	 //获取分页参数
+        //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
         //根据条件查询渠道提现信息
-        if (ShiroKit.isAdmin()) {
-            List<Map<String, Object>> result = deptCashFlowService.findAll(page, null, beginTime, endTime, deptType, cashStatusName, deptId, name);
-            page.setRecords(new DeptCashFlowWrapper(result).wrap());
-        } else {
-            String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
-            List<Map<String, Object>> result = deptCashFlowService.findAll(page, join, beginTime, endTime, deptType, cashStatusName, deptId, name);
-            page.setRecords(new DeptCashFlowWrapper(result).wrap());
-        }
+//        if (ShiroKit.isAdmin()) {
+//            List<Map<String, Object>> result = deptCashFlowService.findAll(page, null, beginTime, endTime, deptType, cashStatusName, deptId, name);
+//            page.setRecords(new DeptCashFlowWrapper(result).wrap());
+//        } else {
+//            String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
+        ShiroUser shiroUser = ShiroKit.getUser();
+        List<Map<String, Object>> result = deptCashFlowService.findAll(page, "", beginTime, endTime, deptType, cashStatusName, shiroUser.getId().toString(), name);
+        page.setRecords(new DeptCashFlowWrapper(result).wrap());
+//        }
         return LayuiPageFactory.createPageInfo(page);
     }
 
-    private List<DeptCashFlowExcel> transForCashExport(List<TDeptCashFlow> dataList){
+    private List<DeptCashFlowExcel> transForCashExport(List<TDeptCashFlow> dataList) {
         List<DeptCashFlowExcel> dataVals = new ArrayList<DeptCashFlowExcel>();
         for (TDeptCashFlow data : dataList) {
             DeptCashFlowExcel deptCashFlowExcel = new DeptCashFlowExcel();
@@ -131,24 +128,24 @@ public class PartnerController extends BaseController {
             deptCashFlowExcel.setDeptId(data.getDeptId());
             deptCashFlowExcel.setDeptName(data.getDeptName());
 
-            if (data.getCashAmount() == null){
+            if (data.getCashAmount() == null) {
                 deptCashFlowExcel.setCashAmount("0");
             } else {
                 deptCashFlowExcel.setCashAmount(PayUtil.transFenToYuan(String.valueOf(data.getCashAmount())));
             }
             if (data.getCashStatus() == 1) {
                 deptCashFlowExcel.setCashStatus("提现中");
-            } else if (data.getCashStatus() == 2){
+            } else if (data.getCashStatus() == 2) {
                 deptCashFlowExcel.setCashStatus("提现成功");
-            } else if (data.getCashStatus() == 3){
+            } else if (data.getCashStatus() == 3) {
                 deptCashFlowExcel.setCashStatus("提现失败");
             }
-            if (data.getCashFee() == null){
+            if (data.getCashFee() == null) {
                 deptCashFlowExcel.setCashFee("0");
             } else {
                 deptCashFlowExcel.setCashFee(PayUtil.transFenToYuan(String.valueOf(data.getCashFee())));
             }
-            if (data.getOutAmount() == null){
+            if (data.getOutAmount() == null) {
                 deptCashFlowExcel.setOutAmount("0");
             } else {
                 deptCashFlowExcel.setOutAmount(PayUtil.transFenToYuan(String.valueOf(data.getOutAmount())));
@@ -166,27 +163,24 @@ public class PartnerController extends BaseController {
 
     /**
      * 报表导出
-     *
-     *
      */
     @RequestMapping("/deptCashFlowExcelList")
     @ResponseBody
     public void deptCashFlowExcelList(@RequestParam(required = false) String beginTime,
-                                  @RequestParam(required = false) String endTime,
-                                  @RequestParam(required = false) String deptType,
-                                  @RequestParam(required = false) String cashStatusName,
-                                  @RequestParam(required = false) String deptId,
-                                  @RequestParam(required = false) String name,
-                                  HttpServletRequest request, HttpServletResponse response) throws Exception
-    {
+                                      @RequestParam(required = false) String endTime,
+                                      @RequestParam(required = false) String deptType,
+                                      @RequestParam(required = false) String cashStatusName,
+                                      @RequestParam(required = false) String deptId,
+                                      @RequestParam(required = false) String name,
+                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
 //        Map<String, Object> result = new HashMap<String, Object>();
         try {
             // System.out.println(userAuthen.next().getIdcardName());
             String excelName = "渠道提现列表" + DateUtils.getCurrentTimeStr();
             String sheetName = "渠道提现列表";
             String titleName = "渠道提现列表";
-            int[] colWidths = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
-            String[] colNames = { "提现号", "渠道号", "渠道名称", "提现金额", "提现状态", "提现手续费", "出款金额", "出款账户名", "出款账户号", "出款银行", "创建时间" };
+            int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
+            String[] colNames = {"提现号", "渠道号", "渠道名称", "提现金额", "提现状态", "提现手续费", "出款金额", "出款账户名", "出款账户号", "出款银行", "创建时间"};
             List<DeptCashFlowExcel> dataVals = new ArrayList<DeptCashFlowExcel>();
             if (ShiroKit.isAdmin()) {
                 List<TDeptCashFlow> pay = deptCashFlowService.find(null, beginTime, endTime, deptType, cashStatusName, deptId, name);
@@ -212,25 +206,20 @@ public class PartnerController extends BaseController {
     }
 
 
-
     /**------------------------------------------渠道账户流水--------------------------------------------------------------**/
 
     /**
      * 跳转到渠道账户流水的首页
-     *
      */
     @RequestMapping("/deptAccountFlow")
-    @Permission
     public String deptAccountFlow() {
         return PREFIX + "dept_account_flow.html";
     }
 
     /**
      * 跳转到渠道账户流水list
-     *
      */
     @RequestMapping("/deptAccountFlowList")
-    @Permission
     @ResponseBody
     public Object deptAccountFlowList(@RequestParam(required = false) String beginTime,
                                       @RequestParam(required = false) String endTime,
@@ -238,43 +227,44 @@ public class PartnerController extends BaseController {
                                       @RequestParam(required = false) String deptType,
                                       @RequestParam(required = false) String bizTypeName,
                                       @RequestParam(required = false) String directionName) {
-    	 //获取分页参数
+        //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
         //根据条件查询商户提现信息
-        if (ShiroKit.isAdmin()) {
-        	List<Map<String, Object>> result = deptAccountFlowService.findAll(page, null, beginTime, endTime, deptId, deptType, bizTypeName, directionName);
-            page.setRecords(new DeptAccountFlowWrapper(result).wrap());
-        }else {
-        	String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
-        	List<Map<String, Object>> result = deptAccountFlowService.findAll(page, join, beginTime, endTime, deptId, deptType, bizTypeName, directionName);
-            page.setRecords(new DeptAccountFlowWrapper(result).wrap());
-        }
+//        if (ShiroKit.isAdmin()) {
+//            List<Map<String, Object>> result = deptAccountFlowService.findAll(page, null, beginTime, endTime, deptId, deptType, bizTypeName, directionName);
+//            page.setRecords(new DeptAccountFlowWrapper(result).wrap());
+//        } else {
+//            String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
+        ShiroUser shiroUser = ShiroKit.getUser();
+        List<Map<String, Object>> result = deptAccountFlowService.findAll(page, "", beginTime, endTime, shiroUser.getId().toString(), deptType, bizTypeName, directionName);
+        page.setRecords(new DeptAccountFlowWrapper(result).wrap());
+//        }
 
         return LayuiPageFactory.createPageInfo(page);
     }
 
-    private List<DeptAccountFlowExcel> transForAccountExport(List<TDeptAccountFlow> dataList){
+    private List<DeptAccountFlowExcel> transForAccountExport(List<TDeptAccountFlow> dataList) {
         List<DeptAccountFlowExcel> dataVals = new ArrayList<DeptAccountFlowExcel>();
         for (TDeptAccountFlow data : dataList) {
             DeptAccountFlowExcel deptAccountFlowExcel = new DeptAccountFlowExcel();
             deptAccountFlowExcel.setDeptId(data.getDeptId());
             deptAccountFlowExcel.setDeptName(data.getDeptName());
 
-            if (data.getBalance() == null){
+            if (data.getBalance() == null) {
                 deptAccountFlowExcel.setBalance("0");
             } else {
                 deptAccountFlowExcel.setBalance(PayUtil.transFenToYuan(String.valueOf(data.getBalance())));
             }
-            if (data.getAmount() == null){
+            if (data.getAmount() == null) {
                 deptAccountFlowExcel.setAmount("0");
             } else {
                 deptAccountFlowExcel.setAmount(PayUtil.transFenToYuan(String.valueOf(data.getAmount())));
             }
             if (data.getBizType() == 1) {
                 deptAccountFlowExcel.setBizType("商户交易分润");
-            } else if (data.getBizType() == 2){
+            } else if (data.getBizType() == 2) {
                 deptAccountFlowExcel.setBizType("商户提现分润");
-            } else if (data.getBizType() == 3){
+            } else if (data.getBizType() == 3) {
                 deptAccountFlowExcel.setBizType("渠道提现");
             }
 
@@ -294,27 +284,24 @@ public class PartnerController extends BaseController {
 
     /**
      * 报表导出
-     *
-     *
      */
     @RequestMapping("/deptAccountFlowExcelList")
     @ResponseBody
     public void deptAccountFlowExcelList(@RequestParam(required = false) String beginTime,
-                                  @RequestParam(required = false) String endTime,
-                                  @RequestParam(required = false) String deptId,
-                                  @RequestParam(required = false) String deptType,
-                                  @RequestParam(required = false) String bizTypeName,
-                                  @RequestParam(required = false) String directionName,
-                                  HttpServletRequest request, HttpServletResponse response) throws Exception
-    {
+                                         @RequestParam(required = false) String endTime,
+                                         @RequestParam(required = false) String deptId,
+                                         @RequestParam(required = false) String deptType,
+                                         @RequestParam(required = false) String bizTypeName,
+                                         @RequestParam(required = false) String directionName,
+                                         HttpServletRequest request, HttpServletResponse response) throws Exception {
 //        Map<String, Object> result = new HashMap<String, Object>();
         try {
             // System.out.println(userAuthen.next().getIdcardName());
             String excelName = "渠道账户列表" + DateUtils.getCurrentTimeStr();
             String sheetName = "渠道账户列表";
             String titleName = "渠道账户列表";
-            int[] colWidths = { 20, 20, 20, 20, 20, 20, 20, 20};
-            String[] colNames = { "渠道号", "渠道名称", "余额", "变动金额", "业务类型", "变动方向", "内部单号", "创建时间" };
+            int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20};
+            String[] colNames = {"渠道号", "渠道名称", "余额", "变动金额", "业务类型", "变动方向", "内部单号", "创建时间"};
             List<DeptAccountFlowExcel> dataVals = new ArrayList<DeptAccountFlowExcel>();
             if (ShiroKit.isAdmin()) {
                 List<TDeptAccountFlow> pay = deptAccountFlowService.find(null, beginTime, endTime, deptId, deptType, bizTypeName, directionName);
@@ -343,7 +330,6 @@ public class PartnerController extends BaseController {
 
     /**
      * 跳转到渠道提现的首页
-     *
      */
     @RequestMapping("/deptCashFlowVerb")
     @Permission
@@ -353,45 +339,44 @@ public class PartnerController extends BaseController {
 
     /**
      * 跳转到余额的首页
-     *
      */
     @Permission
     @RequestMapping("/deptCashApply")
     public String deptCashApply(Model model) {
-    	if(!ShiroKit.isPartner()) {
-    		throw new ServiceException(BizExceptionEnum.NO_PERMITION);
-    	}
-    	Dept dept = deptService.getById(ShiroKit.getDeptId());
-    	if(dept == null) {
-    		throw new ServiceException(BizExceptionEnum.DB_RESOURCE_NULL);
-    	}
-    	model.addAttribute("balance", PayUtil.transFenToYuan(String.valueOf(dept.getBalance())));
-    	return PREFIX + "dept_cash.html";
+        if (!ShiroKit.isPartner()) {
+            throw new ServiceException(BizExceptionEnum.NO_PERMITION);
+        }
+        Dept dept = deptService.getById(ShiroKit.getDeptId());
+        if (dept == null) {
+            throw new ServiceException(BizExceptionEnum.DB_RESOURCE_NULL);
+        }
+        model.addAttribute("balance", PayUtil.transFenToYuan(String.valueOf(dept.getBalance())));
+        return PREFIX + "dept_cash.html";
     }
 
     @RequestMapping("/deptCash")
     @ResponseBody
     public ResponseData deptCash(String cashAmount) {
-    	if(StrUtil.isEmpty(cashAmount)) {
-    		throw new ServiceException(BizExceptionEnum.NO_PERMITION);
-    	}
-    	if(!ShiroKit.isPartner()) {
-    		throw new ServiceException(BizExceptionEnum.NO_PERMITION);
-    	}
-    	Dept dept = deptService.getById(ShiroKit.getDeptId());
-    	if(dept == null) {
-    		throw new ServiceException(BizExceptionEnum.DB_RESOURCE_NULL);
-    	}
-    	cashAmount = PayUtil.transYuanToFen(cashAmount);
-    	if(NumberUtil.parseLong(cashAmount)>dept.getBalance()) {
-			throw new ServiceException(400, "渠道商账户余额不足!");
-		}
-    	DeptDto deptDto = new DeptDto();
+        if (StrUtil.isEmpty(cashAmount)) {
+            throw new ServiceException(BizExceptionEnum.NO_PERMITION);
+        }
+        if (!ShiroKit.isPartner()) {
+            throw new ServiceException(BizExceptionEnum.NO_PERMITION);
+        }
+        Dept dept = deptService.getById(ShiroKit.getDeptId());
+        if (dept == null) {
+            throw new ServiceException(BizExceptionEnum.DB_RESOURCE_NULL);
+        }
+        cashAmount = PayUtil.transYuanToFen(cashAmount);
+        if (NumberUtil.parseLong(cashAmount) > dept.getBalance()) {
+            throw new ServiceException(400, "渠道商账户余额不足!");
+        }
+        DeptDto deptDto = new DeptDto();
 
-    	String cashRate = "0";
-    	Long cashFee = NumberUtil.parseLong("0");
-    	deptDto.setDeptId(ShiroKit.getDeptId());
-    	deptDto.setCashAmount(NumberUtil.parseLong(cashAmount));
+        String cashRate = "0";
+        Long cashFee = NumberUtil.parseLong("0");
+        deptDto.setDeptId(ShiroKit.getDeptId());
+        deptDto.setCashAmount(NumberUtil.parseLong(cashAmount));
         deptDto.setCashRate(cashRate);
         deptDto.setCashFee(cashFee);
         deptDto.setOutAmount(NumberUtil.parseLong(cashAmount));
@@ -400,13 +385,12 @@ public class PartnerController extends BaseController {
         deptDto.setName(deptBankCardService.getById(ShiroKit.getDeptId()).getName());
         deptDto.setCardNo(deptBankCardService.getById(ShiroKit.getDeptId()).getCardNo());
         deptDto.setBankName(deptBankCardService.getById(ShiroKit.getDeptId()).getBankName());
-		deptService.deptCash(deptDto);
-    	return SUCCESS_TIP;
+        deptService.deptCash(deptDto);
+        return SUCCESS_TIP;
     }
 
     /**
      * 渠道提现审核
-     *
      */
     @RequestMapping("/deptCashFlowVerbAccept")
     @ResponseBody
@@ -420,17 +404,18 @@ public class PartnerController extends BaseController {
 
     /**
      * 渠道提现审核拒绝
-     *
      */
     @RequestMapping("/deptCashFlowVerbRefuse")
     @ResponseBody
     @Permission
     public SuccessResponseData refuse(@RequestParam(required = false) String id) {
-    	deptCashFlowService.refuse(id);
+        deptCashFlowService.refuse(id);
         return SUCCESS_TIP;
     }
 
-    /**------------------------------------------渠道流水报表--------------------------------------------------------------**/
+    /**
+     * ------------------------------------------渠道流水报表--------------------------------------------------------------
+     **/
 
     @RequestMapping("/deptOrderReport")
     @Permission
@@ -443,18 +428,18 @@ public class PartnerController extends BaseController {
     @Permission
     @ResponseBody
     public Object deptOrderReportList(@RequestParam(required = false) String beginTime,
-                                   @RequestParam(required = false) String endTime,
-                                   @RequestParam(required = false) String deptId,
-                                   @RequestParam(required = false) String channelNo) {
+                                      @RequestParam(required = false) String endTime,
+                                      @RequestParam(required = false) String deptId,
+                                      @RequestParam(required = false) String channelNo) {
         //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
         //根据条件查询渠道提现信息
         if (ShiroKit.isAdmin()) {
-            List<Map<String, Object>> result = deptOrderReportService.findAll(page, null, beginTime, endTime,deptId, channelNo);
+            List<Map<String, Object>> result = deptOrderReportService.findAll(page, null, beginTime, endTime, deptId, channelNo);
             page.setRecords(new DeptOrderReportWrapper(result).wrap());
         } else {
             String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
-            List<Map<String, Object>> result = deptOrderReportService.findAll(page, join, beginTime, endTime,deptId, channelNo);
+            List<Map<String, Object>> result = deptOrderReportService.findAll(page, join, beginTime, endTime, deptId, channelNo);
             page.setRecords(new DeptOrderReportWrapper(result).wrap());
         }
         return LayuiPageFactory.createPageInfo(page);
@@ -464,18 +449,18 @@ public class PartnerController extends BaseController {
     @Permission
     @ResponseBody
     public void deptOrderReportListExcel(@RequestParam(required = false) String beginTime,
-                                      @RequestParam(required = false) String endTime,
-                                      @RequestParam(required = false) String deptId,
-                                      @RequestParam(required = false) String channelNo,
-                                      HttpServletRequest request, HttpServletResponse response) {
+                                         @RequestParam(required = false) String endTime,
+                                         @RequestParam(required = false) String deptId,
+                                         @RequestParam(required = false) String channelNo,
+                                         HttpServletRequest request, HttpServletResponse response) {
         try {
             String excelName = "渠道流水报表" + DateUtils.getCurrentTimeStr();
             String sheetName = "渠道流水报表";
             String titleName = "渠道流水报表";
-            int[] colWidths = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
-            String[] colNames = { "统计日期", "渠道号", "渠道名称", "支付类型", "交易笔数", "交易金额", "交易渠道利润", "交易平台利润", "提现笔数", "提现金额", "提现渠道笔润","提现平台利润","创建时间"};
+            int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
+            String[] colNames = {"统计日期", "渠道号", "渠道名称", "支付类型", "交易笔数", "交易金额", "交易渠道利润", "交易平台利润", "提现笔数", "提现金额", "提现渠道笔润", "提现平台利润", "创建时间"};
             List<DeptOrderReportExcel> dataVals = new ArrayList<DeptOrderReportExcel>();
-            List<DeptOrderReportExcel> result = deptOrderReportService.find(beginTime, endTime,deptId,channelNo);
+            List<DeptOrderReportExcel> result = deptOrderReportService.find(beginTime, endTime, deptId, channelNo);
             dataVals.addAll(this.transForDeptOrderReportListExcel(result));
             // List<UserContact> dataVals = user.getContactsList();
             // OutputStream outps = new FileOutputStream("D://stud.xls"); //
@@ -491,7 +476,7 @@ public class PartnerController extends BaseController {
         }
     }
 
-    private List<DeptOrderReportExcel> transForDeptOrderReportListExcel(List<DeptOrderReportExcel> dataList){
+    private List<DeptOrderReportExcel> transForDeptOrderReportListExcel(List<DeptOrderReportExcel> dataList) {
         //List<DeptOrderReportExcel> dataVals = new ArrayList<>();
         for (DeptOrderReportExcel data : dataList) {
             data.setOrderAmount(PayUtil.transFenToYuan(data.getOrderAmount()));
@@ -508,14 +493,12 @@ public class PartnerController extends BaseController {
                 data.setChannelNo("商盟小额");
             } else if ("101713675".equals(data.getChannelNo())) {
                 data.setChannelNo("银联新快捷");
-            } else if ("102423765".equals(data.getChannelNo())){
+            } else if ("102423765".equals(data.getChannelNo())) {
                 data.setChannelNo("银联新快捷N");
             }
         }
         return dataList;
     }
-
-
 
 
 }
