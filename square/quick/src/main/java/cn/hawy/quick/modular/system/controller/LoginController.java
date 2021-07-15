@@ -67,7 +67,7 @@ public class LoginController extends BaseController {
 
         List<MenuNode> menus = userService.getUserMenuNodes(roleList);
         model.addAttribute("menus", menus);
-
+        model.addAttribute("name", user.getName());
         return "/index.html";
     }
 

@@ -97,7 +97,7 @@ public class PartnerController extends BaseController {
                                    @RequestParam(required = false) String name) {
 
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = deptCashFlowService.findAll(page, beginTime, endTime, cashStatusName, shiroUser.getId(), name);
         page.setRecords(new DeptCashFlowWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
@@ -165,7 +165,7 @@ public class PartnerController extends BaseController {
             int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = {"提现号", "渠道号", "渠道名称", "提现金额", "提现状态", "提现手续费", "出款金额", "出款账户名", "出款账户号", "出款银行", "创建时间"};
             List<DeptCashFlowExcel> dataVals = new ArrayList<DeptCashFlowExcel>();
-            ShiroUser shiroUser = ShiroKit.getUser();
+            ShiroUser shiroUser = ShiroKit.getUserNotNull();
             List<TDeptCashFlow> pay = deptCashFlowService.find(null, beginTime, endTime, deptType, cashStatusName, shiroUser.getId(), name);
             dataVals.addAll(this.transForCashExport(pay));
 
@@ -203,7 +203,7 @@ public class PartnerController extends BaseController {
                                       @RequestParam(required = false) String directionName) {
         //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = deptAccountFlowService.findAll(page, beginTime, endTime, shiroUser.getId(), bizTypeName, directionName);
         page.setRecords(new DeptAccountFlowWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
@@ -269,7 +269,7 @@ public class PartnerController extends BaseController {
             int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = {"渠道号", "渠道名称", "余额", "变动金额", "业务类型", "变动方向", "内部单号", "创建时间"};
             List<DeptAccountFlowExcel> dataVals = new ArrayList<DeptAccountFlowExcel>();
-            ShiroUser shiroUser = ShiroKit.getUser();
+            ShiroUser shiroUser = ShiroKit.getUserNotNull();
             List<TDeptAccountFlow> pay = deptAccountFlowService.find(null, beginTime, endTime, shiroUser.getId(), deptType, bizTypeName, directionName);
             dataVals.addAll(this.transForAccountExport(pay));
 
@@ -302,8 +302,8 @@ public class PartnerController extends BaseController {
      */
     @RequestMapping("/deptCashApply")
     public String deptCashApply(Model model) {
-
-        TDeptInfo dept = deptInfoService.getById(ShiroKit.getUser().getId());
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
+        TDeptInfo dept = deptInfoService.getById(shiroUser.getId());
         if (dept == null) {
             throw new ServiceException(BizExceptionEnum.DB_RESOURCE_NULL);
         }
@@ -311,50 +311,17 @@ public class PartnerController extends BaseController {
         return PREFIX + "dept_cash.html";
     }
 
-//    @RequestMapping("/deptCash")
-//    @ResponseBody
-//    public ResponseData deptCash(String cashAmount) {
-//        if (StrUtil.isEmpty(cashAmount)) {
-//            throw new ServiceException(BizExceptionEnum.NO_PERMITION);
-//        }
-//
-//        TDeptInfo dept = deptInfoService.getById(ShiroKit.getUser().getId());
-//        if (dept == null) {
-//            throw new ServiceException(BizExceptionEnum.DB_RESOURCE_NULL);
-//        }
-//        cashAmount = PayUtil.transYuanToFen(cashAmount);
-//        if (NumberUtil.parseLong(cashAmount) > dept.getBalance()) {
-//            throw new ServiceException(400, "渠道商账户余额不足!");
-//        }
-//        DeptDto deptDto = new DeptDto();
-//
-//        String cashRate = "0";
-//        Long cashFee = NumberUtil.parseLong("0");
-//        deptDto.setDeptId(ShiroKit.getUser().getId());
-//        deptDto.setCashAmount(NumberUtil.parseLong(cashAmount));
-//        deptDto.setCashRate(cashRate);
-//        deptDto.setCashFee(cashFee);
-//        deptDto.setOutAmount(NumberUtil.parseLong(cashAmount));
-//        deptDto.setFullName(dept.getDeptName());
-//        deptDto.setBalance(dept.getBalance());
-//        deptDto.setName(deptBankCardService.getById(ShiroKit.getDeptId()).getName());
-//        deptDto.setCardNo(deptBankCardService.getById(ShiroKit.getDeptId()).getCardNo());
-//        deptDto.setBankName(deptBankCardService.getById(ShiroKit.getDeptId()).getBankName());
-//        deptInfoService.deptCash(deptDto);
-//        return SUCCESS_TIP;
-//    }
-
-    /**
-     * 渠道提现审核
-     */
-    @RequestMapping("/deptCashFlowVerbAccept")
+    @RequestMapping("/deptCash")
     @ResponseBody
-    public SuccessResponseData accept(@RequestParam(required = false) String id) {
-        TDeptCashFlow deptCashFlow = deptCashFlowService.getById(id);
-        deptCashFlow.setCashStatus(2);
-        deptCashFlowService.updateCashStatus(deptCashFlow);
+    public ResponseData deptCash(String cashAmount) {
+        if (StrUtil.isEmpty(cashAmount)) {
+            throw new ServiceException(BizExceptionEnum.NO_PERMITION);
+        }
+        deptInfoService.deptCash(cashAmount);
         return SUCCESS_TIP;
     }
+
+
 
 
     /**
@@ -371,11 +338,11 @@ public class PartnerController extends BaseController {
     @ResponseBody
     public Object deptOrderReportList(@RequestParam(required = false) String beginTime,
                                       @RequestParam(required = false) String endTime,
-                                      @RequestParam(required = false) String deptId,
                                       @RequestParam(required = false) String channelNo) {
         //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
-        List<Map<String, Object>> result = deptOrderReportService.findAll(page, null, beginTime, endTime, ShiroKit.getUser().getId(), channelNo);
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
+        List<Map<String, Object>> result = deptOrderReportService.findAll(page, null, beginTime, endTime, shiroUser.getId(), channelNo);
         page.setRecords(new DeptOrderReportWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
     }
@@ -384,7 +351,6 @@ public class PartnerController extends BaseController {
     @ResponseBody
     public void deptOrderReportListExcel(@RequestParam(required = false) String beginTime,
                                          @RequestParam(required = false) String endTime,
-                                         @RequestParam(required = false) String deptId,
                                          @RequestParam(required = false) String channelNo,
                                          HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -394,7 +360,8 @@ public class PartnerController extends BaseController {
             int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = {"统计日期", "渠道号", "渠道名称", "支付类型", "交易笔数", "交易金额", "交易渠道利润", "交易平台利润", "提现笔数", "提现金额", "提现渠道笔润", "提现平台利润", "创建时间"};
             List<DeptOrderReportExcel> dataVals = new ArrayList<DeptOrderReportExcel>();
-            List<DeptOrderReportExcel> result = deptOrderReportService.find(beginTime, endTime, deptId, channelNo);
+            ShiroUser shiroUser = ShiroKit.getUserNotNull();
+            List<DeptOrderReportExcel> result = deptOrderReportService.find(beginTime, endTime, shiroUser.getId(), channelNo);
             dataVals.addAll(this.transForDeptOrderReportListExcel(result));
             // List<UserContact> dataVals = user.getContactsList();
             // OutputStream outps = new FileOutputStream("D://stud.xls"); //

@@ -112,7 +112,7 @@ public class MchController extends BaseController {
                               @RequestParam(required = false) String mobile) {
         //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = mchInfoService.findAll(page, mchId, beginTime, endTime, mchName, shiroUser.getId(), mobile);
         page.setRecords(new MchInfoWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
@@ -141,7 +141,7 @@ public class MchController extends BaseController {
                                   @RequestParam(required = false) String mchName,
                                   @RequestParam(required = false) String bankCardNo) {
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = mchCashFlowService.findAll(page, shiroUser.getId(), beginTime, endTime, cashId, outTradeNo, cashStatus, mchName, bankCardNo);
         page.setRecords(new MchCashFlowWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
@@ -214,7 +214,7 @@ public class MchController extends BaseController {
             int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = {"提现号", "商户号", "商户名称", "银行卡号", "渠道号", "提现金额", "提现状态", "错误原因", "提现手续费", "渠道提现成本", "渠道利润", "出款金额", "外部提现号", "创建时间"};
             List<MchCashExcel> dataVals = new ArrayList<MchCashExcel>();
-            ShiroUser shiroUser = ShiroKit.getUser();
+            ShiroUser shiroUser = ShiroKit.getUserNotNull();
             List<TMchCashFlow> pay = mchCashFlowService.find(shiroUser.getId(), beginTime, endTime, cashId, outTradeNo, cashStatus, mchName, bankCardNo);
             dataVals.addAll(this.transForMchExport(pay));
             response.setContentType("octets/stream");
@@ -241,7 +241,7 @@ public class MchController extends BaseController {
                                @RequestParam(required = false) String endTime) {
         //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = cardAuthService.findAll(page, null, beginTime, endTime, shiroUser.getId());
         page.setRecords(new CardAuthWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);

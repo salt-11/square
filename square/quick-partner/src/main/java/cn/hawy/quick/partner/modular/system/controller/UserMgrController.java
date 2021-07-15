@@ -19,6 +19,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hawy.quick.partner.config.properties.GunsProperties;
 import cn.hawy.quick.partner.modular.system.service.UserService;
 import cn.stylefeng.roses.core.base.controller.BaseController;
+import cn.stylefeng.roses.core.util.ToolUtil;
+import cn.stylefeng.roses.kernel.model.exception.RequestEmptyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +37,27 @@ public class UserMgrController extends BaseController {
 
     private static String PREFIX = "/modular/system/user/";
 
-    @Autowired
-    private GunsProperties gunsProperties;
 
     @Autowired
     private UserService userService;
 
 
 
+    /**
+     * 修改当前用户的密码
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:43
+     */
+    @RequestMapping("/changePwd")
+    @ResponseBody
+    public Object changePwd(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
+        if (ToolUtil.isOneEmpty(oldPassword, newPassword)) {
+            throw new RequestEmptyException();
+        }
+        this.userService.changePwd(oldPassword, newPassword);
+        return SUCCESS_TIP;
+    }
 
 
 

@@ -74,6 +74,17 @@ public class GlobalExceptionHandler {
         return "/login.html";
     }
 
+    /**
+     * 账号密码错误异常
+     */
+    @ExceptionHandler(CredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String credentials(CredentialsException e, Model model) {
+        String username = getRequest().getParameter("username");
+        model.addAttribute("tips", "账号密码错误");
+        return "/login.html";
+    }
+
 
     /**
      * 无权访问该资源异常

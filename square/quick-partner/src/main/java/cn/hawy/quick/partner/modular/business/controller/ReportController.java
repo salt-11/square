@@ -94,12 +94,11 @@ public class ReportController extends BaseController {
                                @RequestParam(required = false) Integer orderStatus,
                                @RequestParam(required = false) String channelNo) {
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = payOrderService.findAll(page, null,shiroUser.getId(), beginTime, endTime,orderId, outTradeNo,mchId,orderStatus,channelNo);
         page.setRecords(new OrderWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
     }
-
 
 
     @RequestMapping("/mchCashReportList")
@@ -112,7 +111,7 @@ public class ReportController extends BaseController {
                                   @RequestParam(required = false) String mchName,
                                   @RequestParam(required = false) String bankCardNo) {
     	Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = mchCashFlowService.findAll(page,shiroUser.getId(), beginTime, endTime,cashId, outTradeNo, "2", mchName, bankCardNo);
         page.setRecords(new MchCashFlowWrapper(result).wrap());
 
@@ -224,7 +223,6 @@ public class ReportController extends BaseController {
     @ResponseBody
     public void reportOrderExcelList(@RequestParam(required = false) String beginTime,
                                      @RequestParam(required = false) String endTime,
-                                     @RequestParam(required = false) String deptId,
                                      @RequestParam(required = false) String orderId,
                                      @RequestParam(required = false) String outTradeNo,
                                      @RequestParam(required = false) String mchId,
@@ -240,7 +238,8 @@ public class ReportController extends BaseController {
             int[] colWidths = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = { "订单号", "商户号", "商户名称", "银行卡号", "支付类型", "渠道号", "订单金额", "商户费率", "商户手续费", "渠道商费率", "渠道商利润","代理商号","代理商费率","代理商利润", "平台费率", "平台利润", "订单状态", "错误原因", "外部订单号", "订单时间" };
             List<OrderReport> dataVals = new ArrayList<OrderReport>();
-            List<TPayOrder> pay = payOrderService.find(null, deptId, beginTime, endTime,orderId, outTradeNo,mchId,orderStatus,channelNo);
+            ShiroUser shiroUser = ShiroKit.getUserNotNull();
+            List<TPayOrder> pay = payOrderService.find(null, shiroUser.getId(), beginTime, endTime,orderId, outTradeNo,mchId,orderStatus,channelNo);
             dataVals.addAll(this.transForReportExport(pay));
             // List<UserContact> dataVals = user.getContactsList();
             // OutputStream outps = new FileOutputStream("D://stud.xls"); //
@@ -331,7 +330,8 @@ public class ReportController extends BaseController {
             int[] colWidths = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = { "提现号", "商户号", "商户名称", "银行卡号", "渠道号", "提现金额", "提现状态", "错误原因", "提现手续费","渠道商提现成本","渠道商利润","平台利润", "出款金额", "外部提现号", "创建时间" };
             List<MchCashReportExcel> dataVals = new ArrayList<MchCashReportExcel>();
-            List<TMchCashFlow> pay = mchCashFlowService.find(ShiroKit.getUser().getId(), beginTime, endTime,cashId, outTradeNo, "2", mchName, bankCardNo);
+            ShiroUser shiroUser = ShiroKit.getUserNotNull();
+            List<TMchCashFlow> pay = mchCashFlowService.find(shiroUser.getId(), beginTime, endTime,cashId, outTradeNo, "2", mchName, bankCardNo);
             dataVals.addAll(this.transForMchExport(pay));
 
             response.setContentType("octets/stream");
@@ -348,11 +348,11 @@ public class ReportController extends BaseController {
     @ResponseBody
     public Object payOrderTj(@RequestParam(required = false) String beginTime,
     						 @RequestParam(required = false) String endTime,
-            				 @RequestParam(required = false) String deptId,
                              @RequestParam(required = false) String channelNo)
     {
-    	Map<String,Object> tMap = payOrderService.tongji(beginTime, endTime, deptId, channelNo, null);
-    	Map<String,Object> sMap = payOrderService.tongji(beginTime, endTime, deptId, channelNo, 2);
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
+    	Map<String,Object> tMap = payOrderService.tongji(beginTime, endTime, shiroUser.getId(), channelNo, null);
+    	Map<String,Object> sMap = payOrderService.tongji(beginTime, endTime, shiroUser.getId(), channelNo, 2);
     	StringBuffer tjHtmlStr = new StringBuffer();
     	tjHtmlStr.append("<table class=\"layui-table\">");
     	tjHtmlStr.append("<colgroup><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"></colgroup>");
@@ -383,10 +383,10 @@ public class ReportController extends BaseController {
     @RequestMapping("/mchCashTj")
     @ResponseBody
     public Object mchCashTj(@RequestParam(required = false) String beginTime,
-    						 @RequestParam(required = false) String endTime,
-            				 @RequestParam(required = false) String deptId)
+    						 @RequestParam(required = false) String endTime)
     {
-    	Map<String,Object> sMap = mchCashFlowService.tongji(beginTime, endTime, deptId, 2);
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
+    	Map<String,Object> sMap = mchCashFlowService.tongji(beginTime, endTime, shiroUser.getId(), 2);
     	StringBuffer tjHtmlStr = new StringBuffer();
     	tjHtmlStr.append("<table class=\"layui-table\">");
     	tjHtmlStr.append("<colgroup><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"></colgroup>");

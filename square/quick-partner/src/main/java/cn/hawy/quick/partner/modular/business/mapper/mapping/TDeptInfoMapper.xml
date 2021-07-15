@@ -26,4 +26,8 @@
         update t_dept_info set balance=balance + #{balance} where id = #{deptId}
     </update>
 
+    <update id="minusBalance">
+        update t_dept_info set balance=balance - #{balance} where id = #{deptId} and balance >= #{balance}
+    </update>
+
 </mapper>

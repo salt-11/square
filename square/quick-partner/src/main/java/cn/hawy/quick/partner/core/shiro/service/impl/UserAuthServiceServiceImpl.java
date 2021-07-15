@@ -45,7 +45,7 @@ import java.util.List;
 public class UserAuthServiceServiceImpl implements UserAuthService {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     public static UserAuthService me() {
         return SpringContextHolder.getBean(UserAuthService.class);
@@ -53,7 +53,7 @@ public class UserAuthServiceServiceImpl implements UserAuthService {
 
     @Override
     public User user(String account) {
-        User user = userMapper.getByAccount(account);
+        User user = userService.getByAccount(account);
         // 账号不存在
         if (null == user) {
             throw new CredentialsException();

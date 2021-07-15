@@ -55,6 +55,7 @@ public class LoginController extends BaseController {
         ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<MenuNode> menus = userService.getUserMenuNodes();
         model.addAttribute("menus", menus);
+        model.addAttribute("name", shiroUser.getName());
         return "/index.html";
     }
 

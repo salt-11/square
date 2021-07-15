@@ -72,6 +72,12 @@ public class TDeptInfo implements Serializable {
 
     private Long dayMaxAmount;
 
+    private String name;
+
+    private String cardNo;
+
+    private String bankName;
+
     /**
      * 创建时间
      */
@@ -173,6 +179,30 @@ public class TDeptInfo implements Serializable {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
     @Override

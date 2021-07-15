@@ -14,6 +14,8 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface TDeptInfoMapper extends BaseMapper<TDeptInfo> {
 
-    int minusBalance(@Param("deptId") Long deptId,@Param("balance") Long balance);
+    int minusBalance(@Param("deptId") String deptId,@Param("balance") Long balance);
+
+    int addBalance(@Param("deptId") String deptId,@Param("balance") Long balance);
 
 }

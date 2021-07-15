@@ -85,7 +85,7 @@ public class OrderController extends BaseController {
     						   @RequestParam(required = false) Integer orderStatus,
                                @RequestParam(required = false) String channelNo) {
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = payOrderService.findAll(page, null,shiroUser.getId(), beginTime, endTime, orderId, outTradeNo,mchId,orderStatus,channelNo);
         page.setRecords(new OrderWrapper(result).wrap());
 
@@ -102,7 +102,7 @@ public class OrderController extends BaseController {
                                @RequestParam(required = false) Integer orderStatus,
                                @RequestParam(required = false) String channelNo) {
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUser();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
         List<Map<String, Object>> result = payOrderService.findHistoryAll(page, null,shiroUser.getId(), beginTime, endTime, orderId, outTradeNo,mchId,orderStatus,channelNo);
         page.setRecords(new OrderWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
@@ -206,7 +206,7 @@ public class OrderController extends BaseController {
             int[] colWidths = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = { "订单号", "商户号", "商户名称", "银行卡号", "支付类型", "渠道号", "订单金额", "商户费率", "商户手续费", "渠道商费率", "渠道商利润", "订单状态", "错误原因", "外部订单号", "订单时间" };
             List<PayOrderContact> dataVals = new ArrayList<PayOrderContact>();
-            ShiroUser shiroUser = ShiroKit.getUser();
+            ShiroUser shiroUser = ShiroKit.getUserNotNull();
             List<TPayOrder> pay = payOrderService.find(null, shiroUser.getId(), beginTime, endTime,orderId, outTradeNo, mchId, orderStatus, channelNo);
             dataVals.addAll(this.transForOrderExport(pay));
 

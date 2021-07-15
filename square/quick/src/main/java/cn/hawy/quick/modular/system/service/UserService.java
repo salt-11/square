@@ -61,6 +61,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String salt = ShiroKit.getRandomSalt(5);
         String password = ShiroKit.md5(user.getPassword(), salt);
 
+
         this.save(UserFactory.createUser(user, password, salt));
     }
 

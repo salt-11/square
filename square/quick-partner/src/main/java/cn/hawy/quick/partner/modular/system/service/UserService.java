@@ -1,5 +1,6 @@
 package cn.hawy.quick.partner.modular.system.service;
 
+import cn.hawy.quick.partner.core.common.exception.BizExceptionEnum;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hawy.quick.partner.core.common.node.MenuNode;
 import cn.hawy.quick.partner.core.shiro.ShiroKit;
@@ -9,6 +10,7 @@ import cn.hawy.quick.partner.core.util.ApiMenuFilter;
 import cn.hawy.quick.partner.modular.system.entity.User;
 import cn.hawy.quick.partner.modular.system.mapper.UserMapper;
 
+import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,27 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     @Autowired
     private UserAuthService userAuthService;
+
+    /**
+     * 修改密码
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:45
+     */
+    public void changePwd(String oldPassword, String newPassword) {
+        String userId = ShiroKit.getUserNotNull().getId();
+        User user = this.getById(userId);
+
+        String oldMd5 = ShiroKit.md5(oldPassword, user.getSalt());
+
+        if (user.getPassword().equals(oldMd5)) {
+            String newMd5 = ShiroKit.md5(newPassword, user.getSalt());
+            user.setPassword(newMd5);
+            this.updateById(user);
+        } else {
+            throw new ServiceException(BizExceptionEnum.OLD_PWD_NOT_RIGHT);
+        }
+    }
 
 
 
