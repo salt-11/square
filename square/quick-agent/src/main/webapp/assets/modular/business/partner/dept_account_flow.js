@@ -20,8 +20,8 @@ layui.use(['layer', 'table', 'ax', 'admin', 'laydate'], function () {
         return [[
             {type: 'checkbox'},
             {field: 'id', hide: true, width:80, title: 'ID'},
-            {field: 'deptId',  title: '渠道号'},
-            {field: 'deptName', title: '渠道名称'},
+            {field: 'agentId',  title: '渠道号'},
+            {field: 'agentName', title: '渠道名称'},
             {field: 'balance', width:100, title: '余额'},
             {field: 'amount', width:100, title: '变动金额'},
             {field: 'bizTypeName', width:160, title: '业务类型'},
