@@ -31,6 +31,7 @@ import cn.hawy.quick.partner.modular.business.utils.ExportExcelUtil;
 import cn.hawy.quick.partner.modular.business.warpper.DeptAccountFlowWrapper;
 import cn.hawy.quick.partner.modular.business.warpper.DeptCashFlowWrapper;
 import cn.hawy.quick.partner.modular.business.warpper.DeptOrderReportWrapper;
+import cn.hawy.quick.partner.modular.business.warpper.DeptRateChannelWrapper;
 import cn.hawy.quick.partner.modular.system.model.DeptDto;
 import cn.hawy.quick.partner.modular.system.service.UserService;
 import cn.hutool.core.util.NumberUtil;
@@ -76,6 +77,8 @@ public class PartnerController extends BaseController {
     TDeptOrderReportService deptOrderReportService;
     @Autowired
     UserService userService;
+    @Autowired
+    TDeptRateChannelService deptRateChannelService;
 
 
     /**
@@ -399,6 +402,30 @@ public class PartnerController extends BaseController {
             }
         }
         return dataList;
+    }
+
+
+    //--------------------------------------------通道费率---------------------------------------------------------------------
+    /**
+     * 跳转到渠道账户流水的首页
+     */
+    @RequestMapping("/deptRateChannel")
+    public String deptRateChannel() {
+        return PREFIX + "dept_rate_channel.html";
+    }
+
+    /**
+     * 跳转到渠道账户流水list
+     */
+    @RequestMapping("/deptRateChannelList")
+    @ResponseBody
+    public Object deptRateChannelList(@RequestParam(required = false) String channel) {
+        //获取分页参数
+        Page page = LayuiPageFactory.defaultPage();
+        ShiroUser shiroUser = ShiroKit.getUserNotNull();
+        List<Map<String, Object>> result = deptRateChannelService.findAll(page, shiroUser.getId(), channel);
+        page.setRecords(new DeptRateChannelWrapper(result).wrap());
+        return LayuiPageFactory.createPageInfo(page);
     }
 
 

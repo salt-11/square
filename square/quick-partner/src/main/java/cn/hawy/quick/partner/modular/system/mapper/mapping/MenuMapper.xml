@@ -13,20 +13,12 @@
         <result column="URL" property="url"/>
         <result column="SORT" property="sort"/>
         <result column="LEVELS" property="levels"/>
-        <result column="MENU_FLAG" property="menuFlag"/>
-        <result column="DESCRIPTION" property="description"/>
-        <result column="STATUS" property="status"/>
-        <result column="NEW_PAGE_FLAG" property="newPageFlag"/>
-        <result column="OPEN_FLAG" property="openFlag"/>
         <result column="CREATE_TIME" property="createTime"/>
-        <result column="UPDATE_TIME" property="updateTime"/>
-        <result column="CREATE_USER" property="createUser"/>
-        <result column="UPDATE_USER" property="updateUser"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        MENU_ID AS menuId, CODE AS code, PCODE AS pcode, PCODES AS pcodes, NAME AS name, ICON AS icon, URL AS url, SORT AS sort, LEVELS AS levels, MENU_FLAG AS menuFlag, DESCRIPTION AS description, STATUS AS status, NEW_PAGE_FLAG AS newPageFlag, OPEN_FLAG AS openFlag, CREATE_TIME AS createTime, UPDATE_TIME AS updateTime, CREATE_USER AS createUser, UPDATE_USER AS updateUser
+        MENU_ID AS menuId, CODE AS code, PCODE AS pcode, PCODES AS pcodes, NAME AS name, ICON AS icon, URL AS url, SORT AS sort, LEVELS AS levels, CREATE_TIME AS createTime
     </sql>
 
     <select id="getMenusByRoleIds" resultType="cn.hawy.quick.partner.core.common.node.MenuNode">

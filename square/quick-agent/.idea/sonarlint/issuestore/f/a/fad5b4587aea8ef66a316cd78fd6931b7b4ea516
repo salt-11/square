@@ -1,0 +1,75 @@
+
+c
+java:S1192x"MDefine a constant instead of duplicating this literal "orderStatus" 24 times.(Í«×
+e
+java:S1192>"ODefine a constant instead of duplicating this literal "yyyyMMddHHmmss" 7 times.(§ê–‰
+e
+java:S1192}"JDefine a constant instead of duplicating this literal "error_msg" 8 times.(îÇØÄúÿÿÿÿ
+]
+java:S1192v"GDefine a constant instead of duplicating this literal "000000" 6 times.(ÆŠï¸
+{
+java:S1192"eDefine a constant instead of duplicating this literal "è®¢å•å…³é—­ï¼Œè¯·è”ç³»è¿ç»´äººå‘˜" 4 times.(Æß‚v
+a
+java:S1192f"FDefine a constant instead of duplicating this literal "UTF-8" 6 times.(âş³ƒøÿÿÿÿ
+
+java:S1192‹"eDefine a constant instead of duplicating this literal "è½¬è´¦å¤±è´¥ï¼Œè¯·è”ç³»è¿ç»´äººå‘˜" 4 times.(óˆ²üÿÿÿÿ
+f
+java:S1192y"KDefine a constant instead of duplicating this literal "returnMsg" 21 times.(ğ™Î“ûÿÿÿÿ
+`
+java:S1192v"JDefine a constant instead of duplicating this literal "resp_code" 6 times.(ÆŠï¸
+e
+java:S1192“"IDefine a constant instead of duplicating this literal "resp_msg" 6 times.(—µíùÿÿÿÿ
+b
+java:S1192w"GDefine a constant instead of duplicating this literal "status" 9 times.(‘ ÿÀşÿÿÿÿ
+W	java:S1077"=Method has 11 parameters, which is greater than 7 authorized.(ñ¤×âşÿÿÿÿ
+?
+java:S2629t"$Invoke method(s) only conditionally.(‰Åõ–ùÿÿÿÿ
+@
+java:S2629·"$Invoke method(s) only conditionally.(Ì–Ëœùÿÿÿÿ
+@
+java:S2629÷"$Invoke method(s) only conditionally.(©µìışÿÿÿÿ
+@
+java:S2629·"$Invoke method(s) only conditionally.(´®ß¢úÿÿÿÿ
+@
+java:S2629î"$Invoke method(s) only conditionally.(¬¼Õéùÿÿÿÿ
+@
+java:S2629µ"$Invoke method(s) only conditionally.(»”Ö¿ûÿÿÿÿ
+g	java:S117º"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬¹÷¤
+N
+java:S1128"8Remove this unused import 'cn.hutool.core.util.StrUtil'.(ƒËôø
+’
+java:S1128"wRemove this unused import 'fosun.sumpay.merchant.integration.core.request.outer.perfectbill.QueryAvaliableBankRequest'.(‚„çµÿÿÿÿÿ
+M
+java:S1135."2Complete the task associated to this TODO comment.(» æÿÿÿÿÿ
+S	java:S1060"9Replace this use of System.out or System.err by a logger.(æ¨¤šøÿÿÿÿ
+Q	java:S1251"<This block of commented-out lines of code should be removed.(Åÿè
+P	java:S125j"<This block of commented-out lines of code should be removed.(ë€´
+o
+java:S2293u"YReplace the type specification in this constructor call with the diamond operator ("<>").(•’‹
+Q	java:S125~"<This block of commented-out lines of code should be removed.( œ•
+W	java:S125‚"<This block of commented-out lines of code should be removed.(ƒÍËûıÿÿÿÿ
+R	java:S125„"<This block of commented-out lines of code should be removed.(àœÓ†
+R	java:S125‰"<This block of commented-out lines of code should be removed.(ìŞÃ
+Q	java:S125­"<This block of commented-out lines of code should be removed.(ë€´
+p
+java:S2293¸"YReplace the type specification in this constructor call with the diamond operator ("<>").(•’‹
+R	java:S125À"<This block of commented-out lines of code should be removed.( œ•
+W	java:S125Ä"<This block of commented-out lines of code should be removed.(ƒÍËûıÿÿÿÿ
+R	java:S125Æ"<This block of commented-out lines of code should be removed.(àœÓ†
+R	java:S125Ë"<This block of commented-out lines of code should be removed.(ìŞÃ
+Q	java:S125í"<This block of commented-out lines of code should be removed.(ë€´
+p
+java:S2293ø"YReplace the type specification in this constructor call with the diamond operator ("<>").(•’‹
+R	java:S125€"<This block of commented-out lines of code should be removed.( œ•
+W	java:S125„"<This block of commented-out lines of code should be removed.(ƒÍËûıÿÿÿÿ
+R	java:S125†"<This block of commented-out lines of code should be removed.(àœÓ†
+R	java:S125‹"<This block of commented-out lines of code should be removed.(ìŞÃ
+Q	java:S125ã"<This block of commented-out lines of code should be removed.(ë€´
+p
+java:S2293ï"YReplace the type specification in this constructor call with the diamond operator ("<>").(•’‹
+W	java:S125ú"<This block of commented-out lines of code should be removed.(ƒÍËûıÿÿÿÿ
+R	java:S125ü"<This block of commented-out lines of code should be removed.(àœÓ†
+R	java:S125"<This block of commented-out lines of code should be removed.(ìŞÃ
+Q	java:S125ª"<This block of commented-out lines of code should be removed.(ë€´
+p
+java:S2293¶"YReplace the type specification in this constructor call with the diamond operator ("<>").(•’‹

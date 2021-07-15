@@ -30,9 +30,7 @@
         <if test="endTime != null and endTime != ''">
         	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="id != null and id != ''">
-        	and dept_id = #{id}
-        </if>
+        and dept_id = #{deptId}
         <if test="bizTypeName != null and bizTypeName != ''">
         	and biz_type = #{bizTypeName}
         </if>
@@ -55,9 +53,7 @@
         <if test="endTime != null and endTime != ''">
         	and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="deptId != null and deptId != ''">
-        	and dept_id = #{deptId}
-        </if>
+        and dept_id = #{deptId}
         <if test="bizTypeName != null and bizTypeName != ''">
         	and biz_type = #{bizTypeName}
         </if>

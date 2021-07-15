@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hawy.quick.agent.modular.business.mapper.TAgentCashFlowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hawy.quick.agent.modular.business.entity.TAgentCashFlow">
+        <id column="id" property="id" />
+        <result column="agent_id" property="agentId" />
+        <result column="agent_name" property="agentName" />
+        <result column="cash_amount" property="cashAmount" />
+        <result column="cash_status" property="cashStatus" />
+        <result column="cash_rate" property="cashRate" />
+        <result column="cash_fee" property="cashFee" />
+        <result column="out_amount" property="outAmount" />
+        <result column="name" property="name" />
+        <result column="card_no" property="cardNo" />
+        <result column="bank_name" property="bankName" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, agent_id as agentId, agent_name as agentName, cash_amount as cashAmount, cash_status as cashStatus, cash_rate as cashRate, cash_fee as cashFee, out_amount as outAmount, name, card_no as cardNo, bank_name as bankName, create_time createTime
+    </sql>
+
+    <select id="findAll" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_agent_cash_flow where 1=1
+        and agent_id = #{agentId}
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="cashStatusName != null and cashStatusName != ''">
+            and cash_status = #{cashStatusName}
+        </if>
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        order by create_time  desc
+    </select>
+
+    <select id="find" resultType="cn.hawy.quick.agent.modular.business.entity.TAgentCashFlow">
+        select
+        <include refid="Base_Column_List"/>
+        from t_agent_cash_flow where 1=1
+        and agent_id = #{agentId}
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="cashStatusName != null and cashStatusName != ''">
+            and cash_status = #{cashStatusName}
+        </if>
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        order by create_time  desc
+    </select>
+
+</mapper>

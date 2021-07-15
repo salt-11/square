@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.dongwu:merchant-integration-api-core:0.0.3">
+    <CLASSES>
+      <root url="jar://D:/Program Files/maven/repo/com/dongwu/merchant-integration-api-core/0.0.3/merchant-integration-api-core-0.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://D:/Program Files/maven/repo/com/dongwu/merchant-integration-api-core/0.0.3/merchant-integration-api-core-0.0.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://D:/Program Files/maven/repo/com/dongwu/merchant-integration-api-core/0.0.3/merchant-integration-api-core-0.0.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

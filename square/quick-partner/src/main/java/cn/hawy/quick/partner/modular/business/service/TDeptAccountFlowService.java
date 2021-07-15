@@ -20,8 +20,8 @@ import java.util.Map;
 @Service
 public class TDeptAccountFlowService extends ServiceImpl<TDeptAccountFlowMapper, TDeptAccountFlow> {
 
-	public List<Map<String, Object>> findAll(Page page,  String beginTime, String endTime, String id, String bizTypeName, String directionName){
-		return this.baseMapper.findAll(page, beginTime, endTime, id, bizTypeName, directionName);
+	public List<Map<String, Object>> findAll(Page page,  String beginTime, String endTime, String deptId, String bizTypeName, String directionName){
+		return this.baseMapper.findAll(page, beginTime, endTime, deptId, bizTypeName, directionName);
 	}
 
 	public List<TDeptAccountFlow> find(String join, String beginTime, String endTime, String deptId, String deptType, String bizTypeName, String directionName){

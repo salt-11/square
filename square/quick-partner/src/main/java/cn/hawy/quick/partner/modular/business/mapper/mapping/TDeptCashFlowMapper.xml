@@ -37,9 +37,7 @@
         <if test="cashStatusName != null and cashStatusName != ''">
         	and cash_status = #{cashStatusName}
         </if>
-        <if test="id != null and id != ''">
-        	and dept_id = #{id}
-        </if>
+        and dept_id = #{deptId}
         <if test="name != null and name != ''">
         	and name = #{name}
         </if>
@@ -65,9 +63,7 @@
         <if test="cashStatusName != null and cashStatusName != ''">
         	and cash_status = #{cashStatusName}
         </if>
-        <if test="deptId != null and deptId != ''">
-        	and dept_id = #{deptId}
-        </if>
+        and dept_id = #{deptId}
         <if test="name != null and name != ''">
         	and name = #{name}
         </if>

@@ -1,0 +1,59 @@
+@layout("/common/_container.html",{js:["/assets/modular/business/agent/agent_order_report.js"]}){
+
+<div class="layui-body-header">
+    <span class="layui-body-header-title">报表</span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                        	<div class="layui-inline">
+                                <input id="beginTime" class="layui-input" type="text" placeholder="开始时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="endTime" class="layui-input" type="text" placeholder="结束时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="agentId" class="layui-input" type="text" placeholder="渠道号"/>
+                            </div>
+                            <div class="layui-inline">
+                                <select id="channelNo">
+                                    <option value="">支付类型</option>
+                                    <option value="101243663">商盟新快捷</option>
+                                    <option value="101243664">银联新快捷(大O)</option>
+                                    <option value="101733657">商盟小额</option>
+                                    <option value="101713675">银联新快捷</option>
+                                </select>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnExp" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="agentOrderReportTable" lay-filter="agentOrderReportTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="channelNoTpl">
+    {{# if(d.channelNo == '101243663'){ }}
+        <span>商盟新快捷</span>
+    {{# } else if(d.channelNo == '101243664'){ }}
+        <span>银联新快捷(大O)</span>
+	{{# } else if(d.channelNo == '101733657'){ }}
+        <span>商盟小额</span>
+	{{# } else if(d.channelNo == '101713675'){ }}
+        <span>银联新快捷</span>
+    {{# } else { }}
+        <span>未知类型</span>
+    {{# } }}
+</script>
+@}

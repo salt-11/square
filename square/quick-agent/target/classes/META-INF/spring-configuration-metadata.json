@@ -1,0 +1,537 @@
+{
+  "groups": [
+    {
+      "name": "beetl",
+      "type": "cn.hawy.quick.agent.config.properties.BeetlProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.BeetlProperties"
+    },
+    {
+      "name": "efps",
+      "type": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties"
+    },
+    {
+      "name": "ff",
+      "type": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties"
+    },
+    {
+      "name": "guns",
+      "type": "cn.hawy.quick.agent.config.properties.GunsProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties"
+    },
+    {
+      "name": "gyf",
+      "type": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties"
+    },
+    {
+      "name": "paf",
+      "type": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties"
+    },
+    {
+      "name": "rest",
+      "type": "cn.hawy.quick.agent.config.properties.RestProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.RestProperties"
+    },
+    {
+      "name": "sum",
+      "type": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties"
+    },
+    {
+      "name": "sumbt",
+      "type": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "beetl.delimiter-statement-end",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.delimiter-statement-start",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.properties",
+      "type": "java.util.Properties",
+      "sourceType": "cn.hawy.quick.agent.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.resource-auto-check",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.resource-tagroot",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.resource-tagsuffix",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.BeetlProperties"
+    },
+    {
+      "name": "efps.cash-rate",
+      "type": "java.lang.Long",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "efps.customer-code",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.is-query-sub-customer",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "efps.is-service-fee",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "efps.mch-cash-notify-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.order-notify-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.password",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.private-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.public-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.sign-no",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.split-notify-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "efps.url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.EfpsProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.cost-fee",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.cost-public-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.key",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.merchant-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.min-order-amount",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.order-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.private-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "ff.withdraw-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.FfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "guns.file-upload-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties"
+    },
+    {
+      "name": "guns.kaptcha-open",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "guns.locked",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "guns.session-invalidate-time",
+      "type": "java.lang.Integer",
+      "description": "session 失效时间（默认为30分钟 单位：秒）",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties"
+    },
+    {
+      "name": "guns.session-validation-interval",
+      "type": "java.lang.Integer",
+      "description": "session 验证失效时间（默认为15分钟 单位：秒）",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties"
+    },
+    {
+      "name": "guns.spring-session-open",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "guns.swagger-open",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "gyf.cost-fee",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": "50"
+    },
+    {
+      "name": "gyf.df-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.mch-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.merchant-no",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.min-order-amount",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.order-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.password",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.private-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.public-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.query-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "gyf.trans-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.GyfProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "paf.bind-card-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "paf.cost-fee",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": "40"
+    },
+    {
+      "name": "paf.encrypt-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "paf.mid",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "paf.min-order-amount",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "paf.order-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "paf.public-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "paf.withdraw-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.PafProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "rest.img-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.RestProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "rest.img-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.RestProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.agent-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.app-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.cost-fee",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": "40"
+    },
+    {
+      "name": "sum.cost-rate",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.domain",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.min-order-amount",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.order-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.password",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.private-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.public-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.share-mer-no",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.sign-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sum.url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.app-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.card-auth-app-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.card-auth-private-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.cost-fee",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": "40"
+    },
+    {
+      "name": "sumbt.cost-rate",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.domain",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.mer-no",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.min-order-amount",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.order-notify",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.password",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.private-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.public-key-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.sub-mer-no",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "sumbt.url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.agent.config.properties.SumBtProperties",
+      "defaultValue": ""
+    }
+  ],
+  "hints": []
+}

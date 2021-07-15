@@ -114,14 +114,8 @@ public class OrderController extends BaseController {
     						   @RequestParam(required = false) Integer orderStatus,
                                @RequestParam(required = false) String channelNo) {
     	Page page = LayuiPageFactory.defaultPage();
-    	if (ShiroKit.isAdmin()) {
-    		List<Map<String, Object>> result = payOrderService.findAll(page, null,deptId, beginTime, endTime, orderId, outTradeNo,mchId,orderStatus,channelNo);
-    		page.setRecords(new OrderWrapper(result).wrap());
-    	}else {
-    		String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
-            List<Map<String, Object>> result = payOrderService.findAll(page, join,deptId, beginTime, endTime, orderId, outTradeNo,mchId,orderStatus,channelNo);
-            page.setRecords(new OrderWrapper(result).wrap());
-    	}
+        List<Map<String, Object>> result = payOrderService.findAll(page, null,deptId, beginTime, endTime, orderId, outTradeNo,mchId,orderStatus,channelNo);
+        page.setRecords(new OrderWrapper(result).wrap());
     	return LayuiPageFactory.createPageInfo(page);
     }
 

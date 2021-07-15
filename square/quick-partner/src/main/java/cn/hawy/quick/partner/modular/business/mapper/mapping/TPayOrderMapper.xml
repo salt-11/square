@@ -47,9 +47,7 @@
         <if test="endTime != null and endTime != ''">
         	and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="deptId != null and deptId !=''">
-            and dept_id = #{deptId}
-        </if>
+        and dept_id = #{deptId}
         <if test="orderId != null and orderId !=''">
             and order_id = #{orderId}
         </if>
@@ -81,9 +79,9 @@
         <if test="endTime != null and endTime != ''">
             and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="deptId != null and deptId !=''">
-            and dept_id = #{deptId}
-        </if>
+
+        and dept_id = #{deptId}
+
         <if test="orderId != null and orderId !=''">
             and order_id = #{orderId}
         </if>
@@ -115,9 +113,7 @@
         <if test="endTime != null and endTime != ''">
             and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="deptId != null and deptId !=''">
-            and dept_id = #{deptId}
-        </if>
+        and dept_id = #{deptId}
         <if test="orderId != null and orderId !=''">
             and order_id = #{orderId}
         </if>
@@ -148,9 +144,7 @@
         <if test="endTime != null and endTime != ''">
             and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="deptId != null and deptId !=''">
-            and dept_id = #{deptId}
-        </if>
+        and dept_id = #{deptId}
         <if test="orderId != null and orderId !=''">
             and order_id = #{orderId}
         </if>
@@ -180,9 +174,7 @@
         <if test="endTime != null and endTime != ''">
         	and order_time &lt;= CONCAT(#{endTime},' 23:59:59')
         </if>
-        <if test="deptId != null and deptId !=''">
-            and dept_id = #{deptId}
-        </if>
+        and dept_id = #{deptId}
         <if test="orderStatus != null and orderStatus !=''">
             and order_status = #{orderStatus}
         </if>

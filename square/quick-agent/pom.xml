@@ -11,7 +11,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>cn.hawy</groupId>
     <artifactId>quick-agent</artifactId>
+    <version>1.0.0</version>
+
+    <name>quick-agent</name>
+    <description>guns 的spring boot版本</description>
 
     <packaging>jar</packaging>
 

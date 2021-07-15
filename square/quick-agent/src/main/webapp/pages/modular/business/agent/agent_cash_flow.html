@@ -1,0 +1,44 @@
+@layout("/common/_container.html",{js:["/assets/modular/business/agent/agent_cash_flow.js"]}){
+
+<div class="layui-body-header">
+    <span class="layui-body-header-title">提现流水</span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                        	<div class="layui-inline">
+                                <input id="beginTime" class="layui-input" type="text" placeholder="开始时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="endTime" class="layui-input" type="text" placeholder="结束时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="name" class="layui-input" type="text" placeholder="出款账户名称"/>
+                            </div>
+                            <div class="layui-inline">
+                                <select id="cashStatusName">
+                                    <option value="">提现状态</option>
+                                    <option value="1">提现中</option>
+                                    <option value="2">提现成功</option>
+                                    <option value="3">提现失败</option>
+                                </select>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                                <button id="btnExp" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="agentCashFlowTable" lay-filter="agentCashFlowTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@}

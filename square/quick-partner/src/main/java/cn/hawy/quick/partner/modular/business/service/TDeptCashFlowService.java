@@ -22,8 +22,8 @@ import java.util.Map;
 public class TDeptCashFlowService extends ServiceImpl<TDeptCashFlowMapper, TDeptCashFlow> {
 
 	
-	public List<Map<String, Object>> findAll(Page page, String beginTime, String endTime, String cashStatusName, String id, String name){
-		return this.baseMapper.findAll(page, beginTime, endTime, cashStatusName, id, name);
+	public List<Map<String, Object>> findAll(Page page, String beginTime, String endTime, String cashStatusName, String deptId, String name){
+		return this.baseMapper.findAll(page, beginTime, endTime, cashStatusName, deptId, name);
 	}
 
 	public List<TDeptCashFlow> find(String join, String beginTime, String endTime, String deptType, String cashStatusName, String deptId, String name){

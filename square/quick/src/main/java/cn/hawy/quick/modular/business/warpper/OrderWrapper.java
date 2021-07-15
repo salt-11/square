@@ -45,19 +45,16 @@ public class OrderWrapper extends BaseControllerWrapper {
     	map.put("orderAmount", PayUtil.transFenToYuan(String.valueOf(map.get("orderAmount"))));
     	map.put("mchFee", PayUtil.transFenToYuan(String.valueOf(map.get("mchFee"))));
     	map.put("deptAmount", PayUtil.transFenToYuan(String.valueOf(map.get("deptAmount"))));
+        if (map.get("agentAmount") == null) {
+            map.put("agentAmount", "");
+        } else {
+            map.put("agentAmount", PayUtil.transFenToYuan(String.valueOf(map.get("agentAmount"))));
+        }
     	if (map.get("costAmount") == null) {
             map.put("costAmount", "");
         } else {
             map.put("costAmount", PayUtil.transFenToYuan(String.valueOf(map.get("costAmount"))));
         }
-    	if (map.get("deptId").toString().startsWith("20006")) {
-            map.put("deptType", "20006");
-        } else if (map.get("deptId").toString().startsWith("20007")){
-    	    map.put("deptType", "20007");
-        } else if (map.get("deptId").toString().startsWith("20008")){
-    	    map.put("deptType", "20008");
-        } else if (map.get("deptId").toString().startsWith("20009")){
-    	    map.put("deptType", "20009");
-        }
+
     }
 }

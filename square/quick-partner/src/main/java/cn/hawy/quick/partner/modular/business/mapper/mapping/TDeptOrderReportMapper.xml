@@ -41,9 +41,7 @@
         <if test="endTime != null and endTime != ''">
             and report_date &lt;= #{endTime}
         </if>
-        <if test="deptId != null and deptId !=''">
-            and a.dept_id = #{deptId}
-        </if>
+        and a.dept_id = #{deptId}
         <if test="channelNo != null and channelNo !=''">
             and channel_no = #{channelNo}
         </if>
@@ -60,9 +58,7 @@
         <if test="endTime != null and endTime != ''">
             and report_date &lt;= #{endTime}
         </if>
-        <if test="deptId != null and deptId !=''">
-            and a.dept_id = #{deptId}
-        </if>
+        and a.dept_id = #{deptId}
         <if test="channelNo != null and channelNo !=''">
             and channel_no = #{channelNo}
         </if>

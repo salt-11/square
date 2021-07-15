@@ -25,7 +25,7 @@ public class TDeptAccountFlow implements Serializable {
     /**
      * 渠道号
      */
-    private String agentId;
+    private String deptId;
 
     private String deptName;
 
@@ -122,19 +122,19 @@ public class TDeptAccountFlow implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getAgentId() {
-        return agentId;
+    public String getDeptId() {
+        return deptId;
     }
 
-    public void setAgentId(String agentId) {
-        this.agentId = agentId;
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
     }
 
     @Override
     public String toString() {
         return "TDeptAccountFlow{" +
                 "id=" + id +
-                ", agentId='" + agentId + '\'' +
+                ", deptId='" + deptId + '\'' +
                 ", deptName='" + deptName + '\'' +
                 ", balance=" + balance +
                 ", amount=" + amount +

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hawy.quick.agent.modular.business.mapper.TAgentAccountFlowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hawy.quick.agent.modular.business.entity.TAgentAccountFlow">
+        <id column="id" property="id" />
+        <result column="agent_id" property="agentId" />
+        <result column="agent_name" property="agentName" />
+        <result column="balance" property="balance" />
+        <result column="amount" property="amount" />
+        <result column="biz_type" property="bizType" />
+        <result column="direction" property="direction" />
+        <result column="trade_no" property="tradeNo" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, agent_id as agentId, agent_name as agentName, balance, amount, biz_type as bizType, direction, trade_no as tradeNo, create_time
+    </sql>
+
+    <select id="findAll" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_agent_account_flow where 1=1
+        and agent_id = #{agentId}
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="bizTypeName != null and bizTypeName != ''">
+            and biz_type = #{bizTypeName}
+        </if>
+        <if test="directionName != null and directionName != ''">
+            and direction = #{directionName}
+        </if>
+        order by create_time  desc
+    </select>
+
+    <select id="find" resultType="cn.hawy.quick.agent.modular.business.entity.TAgentAccountFlow">
+        select
+        <include refid="Base_Column_List"/>
+        from t_agent_account_flow where 1=1
+        and agent_id = #{agentId}
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="bizTypeName != null and bizTypeName != ''">
+            and biz_type = #{bizTypeName}
+        </if>
+        <if test="directionName != null and directionName != ''">
+            and direction = #{directionName}
+        </if>
+        order by create_time  desc
+    </select>
+
+</mapper>
