@@ -1,7 +1,7 @@
-@layout("/common/_container.html",{js:["/assets/modular/business/partner/dept_cash_flow.js"]}){
+@layout("/common/_container.html",{js:["/assets/modular/business/agent/agent_account_flow.js"]}){
 
 <div class="layui-body-header">
-    <span class="layui-body-header-title">渠道提现流水</span>
+    <span class="layui-body-header-title">账户流水</span>
 </div>
 
 <div class="layui-fluid">
@@ -18,26 +18,35 @@
                                 <input id="endTime" class="layui-input" type="text" placeholder="结束时间"/>
                             </div>
                             <div class="layui-inline">
-                                <input id="deptId" class="layui-input" type="text" placeholder="渠道号"/>
+                                <input id="agentId" class="layui-input" type="text" placeholder="代理号"/>
                             </div>
                             <div class="layui-inline">
-                                <input id="name" class="layui-input" type="text" placeholder="出款账户名称"/>
+                                <select id="bizTypeName">
+                                    <option value="">业务类型</option>
+                                    <option value="1">商户交易分润</option>
+                                    <option value="2">商户提现分润</option>
+                                    <option value="3">提现</option>
+                                    <option value="4">提现拒绝</option>
+                                    <option value="5">银行卡鉴权</option>
+                                </select>
                             </div>
                             <div class="layui-inline">
-                                <select id="cashStatusName">
-                                    <option value="">提现状态</option>
-                                    <option value="1">提现中</option>
-                                    <option value="2">提现成功</option>
-                                    <option value="3">提现失败</option>
+                                <select id="directionName">
+                                    <option value="">变动方向</option>
+                                    <option value="1">加款</option>
+                                    <option value="2">减款</option>
                                 </select>
                             </div>
                             <div class="layui-inline">
                                 <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnCash" class="layui-btn icon-btn"><i class="layui-icon"></i>提现</button>
                                 <button id="btnExp" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
                             </div>
                         </div>
                     </div>
-                    <table class="layui-table" id="deptCashFlowTable" lay-filter="deptCashFlowTable"></table>
+                    <table class="layui-table" id="agentAccountFlowTable" lay-filter="agentAccountFlowTable"></table>
                 </div>
             </div>
         </div>

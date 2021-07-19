@@ -13,13 +13,58 @@
         <result column="cash_fee" property="cashFee" />
         <result column="out_amount" property="outAmount" />
         <result column="name" property="name" />
+        <result column="bank_name" property="bankName" />
         <result column="card_no" property="cardNo" />
         <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, agent_id, agent_name, cash_amount, cash_status, cash_rate, cash_fee, out_amount, name, card_no, create_time
+        id, agent_id as agentId, agent_name as agentName, cash_amount as cashAmount, cash_status as cashStatus, cash_rate as cashRate, cash_fee as cashFee, out_amount as outAmount, name, card_no as cardNo,bank_name as bankName, create_time as createTime
     </sql>
+
+    <select id="findAll" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_agent_cash_flow where 1=1
+        <if test="agentId != null and agentId != ''">
+            and agent_id = #{agentId}
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="cashStatusName != null and cashStatusName != ''">
+            and cash_status = #{cashStatusName}
+        </if>
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        order by create_time  desc
+    </select>
+
+    <select id="find" resultType="cn.hawy.quick.modular.api.entity.TAgentCashFlow">
+        select
+        <include refid="Base_Column_List"/>
+        from t_agent_cash_flow where 1=1
+        <if test="agentId != null and agentId != ''">
+            and agent_id = #{agentId}
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        <if test="cashStatusName != null and cashStatusName != ''">
+            and cash_status = #{cashStatusName}
+        </if>
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        order by create_time  desc
+    </select>
 
 </mapper>

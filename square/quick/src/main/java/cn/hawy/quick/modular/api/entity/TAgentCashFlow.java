@@ -67,6 +67,8 @@ public class TAgentCashFlow implements Serializable {
      */
     private String cardNo;
 
+    private String bankName;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
@@ -157,6 +159,14 @@ public class TAgentCashFlow implements Serializable {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
     @Override

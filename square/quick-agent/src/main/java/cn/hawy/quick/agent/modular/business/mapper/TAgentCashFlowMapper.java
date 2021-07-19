@@ -21,6 +21,6 @@ public interface TAgentCashFlowMapper extends BaseMapper<TAgentCashFlow> {
 
     List<Map<String, Object>> findAll(@Param("page") Page page, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashStatusName") String cashStatusName, @Param("agentId") String agentId, @Param("name") String name);
 
-    List<TAgentCashFlow> find(@Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("deptType") String deptType, @Param("cashStatusName") String cashStatusName, @Param("agentId") String agentId, @Param("name") String name);
+    List<TAgentCashFlow> find(@Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("cashStatusName") String cashStatusName, @Param("agentId") String agentId, @Param("name") String name);
 
 }

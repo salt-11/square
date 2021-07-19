@@ -25,8 +25,8 @@ public class TAgentCashFlowService extends ServiceImpl<TAgentCashFlowMapper, TAg
         return this.baseMapper.findAll(page, beginTime, endTime, cashStatusName, agentId, name);
     }
 
-    public List<TAgentCashFlow> find(String beginTime, String endTime, String deptType, String cashStatusName, String agentId, String name){
-        return this.baseMapper.find(beginTime, endTime, deptType, cashStatusName, agentId, name);
+    public List<TAgentCashFlow> find(String beginTime, String endTime, String cashStatusName, String agentId, String name){
+        return this.baseMapper.find(beginTime, endTime, cashStatusName, agentId, name);
     }
 
 }

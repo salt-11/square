@@ -25,8 +25,8 @@ layui.use(['layer', 'table', 'ax', 'laydate'], function () {
             {field: 'cashFee', align:'center',width:100, title: '提现手续费'},
             {field: 'outAmount', align:'center',width:100, title: '出款金额'},
             {field: 'name', align:'center',title: '出款账户名'},
-            {field: 'bankName', align:'center',title: '出款银行'},
             {field: 'cardNo', align:'center',width:170, title: '出款账户号'},
+            {field: 'bankName', align:'center',title: '出款银行'},
             {field: 'createTime', align:'center',width:180, title: '创建时间'}
         ]];
     };
@@ -38,6 +38,7 @@ layui.use(['layer', 'table', 'ax', 'laydate'], function () {
         var queryData = {};
         queryData['beginTime'] = $("#beginTime").val();
         queryData['endTime'] = $("#endTime").val();
+        queryData['agentId'] = $("#agentId").val();
         queryData['cashStatusName'] = $("#cashStatusName").val();
         queryData['name'] = $("#name").val();
         table.reload(AgentCashFlow.tableId, {where: queryData});
@@ -49,7 +50,8 @@ layui.use(['layer', 'table', 'ax', 'laydate'], function () {
     AgentCashFlow.exportExcel = function () {
         DownLoadFile({
             url: Feng.ctxPath + '/agent/agentCashFlowExcelList?beginTime=' + $("#beginTime").val() + '&endTime=' + $("#endTime").val()
-                + '&cashStatusName=' + $("#cashStatusName").val() + '&name=' + $("#name").val()
+                + '&cashStatusName=' + $("#cashStatusName").val() + '&agentId=' + $("#agentId").val()
+                + '&name=' + $("#name").val()
         });
     };
 

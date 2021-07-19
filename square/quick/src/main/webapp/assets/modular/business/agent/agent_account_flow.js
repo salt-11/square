@@ -38,6 +38,7 @@ layui.use(['layer', 'table', 'ax', 'admin', 'laydate'], function () {
         var queryData = {};
         queryData['beginTime'] = $("#beginTime").val();
         queryData['endTime'] = $("#endTime").val();
+        queryData['agentId'] = $("#agentId").val();
         queryData['bizTypeName'] = $("#bizTypeName").val();
         queryData['directionName'] = $("#directionName").val();
         table.reload(AgentAccountFlow.tableId, {where: queryData});
@@ -49,7 +50,7 @@ layui.use(['layer', 'table', 'ax', 'admin', 'laydate'], function () {
     AgentAccountFlow.exportExcel = function () {
         DownLoadFile({
             url: Feng.ctxPath + '/agent/agentAccountFlowExcelList?beginTime=' + $("#beginTime").val() + '&endTime=' + $("#endTime").val()
-                 + '&bizTypeName=' + $("#bizTypeName").val() + '&directionName=' + $("#directionName").val()
+                + '&agentId=' + $("#agentId").val() + '&bizTypeName=' + $("#bizTypeName").val() + '&directionName=' + $("#directionName").val()
         });
     };
 

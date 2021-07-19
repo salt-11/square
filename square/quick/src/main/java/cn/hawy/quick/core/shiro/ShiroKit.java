@@ -319,7 +319,7 @@ public class ShiroKit {
             return shiroUser;
         }
 
-        shiroUser.setId(user.getId());
+        shiroUser.setId(user.getUserId());
         shiroUser.setAccount(user.getAccount());
         shiroUser.setDeptId(user.getDeptId());
         shiroUser.setDeptName(ConstantFactory.me().getDeptName(user.getDeptId()));

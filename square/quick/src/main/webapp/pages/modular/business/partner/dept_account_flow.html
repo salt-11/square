@@ -1,4 +1,4 @@
-@layout("/common/_container.html",{js:["/assets/modular/business/partner/agent_account_flow.js"]}){
+@layout("/common/_container.html",{js:["/assets/modular/business/partner/dept_account_flow.js"]}){
 
 <div class="layui-body-header">
     <span class="layui-body-header-title">渠道账户流水</span>
@@ -40,12 +40,7 @@
                             <div class="layui-inline">
                                 <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
                             </div>
-                            @if(shiro.hasPermission("/partner/deptCashApply")){
-                            <div class="layui-inline">
-                                <button id="btnCash" class="layui-btn icon-btn"><i class="layui-icon"></i>提现</button>
-                                <button id="btnExp" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
-                            </div>
-                            @}
+                            <button id="btnExp" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
                         </div>
                     </div>
                     <table class="layui-table" id="deptAccountFlowTable" lay-filter="deptAccountFlowTable"></table>

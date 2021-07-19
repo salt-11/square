@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.hawy.quick.agent.modular.business.controller;
+package cn.hawy.quick.modular.business.controller;
 
-import cn.hawy.quick.agent.core.common.exception.BizExceptionEnum;
-import cn.hawy.quick.agent.core.common.page.LayuiPageFactory;
-import cn.hawy.quick.agent.core.shiro.ShiroKit;
-import cn.hawy.quick.agent.core.shiro.ShiroUser;
-import cn.hawy.quick.agent.core.util.PayUtil;
-import cn.hawy.quick.agent.modular.business.dao.AgentAccountFlowExcel;
-import cn.hawy.quick.agent.modular.business.dao.AgentCashFlowExcel;
-import cn.hawy.quick.agent.modular.business.entity.TAgentAccountFlow;
-import cn.hawy.quick.agent.modular.business.entity.TAgentCashFlow;
-import cn.hawy.quick.agent.modular.business.entity.TAgentInfo;
-import cn.hawy.quick.agent.modular.business.service.*;
-import cn.hawy.quick.agent.modular.business.utils.DateUtils;
-import cn.hawy.quick.agent.modular.business.utils.ExportExcelUtil;
-import cn.hawy.quick.agent.modular.business.warpper.AgentAccountFlowWrapper;
-import cn.hawy.quick.agent.modular.business.warpper.AgentCashFlowWrapper;
-import cn.hawy.quick.agent.modular.system.service.UserService;
+
+import cn.hawy.quick.core.common.annotion.Permission;
+import cn.hawy.quick.core.common.page.LayuiPageFactory;
+import cn.hawy.quick.core.shiro.ShiroKit;
+import cn.hawy.quick.core.util.PayUtil;
+import cn.hawy.quick.modular.api.dao.AgentAccountFlowExcel;
+import cn.hawy.quick.modular.api.dao.AgentCashFlowExcel;
+import cn.hawy.quick.modular.api.entity.TAgentAccountFlow;
+import cn.hawy.quick.modular.api.entity.TAgentCashFlow;
+import cn.hawy.quick.modular.api.entity.TDeptCashFlow;
+import cn.hawy.quick.modular.api.service.*;
+import cn.hawy.quick.modular.api.utils.DateUtils;
+import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
+import cn.hawy.quick.modular.business.warpper.AgentAccountFlowWrapper;
+import cn.hawy.quick.modular.business.warpper.AgentCashFlowWrapper;
+import cn.hawy.quick.modular.system.service.UserService;
 import cn.hutool.core.util.StrUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
+import cn.stylefeng.roses.core.reqres.response.SuccessResponseData;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +44,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 日志管理的控制器
@@ -85,15 +85,16 @@ public class AgentController extends BaseController {
      * 跳转到代理提现的列表
      */
     @RequestMapping("/agentCashFlowList")
+    @Permission
     @ResponseBody
     public Object agentCashFlowList(@RequestParam(required = false) String beginTime,
                                    @RequestParam(required = false) String endTime,
+                                    @RequestParam(required = false) String agentId,
                                    @RequestParam(required = false) String cashStatusName,
                                    @RequestParam(required = false) String name) {
 
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUserNotNull();
-        List<Map<String, Object>> result = agentCashFlowService.findAll(page, beginTime, endTime, cashStatusName, shiroUser.getId(), name);
+        List<Map<String, Object>> result = agentCashFlowService.findAll(page, beginTime, endTime, cashStatusName, agentId, name);
         page.setRecords(new AgentCashFlowWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
     }
@@ -147,6 +148,7 @@ public class AgentController extends BaseController {
     public void agentCashFlowExcelList(@RequestParam(required = false) String beginTime,
                                       @RequestParam(required = false) String endTime,
                                       @RequestParam(required = false) String cashStatusName,
+                                      @RequestParam(required = false) String agentId,
                                       @RequestParam(required = false) String name,
                                       HttpServletRequest request, HttpServletResponse response) throws Exception {
 //        Map<String, Object> result = new HashMap<String, Object>();
@@ -158,8 +160,8 @@ public class AgentController extends BaseController {
             int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = {"提现号", "代理号", "代理名称", "提现金额", "提现状态", "提现手续费", "出款金额", "出款账户名", "出款账户号", "出款银行", "创建时间"};
             List<AgentCashFlowExcel> dataVals = new ArrayList<AgentCashFlowExcel>();
-            ShiroUser shiroUser = ShiroKit.getUserNotNull();
-            List<TAgentCashFlow> pay = agentCashFlowService.find(beginTime, endTime, cashStatusName, shiroUser.getId(), name);
+
+            List<TAgentCashFlow> pay = agentCashFlowService.find(beginTime, endTime, cashStatusName, agentId, name);
             dataVals.addAll(this.transForCashExport(pay));
 
             // 输出到服务器
@@ -192,12 +194,13 @@ public class AgentController extends BaseController {
     @ResponseBody
     public Object agentAccountFlowList(@RequestParam(required = false) String beginTime,
                                       @RequestParam(required = false) String endTime,
+                                       @RequestParam(required = false) String agentId,
                                       @RequestParam(required = false) String bizTypeName,
                                       @RequestParam(required = false) String directionName) {
         //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUserNotNull();
-        List<Map<String, Object>> result = agentAccountFlowService.findAll(page, beginTime, endTime, shiroUser.getId(), bizTypeName, directionName);
+
+        List<Map<String, Object>> result = agentAccountFlowService.findAll(page, beginTime, endTime, agentId, bizTypeName, directionName);
         page.setRecords(new AgentAccountFlowWrapper(result).wrap());
         return LayuiPageFactory.createPageInfo(page);
     }
@@ -250,6 +253,7 @@ public class AgentController extends BaseController {
     @ResponseBody
     public void agentAccountFlowExcelList(@RequestParam(required = false) String beginTime,
                                          @RequestParam(required = false) String endTime,
+                                         @RequestParam(required = false) String agentId,
                                          @RequestParam(required = false) String bizTypeName,
                                          @RequestParam(required = false) String directionName,
                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -262,8 +266,7 @@ public class AgentController extends BaseController {
             int[] colWidths = {20, 20, 20, 20, 20, 20, 20, 20};
             String[] colNames = {"代理号", "代理名称", "余额", "变动金额", "业务类型", "变动方向", "内部单号", "创建时间"};
             List<AgentAccountFlowExcel> dataVals = new ArrayList<AgentAccountFlowExcel>();
-            ShiroUser shiroUser = ShiroKit.getUserNotNull();
-            List<TAgentAccountFlow> pay = agentAccountFlowService.find(beginTime, endTime, shiroUser.getId(), bizTypeName, directionName);
+            List<TAgentAccountFlow> pay = agentAccountFlowService.find(beginTime, endTime, agentId, bizTypeName, directionName);
             dataVals.addAll(this.transForAccountExport(pay));
 
             // List<UserContact> dataVals = user.getContactsList();
@@ -280,39 +283,33 @@ public class AgentController extends BaseController {
         }
     }
 
-    /**------------------------------------------代理账户提现--------------------------------------------------------------**/
 
-    /**
-     * 跳转到代理提现的首页
-     */
+    //---------------------------------------------------------------------------------------------------------------------
     @RequestMapping("/agentCashFlowVerb")
+    @Permission
     public String agentCashFlowVerb() {
         return PREFIX + "agent_cash_flow_verb.html";
     }
 
-    /**
-     * 跳转到余额的首页
-     */
-    @RequestMapping("/agentCashApply")
-    public String agentCashApply(Model model) {
-        ShiroUser shiroUser = ShiroKit.getUserNotNull();
-        TAgentInfo agent = agentInfoService.getById(shiroUser.getId());
-        if (agent == null) {
-            throw new ServiceException(BizExceptionEnum.DB_RESOURCE_NULL);
-        }
-        model.addAttribute("balance", PayUtil.transFenToYuan(String.valueOf(agent.getBalance())));
-        return PREFIX + "agent_cash.html";
-    }
-
-    @RequestMapping("/agentCash")
+    @RequestMapping("/agentCashFlowVerbAccept")
     @ResponseBody
-    public ResponseData agentCash(String cashAmount) {
-        if (StrUtil.isEmpty(cashAmount)) {
-            throw new ServiceException(BizExceptionEnum.NO_PERMITION);
-        }
-        agentInfoService.agentCash(cashAmount);
+    @Permission
+    public SuccessResponseData accept(@RequestParam(required = false) String id) {
+        TAgentCashFlow agentCashFlow = agentCashFlowService.getById(id);
+        agentCashFlow.setCashStatus(2);
+        agentCashFlowService.updateCashStatus(agentCashFlow);
         return SUCCESS_TIP;
     }
+
+    @RequestMapping("/agentCashFlowVerbRefuse")
+    @ResponseBody
+    @Permission
+    public SuccessResponseData refuse(@RequestParam(required = false) String id) {
+        agentCashFlowService.refuse(id);
+        return SUCCESS_TIP;
+    }
+
+
 
     //--------------------------------------------通道费率---------------------------------------------------------------------
 
@@ -324,29 +321,14 @@ public class AgentController extends BaseController {
 
     @RequestMapping("/agentRateChannelList")
     @ResponseBody
-    public Object agentRateChannelList(@RequestParam(required = false) String channel) {
+    public Object agentRateChannelList(@RequestParam(required = false) String agentId,
+                                       @RequestParam(required = false) String channel) {
         //获取分页参数
         Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUserNotNull();
-        List<Map<String, Object>> result = agentRateChannelService.findAll(page, shiroUser.getId(), channel);
+        List<Map<String, Object>> result = agentRateChannelService.findAll(page, agentId, channel);
         page.setRecords(result);
         return LayuiPageFactory.createPageInfo(page);
     }
 
-    //--------------------------------------------我的商户---------------------------------------------------------------------
-    @RequestMapping("/agentDeptInfo")
-    public String agentDeptInfo() {
-        return PREFIX + "agent_dept_info.html";
-    }
 
-    @RequestMapping("/agentDeptInfoList")
-    @ResponseBody
-    public Object agentDeptInfolList() {
-        //获取分页参数
-        Page page = LayuiPageFactory.defaultPage();
-        ShiroUser shiroUser = ShiroKit.getUserNotNull();
-        List<Map<String, Object>> result = deptInfoService.findAll(page, shiroUser.getId());
-        page.setRecords(result);
-        return LayuiPageFactory.createPageInfo(page);
-    }
 }

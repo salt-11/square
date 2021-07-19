@@ -3,8 +3,12 @@ package cn.hawy.quick.modular.api.service;
 import cn.hawy.quick.modular.api.entity.TAgentRateChannel;
 import cn.hawy.quick.modular.api.mapper.TAgentRateChannelMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,6 +36,10 @@ public class TAgentRateChannelService extends ServiceImpl<TAgentRateChannelMappe
 		agentRateChannel.setAgentId(agentId);
 		agentRateChannel.setChannel(channel);
 		return this.baseMapper.selectOne(new QueryWrapper<>(agentRateChannel));
+	}
+
+	public List<Map<String, Object>> findAll(Page page, String agentId, String channel){
+		return this.baseMapper.findAll(page,agentId,channel);
 	}
 	
 }

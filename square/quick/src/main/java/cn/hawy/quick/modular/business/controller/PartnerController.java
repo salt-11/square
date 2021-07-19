@@ -19,6 +19,7 @@ import cn.hawy.quick.core.common.annotion.Permission;
 import cn.hawy.quick.core.common.exception.BizExceptionEnum;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
 import cn.hawy.quick.core.shiro.ShiroKit;
+import cn.hawy.quick.core.shiro.ShiroUser;
 import cn.hawy.quick.core.util.CollectionKit;
 import cn.hawy.quick.core.util.IdGenerator;
 import cn.hawy.quick.core.util.PayUtil;
@@ -28,15 +29,13 @@ import cn.hawy.quick.modular.api.dao.DeptOrderReportExcel;
 import cn.hawy.quick.modular.api.dao.MchCashReportExcel;
 import cn.hawy.quick.modular.api.entity.*;
 import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
-import cn.hawy.quick.modular.api.service.TDeptAccountFlowService;
-import cn.hawy.quick.modular.api.service.TDeptBankCardService;
-import cn.hawy.quick.modular.api.service.TDeptCashFlowService;
-import cn.hawy.quick.modular.api.service.TDeptOrderReportService;
+import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
 import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
 import cn.hawy.quick.modular.business.warpper.DeptAccountFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptCashFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptOrderReportWrapper;
+import cn.hawy.quick.modular.business.warpper.DeptRateChannelWrapper;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.model.DeptDto;
 import cn.hawy.quick.modular.system.service.DeptService;
@@ -84,6 +83,8 @@ public class PartnerController extends BaseController {
     TDeptCashFlowMapper deptCashFlowMapper;
     @Autowired
     TDeptOrderReportService deptOrderReportService;
+    @Autowired
+    TDeptRateChannelService deptRateChannelService;
 
 
     /**
@@ -513,6 +514,29 @@ public class PartnerController extends BaseController {
             }
         }
         return dataList;
+    }
+
+    //--------------------------------------------通道费率---------------------------------------------------------------------
+    /**
+     * 跳转到渠道账户流水的首页
+     */
+    @RequestMapping("/deptRateChannel")
+    public String deptRateChannel() {
+        return PREFIX + "dept_rate_channel.html";
+    }
+
+    /**
+     * 跳转到渠道账户流水list
+     */
+    @RequestMapping("/deptRateChannelList")
+    @ResponseBody
+    public Object deptRateChannelList(@RequestParam(required = false) String deptId,
+                                      @RequestParam(required = false) String channel) {
+        //获取分页参数
+        Page page = LayuiPageFactory.defaultPage();
+        List<Map<String, Object>> result = deptRateChannelService.findAll(page, deptId, channel);
+        page.setRecords(new DeptRateChannelWrapper(result).wrap());
+        return LayuiPageFactory.createPageInfo(page);
     }
 
 

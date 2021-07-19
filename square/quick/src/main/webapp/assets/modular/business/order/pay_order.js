@@ -28,6 +28,7 @@ layui.use(['layer', 'table', 'ax', 'laydate'], function () {
             {field: 'mchFee', width:100, align:'center',title: '商户手续费'},
             {field: 'deptRate', width:100, align:'center',title: '渠道费率'},
             {field: 'deptAmount', width:100, align:'center',title: '渠道利润'},
+            {field: 'agentId', width:100, align:'center',title: '代理号'},
             {field: 'agentRate', width:100, align:'center',title: '代理费率'},
             {field: 'agentAmount', width:100, align:'center',title: '代理利润'},
             {field: 'orderStatus', width:100, align:'center',templet: '#orderStatusTpl', title: '订单状态'},

@@ -14,7 +14,7 @@ import java.util.Date;
  * @author stylefeng
  * @since 2018-12-07
  */
-@TableName("t_dept_info")
+@TableName("sys_user")
 @Data
 public class User implements Serializable {
 
@@ -23,8 +23,8 @@ public class User implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.ID_WORKER)
-    private Long id;
+    @TableId(value = "USER_ID", type = IdType.ID_WORKER)
+    private Long userId;
     /**
      * 头像
      */

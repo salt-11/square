@@ -17,7 +17,17 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, channel, bank_code, bank_name, cost_rate, channel_no,channel_mer_app_id, create_time
+        id, channel, bank_code as bankCode, bank_name as bankName, cost_rate as costRate, channel_no,channel_mer_app_id, create_time as createTime
     </sql>
+
+    <select id="findAll" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_platform_rate_channel where 1=1
+        <if test="channel != null and channel != ''">
+            and channel = #{channel}
+        </if>
+        order by create_time  desc
+    </select>
 
 </mapper>

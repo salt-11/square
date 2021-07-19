@@ -4,8 +4,12 @@ import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
 import cn.hawy.quick.modular.api.mapper.TDeptRateChannelMapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -39,6 +43,10 @@ public class TDeptRateChannelService extends ServiceImpl<TDeptRateChannelMapper,
 		deptRateChannel.setDeptId(deptId);
 		deptRateChannel.setChannel(channel);
 		return this.baseMapper.selectOne(new QueryWrapper<>(deptRateChannel));
+	}
+
+	public List<Map<String, Object>> findAll(Page page, String deptId, String channel){
+		return this.baseMapper.findAll(page,deptId,channel);
 	}
 	
 }
