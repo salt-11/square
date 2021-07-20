@@ -11,6 +11,7 @@ import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.mapper.DeptMapper;
 import cn.hawy.quick.modular.system.model.DeptDto;
+import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -186,5 +187,12 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
             throw new ServiceException(400, "渠道商账户余额不足!");
         }
     }
-
+ public boolean getDeptInfo(Long deptId){
+      Dept dept = this.baseMapper.selectById(deptId);
+      if(BeanUtil.isEmpty(dept)){
+          throw new ServiceException(400, "该渠道不存在!");
+      }else{
+          return true;
+     }
+ }
 }

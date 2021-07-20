@@ -17,14 +17,15 @@ package cn.hawy.quick.modular.business.controller;
 
 
 import cn.hawy.quick.core.common.annotion.Permission;
+import cn.hawy.quick.core.common.exception.BizExceptionEnum;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
 import cn.hawy.quick.core.shiro.ShiroKit;
 import cn.hawy.quick.core.util.PayUtil;
 import cn.hawy.quick.modular.api.dao.AgentAccountFlowExcel;
 import cn.hawy.quick.modular.api.dao.AgentCashFlowExcel;
-import cn.hawy.quick.modular.api.entity.TAgentAccountFlow;
-import cn.hawy.quick.modular.api.entity.TAgentCashFlow;
-import cn.hawy.quick.modular.api.entity.TDeptCashFlow;
+import cn.hawy.quick.modular.api.entity.*;
+import cn.hawy.quick.modular.api.param.AgentRateChannelParam;
+import cn.hawy.quick.modular.api.param.PlatformRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
 import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
@@ -40,12 +41,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +82,20 @@ public class AgentController extends BaseController {
     @RequestMapping("/agentCashFlow")
     public String agentCashFlow() {
         return PREFIX + "agent_cash_flow.html";
+    }
+    @RequestMapping("/agentRateChannelAdd")
+    public String platformRateChannelAdd() {
+        return PREFIX + "agent_rate_channel_add.html";
+    }
+    /**
+     * 跳转到编辑管理员页面
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:43
+     */
+    @RequestMapping("/agentRateChannelEdit")
+    public String userEdit() {
+        return PREFIX + "agent_rate_channel_edit.html";
     }
 
     /**
@@ -328,6 +345,60 @@ public class AgentController extends BaseController {
         List<Map<String, Object>> result = agentRateChannelService.findAll(page, agentId, channel);
         page.setRecords(result);
         return LayuiPageFactory.createPageInfo(page);
+    }
+    /**
+     * 添加平台通道费率
+     * @param channelParam
+     * @param result
+     * @return
+     */
+    @RequestMapping("/add")
+    @ResponseBody
+    public ResponseData add(@Valid AgentRateChannelParam channelParam, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        agentInfoService.getAgentInfo(channelParam.getAgentId());
+        this.agentRateChannelService.addRateChannel(channelParam);
+        return new SuccessResponseData();
+    }
+    /**
+     * 编辑接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/edit")
+    @ResponseBody
+    public ResponseData editItem(AgentRateChannelParam channelParam) {
+        agentInfoService.getAgentInfo(channelParam.getAgentId());
+        this.agentRateChannelService.update(channelParam);
+        return new SuccessResponseData();
+    }
+
+    /**
+     * 删除店铺
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResponseData delete(AgentRateChannelParam channelParam) {
+        agentRateChannelService.removeById(channelParam.getId());
+        return new SuccessResponseData();
+    }
+    /**
+     * 查看详情接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/detail")
+    @ResponseBody
+    public ResponseData detail(AgentRateChannelParam channelParam){
+         TAgentRateChannel tAgentRateChannel = this.agentRateChannelService.getById(channelParam.getId());
+        return new SuccessResponseData(tAgentRateChannel);
     }
 
 

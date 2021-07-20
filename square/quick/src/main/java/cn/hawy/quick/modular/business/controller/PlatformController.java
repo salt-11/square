@@ -15,32 +15,30 @@
  */
 package cn.hawy.quick.modular.business.controller;
 
-
+import cn.hawy.quick.core.common.annotion.BussinessLog;
 import cn.hawy.quick.core.common.annotion.Permission;
+import cn.hawy.quick.core.common.constant.dictmap.UserDict;
+import cn.hawy.quick.core.common.exception.BizExceptionEnum;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
-import cn.hawy.quick.core.util.PayUtil;
-import cn.hawy.quick.modular.api.dao.AgentAccountFlowExcel;
-import cn.hawy.quick.modular.api.dao.AgentCashFlowExcel;
-import cn.hawy.quick.modular.api.entity.TAgentAccountFlow;
-import cn.hawy.quick.modular.api.entity.TAgentCashFlow;
+import cn.hawy.quick.core.log.LogObjectHolder;
+import cn.hawy.quick.modular.api.entity.TPlatformRateChannel;
+import cn.hawy.quick.modular.api.param.PlatformRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
-import cn.hawy.quick.modular.api.utils.DateUtils;
-import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
-import cn.hawy.quick.modular.business.warpper.AgentAccountFlowWrapper;
-import cn.hawy.quick.modular.business.warpper.AgentCashFlowWrapper;
-import cn.hawy.quick.modular.system.service.UserService;
+import cn.hawy.quick.modular.system.entity.User;
+import cn.hawy.quick.modular.system.model.UserDto;
 import cn.stylefeng.roses.core.base.controller.BaseController;
+import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import cn.stylefeng.roses.core.reqres.response.SuccessResponseData;
+import cn.stylefeng.roses.core.util.ToolUtil;
+import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +64,20 @@ public class PlatformController extends BaseController {
         return PREFIX + "platform_rate_channel.html";
     }
 
+    @RequestMapping("/platformRateChannelAdd")
+    public String platformRateChannelAdd() {
+        return PREFIX + "platform_rate_channel_add.html";
+    }
+    /**
+     * 跳转到编辑管理员页面
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:43
+     */
+    @RequestMapping("/platformRateChannelEdit")
+    public String userEdit() {
+        return PREFIX + "platform_rate_channel_edit.html";
+    }
 
     @RequestMapping("/platformRateChannelList")
     @ResponseBody
@@ -77,5 +89,57 @@ public class PlatformController extends BaseController {
         return LayuiPageFactory.createPageInfo(page);
     }
 
+    /**
+     * 添加平台通道费率
+     * @param channelParam
+     * @param result
+     * @return
+     */
+    @RequestMapping("/add")
+    @ResponseBody
+    public ResponseData add(@Valid PlatformRateChannelParam channelParam, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        this.platformRateChannelService.addRateChannel(channelParam);
+        return new SuccessResponseData();
+    }
+    /**
+     * 编辑接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/edit")
+    @ResponseBody
+    public ResponseData editItem(PlatformRateChannelParam channelParam) {
+        this.platformRateChannelService.update(channelParam);
+        return ResponseData.success();
+    }
+
+    /**
+     * 删除店铺
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResponseData delete(PlatformRateChannelParam channelParam) {
+        platformRateChannelService.removeById(channelParam.getId());
+        return ResponseData.success();
+    }
+    /**
+     * 查看详情接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/detail")
+    @ResponseBody
+    public ResponseData detail(PlatformRateChannelParam channelParam){
+        TPlatformRateChannel tPlatformRateChannel = this.platformRateChannelService.getById(channelParam.getId());
+        return ResponseData.success(tPlatformRateChannel);
+    }
 
 }

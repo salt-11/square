@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Data;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -27,7 +30,7 @@ public class TDeptRateChannel implements Serializable {
     private String channel;
 
     private String bankName;
-    
+
     private String bankCode;
 
     private String costRate;
@@ -37,7 +40,7 @@ public class TDeptRateChannel implements Serializable {
     private String cardAuthRate;
 
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private Date createTime;
 
 
     public Integer getId() {
@@ -63,7 +66,7 @@ public class TDeptRateChannel implements Serializable {
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
-    
+
 
     public String getBankCode() {
 		return bankCode;
@@ -81,11 +84,11 @@ public class TDeptRateChannel implements Serializable {
         this.costRate = costRate;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 

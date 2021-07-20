@@ -29,6 +29,8 @@ import cn.hawy.quick.modular.api.dao.DeptOrderReportExcel;
 import cn.hawy.quick.modular.api.dao.MchCashReportExcel;
 import cn.hawy.quick.modular.api.entity.*;
 import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
+import cn.hawy.quick.modular.api.param.AgentRateChannelParam;
+import cn.hawy.quick.modular.api.param.DeptRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
 import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
@@ -50,6 +52,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -60,6 +63,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * 日志管理的控制器
@@ -95,6 +99,20 @@ public class PartnerController extends BaseController {
     @Permission
     public String deptCashFlow() {
         return PREFIX + "dept_cash_flow.html";
+    }
+    @RequestMapping("/deptRateChannelAdd")
+    public String deptRateChannelAdd() {
+        return PREFIX + "dept_rate_channel_add.html";
+    }
+    /**
+     * 跳转到编辑页面
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:43
+     */
+    @RequestMapping("/deptRateChannelEdit")
+    public String userEdit() {
+        return PREFIX + "dept_rate_channel_edit.html";
     }
 
     /**
@@ -539,6 +557,61 @@ public class PartnerController extends BaseController {
         return LayuiPageFactory.createPageInfo(page);
     }
 
+
+    /**
+     * 添加平台通道费率
+     * @param channelParam
+     * @param result
+     * @return
+     */
+    @RequestMapping("/add")
+    @ResponseBody
+    public ResponseData add(@Valid DeptRateChannelParam channelParam, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        deptService.getDeptInfo(channelParam.getDeptId());
+        this.deptRateChannelService.addRateChannel(channelParam);
+        return new SuccessResponseData();
+    }
+    /**
+     * 编辑接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/edit")
+    @ResponseBody
+    public ResponseData editItem(DeptRateChannelParam channelParam) {
+        deptService.getDeptInfo(channelParam.getDeptId());
+        this.deptRateChannelService.update(channelParam);
+        return new SuccessResponseData();
+    }
+
+    /**
+     * 删除店铺
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResponseData delete(DeptRateChannelParam channelParam) {
+        deptRateChannelService.removeById(channelParam.getId());
+        return new SuccessResponseData();
+    }
+    /**
+     * 查看详情接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/detail")
+    @ResponseBody
+    public ResponseData detail(DeptRateChannelParam channelParam){
+         TDeptRateChannel tDeptRateChannel = this.deptRateChannelService.getById(channelParam.getId());
+        return new SuccessResponseData(tDeptRateChannel);
+    }
 
 
 

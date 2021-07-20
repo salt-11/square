@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -28,13 +29,13 @@ public class TAgentRateChannel implements Serializable {
     private String channel;
 
     private String bankName;
-    
+
     private String bankCode;
 
     private String costRate;
 
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private Date createTime;
 
 
     public Integer getId() {
@@ -60,7 +61,7 @@ public class TAgentRateChannel implements Serializable {
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
-    
+
 
     public String getBankCode() {
 		return bankCode;
@@ -78,14 +79,13 @@ public class TAgentRateChannel implements Serializable {
         this.costRate = costRate;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
 
     public String getChannel() {
 		return channel;
