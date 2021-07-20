@@ -32,6 +32,7 @@ import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
 import cn.hawy.quick.modular.business.warpper.AgentAccountFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.AgentCashFlowWrapper;
 import cn.hawy.quick.modular.system.service.UserService;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
@@ -359,6 +360,10 @@ public class AgentController extends BaseController {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
         agentInfoService.getAgentInfo(channelParam.getAgentId());
+        TAgentRateChannel byAgentId = agentRateChannelService.findByAgentIdAndBankCodeAndChannel(channelParam.getAgentId(), channelParam.getBankCode(), channelParam.getChannel());
+            if(!BeanUtil.isEmpty(byAgentId)){
+            throw new ServiceException(400,"该通道的代理号已存在该银行编码");
+        }
         this.agentRateChannelService.addRateChannel(channelParam);
         return new SuccessResponseData();
     }

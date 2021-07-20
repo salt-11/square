@@ -26,6 +26,7 @@ import cn.hawy.quick.modular.api.param.PlatformRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.system.entity.User;
 import cn.hawy.quick.modular.system.model.UserDto;
+import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import cn.stylefeng.roses.core.reqres.response.SuccessResponseData;
@@ -100,6 +101,10 @@ public class PlatformController extends BaseController {
     public ResponseData add(@Valid PlatformRateChannelParam channelParam, BindingResult result) {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        TPlatformRateChannel byBankCodeAndChannel =platformRateChannelService.findByBankCodeAndChannel(channelParam.getBankCode(),channelParam.getChannel());
+        if(!BeanUtil.isEmpty(byBankCodeAndChannel)){
+            throw  new ServiceException(400,"该通道的银行编码已存在，请重新输入");
         }
         this.platformRateChannelService.addRateChannel(channelParam);
         return new SuccessResponseData();

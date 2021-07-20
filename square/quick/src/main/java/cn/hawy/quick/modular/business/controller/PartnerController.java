@@ -41,6 +41,7 @@ import cn.hawy.quick.modular.business.warpper.DeptRateChannelWrapper;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.model.DeptDto;
 import cn.hawy.quick.modular.system.service.DeptService;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
@@ -571,7 +572,11 @@ public class PartnerController extends BaseController {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
         deptService.getDeptInfo(channelParam.getDeptId());
-        this.deptRateChannelService.addRateChannel(channelParam);
+         TDeptRateChannel byDeptId = deptRateChannelService.findByDeptIdAndBankCodeAndChannel(channelParam.getDeptId().toString(), channelParam.getBankCode(), channelParam.getChannel());
+            if(!BeanUtil.isEmpty(byDeptId)){
+                throw new ServiceException(400,"该通道的渠道号已存在该银行编码");
+            }
+         this.deptRateChannelService.addRateChannel(channelParam);
         return new SuccessResponseData();
     }
     /**
