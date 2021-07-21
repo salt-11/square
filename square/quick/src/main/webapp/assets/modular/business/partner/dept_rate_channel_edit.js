@@ -29,4 +29,13 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
         ajax.set(data.field);
         ajax.start();
     });
+    form.verify({
+        positiveNumber: [
+            /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
+            ,'只能填写正数'
+        ]
+        ,content: function(value){
+            layedit.sync(editIndex);
+        }
+    });
 });

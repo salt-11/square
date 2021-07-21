@@ -28,19 +28,19 @@
     <div class="layui-form-item">
         <label class="layui-form-label">交易费率<span style="color: red;">*</span></label>
         <div class="layui-input-block">
-            <input name="costRate" type="number" placeholder="请输入交易费率" type="text" class="layui-input" lay-verify="required" required/>
+            <input name="costRate"  type="text" placeholder="请输入交易费率"  class="layui-input" lay-verify="required|positiveNumber" required/>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">提现手续费<span style="color: red;">*</span></label>
         <div class="layui-input-block">
-            <input name="cashRate" type="number" placeholder="请输入提现手续费" type="text" class="layui-input" lay-verify="required" required/>
+            <input name="cashRate" type="text"placeholder="请输入提现手续费"  class="layui-input" lay-verify="required|positiveNumber" required/>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">鉴权手续费<span style="color: red;">*</span></label>
         <div class="layui-input-block">
-            <input name="cardAuthRate" type="number" placeholder="请输入银行卡鉴权手续费" type="text" class="layui-input" lay-verify="required" required/>
+            <input name="cardAuthRate"  placeholder="请输入银行卡鉴权手续费" type="text" class="layui-input" lay-verify="required|positiveNumber" required/>
         </div>
     </div>
     <div class="layui-form-item text-center">
