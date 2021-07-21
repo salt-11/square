@@ -28,7 +28,7 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
             {field: 'cardNo', title: '银行卡号'},
             {field: 'bankName', title: '开户行'},
             {field: 'createTime', width: 250, title: '创建时间'},
-            // {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 100}
+            {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 100}
         ]];
     };
 
@@ -47,7 +47,23 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
             where: queryData
         });
     };
-
+    /**
+     *  编辑
+     *
+     * @param data 点击按钮时候的行数据
+     */
+    DeptInfo.onEdit = function (data) {
+        console.log(123);
+        admin.putTempData('formOk', false);
+        top.layui.admin.open({
+            type: 2,
+            title: '渠道信息',
+            content: Feng.ctxPath + '/partner/deptInfoEdit?id='+data.id,
+            end: function () {
+                admin.getTempData('formOk') && table.reload(DeptInfo.tableId);
+            }
+        });
+    };
     // 渲染表格
     var tableResult = table.render({
         elem: '#' + DeptInfo.tableId,
@@ -87,7 +103,7 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
     $('#btnSearch').click(function () {
     	DeptInfo.search();
     });
-    
+
     // DeptInfo.onDetails = function (data) {
     //     top.layui.admin.open({
     //         type: 2,
@@ -97,14 +113,16 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
     //     });
     // };
 
-//
-//     // 工具条点击事件
-//     table.on('tool(' + DeptInfo.tableId + ')', function (obj) {
-//         var data = obj.data;
-//         var layEvent = obj.event;
-//         if (layEvent === 'details') {
-//             DeptInfo.onDetails(data);
-//         }
-//     });
+
+    // 工具条点击事件
+    table.on('tool(' + DeptInfo.tableId + ')', function (obj) {
+        var data = obj.data;
+        var layEvent = obj.event;
+        if (layEvent === 'details') {
+            DeptInfo.onDetails(data);
+        }else if (layEvent === 'edit') {
+            DeptInfo.onEdit(data);
+        }
+    });
 
 });

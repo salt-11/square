@@ -19,7 +19,9 @@ import cn.hawy.quick.core.common.annotion.Permission;
 import cn.hawy.quick.core.common.exception.BizExceptionEnum;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
 import cn.hawy.quick.core.shiro.ShiroKit;
+import cn.hawy.quick.core.shiro.ShiroUser;
 import cn.hawy.quick.core.util.CollectionKit;
+import cn.hawy.quick.core.util.IdGenerator;
 import cn.hawy.quick.core.util.PayUtil;
 import cn.hawy.quick.modular.api.dao.DeptAccountFlowExcel;
 import cn.hawy.quick.modular.api.dao.DeptCashFlowExcel;
@@ -27,6 +29,8 @@ import cn.hawy.quick.modular.api.dao.DeptOrderReportExcel;
 import cn.hawy.quick.modular.api.dto.PartnerDto;
 import cn.hawy.quick.modular.api.entity.*;
 import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
+import cn.hawy.quick.modular.api.param.AgentRateChannelParam;
+import cn.hawy.quick.modular.api.param.DeptInfoParam;
 import cn.hawy.quick.modular.api.param.DeptRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
@@ -90,6 +94,8 @@ public class PartnerController extends BaseController {
     TDeptOrderReportService deptOrderReportService;
     @Autowired
     TDeptRateChannelService deptRateChannelService;
+    @Autowired
+    TAgentInfoService agentInfoService;
 
 
 
@@ -138,6 +144,7 @@ public class PartnerController extends BaseController {
     @RequestMapping("/addItem")
     @ResponseBody
     public ResponseData addItem(PartnerDto partnerDto) {
+        agentInfoService.getAgentInfo(partnerDto.getAgentId());
         this.deptInfoService.add(partnerDto);
         return ResponseData.success();
     }
@@ -162,8 +169,18 @@ public class PartnerController extends BaseController {
      * @Date 2018/12/24 22:43
      */
     @RequestMapping("/deptRateChannelEdit")
-    public String userEdit() {
+    public String deptRateChannelEdit() {
         return PREFIX + "dept_rate_channel_edit.html";
+    }
+    /**
+     * 跳转到编辑页面
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:43
+     */
+    @RequestMapping("/deptInfoEdit")
+    public String deptInfoEdit() {
+        return PREFIX + "dept_info_edit.html";
     }
 
     /**
@@ -621,7 +638,7 @@ public class PartnerController extends BaseController {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
-        deptService.getDeptInfo(channelParam.getDeptId());
+        deptInfoService.getDeptInfo(channelParam.getDeptId());
          TDeptRateChannel byDeptId = deptRateChannelService.findByDeptIdAndBankCodeAndChannel(channelParam.getDeptId().toString(), channelParam.getBankCode(), channelParam.getChannel());
             if(!BeanUtil.isEmpty(byDeptId)){
                 throw new ServiceException(400,"该通道的渠道号已存在该银行编码");
@@ -638,7 +655,7 @@ public class PartnerController extends BaseController {
     @RequestMapping("/edit")
     @ResponseBody
     public ResponseData editItem(DeptRateChannelParam channelParam) {
-        deptService.getDeptInfo(channelParam.getDeptId());
+        deptInfoService.getDeptInfo(channelParam.getDeptId());
         this.deptRateChannelService.update(channelParam);
         return new SuccessResponseData();
     }
@@ -667,7 +684,33 @@ public class PartnerController extends BaseController {
          TDeptRateChannel tDeptRateChannel = this.deptRateChannelService.getById(channelParam.getId());
         return new SuccessResponseData(tDeptRateChannel);
     }
-
-
-
+    /**
+     * 查看渠道详情接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/deptDetail")
+    @ResponseBody
+    public ResponseData deptDetail(DeptInfoParam channelParam){
+         TDeptInfo dept = this.deptInfoService.getById(channelParam.getId());
+        return new SuccessResponseData(dept);
+    }
+    /**
+     * 渠道编辑接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/deptEdit")
+    @ResponseBody
+    public ResponseData deptEdit(DeptInfoParam channelParam) {
+        agentInfoService.getAgentInfo(channelParam.getAgentId());
+        TDeptInfo byDeptIdAndAgentId = deptInfoService.findByDeptIdAndAgentId(channelParam.getId(), channelParam.getAgentId());
+        if(!BeanUtil.isEmpty(byDeptIdAndAgentId)){
+            throw new ServiceException(400,"该渠道已存在该代理商");
+        }
+        this.deptInfoService.update(channelParam);
+        return new SuccessResponseData();
+    }
 }

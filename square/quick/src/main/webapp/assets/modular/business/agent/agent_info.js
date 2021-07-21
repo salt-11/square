@@ -27,7 +27,7 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
             {field: 'cardNo', title: '银行卡号'},
             {field: 'bankName', title: '开户行'},
             {field: 'createTime', width: 250, title: '创建时间'},
-            // {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 100}
+            {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 100}
         ]];
     };
 
@@ -95,16 +95,17 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
             AgentInfo.onDetails(data);
         } else if (layEvent === 'delete') {
             AgentInfo.onDelete(data);
+        }else if (layEvent === 'edit') {
+            AgentInfo.onEdit(data);
         }
     });
-    
+
     /**
-     *  编辑 
+     *  编辑
      *
      * @param data 点击按钮时候的行数据
      */
     AgentInfo.onEdit = function (data) {
-        console.log(123);
         admin.putTempData('formOk', false);
         top.layui.admin.open({
             type: 2,
@@ -115,7 +116,7 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
             }
         });
     };
-    
+
     /**
      * 删除操作
      */

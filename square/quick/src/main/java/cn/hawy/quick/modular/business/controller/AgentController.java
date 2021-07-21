@@ -27,7 +27,9 @@ import cn.hawy.quick.modular.api.dao.AgentCashFlowExcel;
 import cn.hawy.quick.modular.api.dto.AgentDto;
 import cn.hawy.quick.modular.api.entity.TAgentAccountFlow;
 import cn.hawy.quick.modular.api.entity.TAgentCashFlow;
+import cn.hawy.quick.modular.api.entity.TAgentInfo;
 import cn.hawy.quick.modular.api.entity.TAgentRateChannel;
+import cn.hawy.quick.modular.api.param.AgentInfoParam;
 import cn.hawy.quick.modular.api.param.AgentRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
@@ -357,6 +359,11 @@ public class AgentController extends BaseController {
         return PREFIX + "agent_info.html";
     }
 
+    @RequestMapping("/agentInfoEdit")
+    public String agentInfoEdit() {
+        return PREFIX + "agent_info_edit.html";
+    }
+
     @RequestMapping("/agentInfoList")
     @ResponseBody
     public Object agentInfoList (@RequestParam(required = false) String id,
@@ -398,7 +405,6 @@ public class AgentController extends BaseController {
         this.agentInfoService.add(agentDto);
         return ResponseData.success();
     }
-
        /**
      * 删除
      *
@@ -470,5 +476,33 @@ public class AgentController extends BaseController {
     public ResponseData detail(AgentRateChannelParam channelParam){
         TAgentRateChannel tAgentRateChannel = this.agentRateChannelService.getById(channelParam.getId());
         return new SuccessResponseData(tAgentRateChannel);
+    }
+    /**
+     * 查看代理信息详情接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/agentDetail")
+    @ResponseBody
+    public ResponseData agentDetail(AgentInfoParam infoParam){
+        TAgentInfo tAgentInfo = this.agentInfoService.getById(infoParam.getId());
+        return new SuccessResponseData(tAgentInfo);
+    }
+    /**
+     * 代理信息编辑接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/agentEdit")
+    @ResponseBody
+    public ResponseData agentEdit(AgentInfoParam infoParam ){
+        TAgentInfo byAgentIdAndCardNo = agentInfoService.findByAgentIdAndCardNo(infoParam.getId(), infoParam.getCardNo());
+        if(!BeanUtil.isEmpty(byAgentIdAndCardNo)){
+            throw new ServiceException(400,"该代理商已存在该卡号");
+        }
+        this.agentInfoService.updateAgent(infoParam);
+        return new SuccessResponseData();
     }
 }

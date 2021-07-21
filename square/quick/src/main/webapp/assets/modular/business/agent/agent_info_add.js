@@ -38,5 +38,17 @@ layui.use(['form', 'admin', 'ax','laydate','upload','formSelects'], function () 
     $('#cancel').click(function(){
         window.location.href = Feng.ctxPath + '/agent/agentInfo'
     });
-
+    form.verify({
+        positiveNumber: [
+            /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
+            ,'只能填写正数'
+        ],
+        positiveInteger: [
+            /^[1-9][0-9]{19}$/
+            ,'20位存数字'
+        ]
+        ,content: function(value){
+            layedit.sync(editIndex);
+        }
+    });
 });

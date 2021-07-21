@@ -6,6 +6,7 @@ import cn.hawy.quick.core.common.node.ZTreeNode;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
 import cn.hawy.quick.modular.api.entity.TDeptAccountFlow;
 import cn.hawy.quick.modular.api.entity.TDeptCashFlow;
+import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
 import cn.hawy.quick.modular.api.mapper.TDeptAccountFlowMapper;
 import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
 import cn.hawy.quick.modular.system.entity.Dept;
@@ -187,12 +188,4 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
             throw new ServiceException(400, "渠道商账户余额不足!");
         }
     }
- public boolean getDeptInfo(Long deptId){
-      Dept dept = this.baseMapper.selectById(deptId);
-      if(BeanUtil.isEmpty(dept)){
-          throw new ServiceException(400, "该渠道不存在!");
-      }else{
-          return true;
-     }
- }
 }

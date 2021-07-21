@@ -2,10 +2,15 @@ package cn.hawy.quick.modular.api.service;
 
 import cn.hawy.quick.modular.api.dto.AgentDto;
 import cn.hawy.quick.modular.api.entity.TAgentInfo;
+import cn.hawy.quick.modular.api.entity.TAgentRateChannel;
+import cn.hawy.quick.modular.api.entity.TDeptInfo;
 import cn.hawy.quick.modular.api.mapper.TAgentInfoMapper;
+import cn.hawy.quick.modular.api.param.AgentInfoParam;
+import cn.hawy.quick.modular.api.param.DeptInfoParam;
 import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import cn.stylefeng.roses.core.util.ToolUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -25,14 +30,19 @@ import java.util.Map;
  */
 @Service
 public class TAgentInfoService extends ServiceImpl<TAgentInfoMapper, TAgentInfo> {
-    public boolean getAgentInfo(String AgentId ){
+    public TAgentInfo getAgentInfo(String AgentId ){
         TAgentInfo tAgentInfo = this.baseMapper.selectById(AgentId);
         if(BeanUtil.isEmpty(tAgentInfo)){
             throw new ServiceException(400,"该代理商 不存在");
         }
-            return true;
+            return tAgentInfo;
     }
-
+    public TAgentInfo findByAgentIdAndCardNo(String agentId, String cardNo) {
+        TAgentInfo tAgentInfo = new TAgentInfo();
+        tAgentInfo.setId(agentId);
+        tAgentInfo.setCardNo(cardNo);
+        return this.baseMapper.selectOne(new QueryWrapper <>(tAgentInfo));
+    }
     public boolean getAgent(String AgentId ){
         TAgentInfo tAgentInfo = this.baseMapper.selectById(AgentId);
         if(!BeanUtil.isEmpty(tAgentInfo)){
@@ -73,6 +83,14 @@ public class TAgentInfoService extends ServiceImpl<TAgentInfoMapper, TAgentInfo>
         ToolUtil.copyProperties(newEntity, oldEntity);
         this.updateById(newEntity);
     }
-
+    /**
+     * 修改渠道信息
+     * @param channelParam
+     */
+    public void updateAgent(AgentInfoParam infoParam){
+        TAgentInfo tAgentInfo =new TAgentInfo();
+        BeanUtil.copyProperties(infoParam, tAgentInfo);
+        this.updateById(tAgentInfo);
+    }
 
 }

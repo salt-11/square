@@ -2,13 +2,20 @@ package cn.hawy.quick.modular.api.service;
 
 import cn.hawy.quick.modular.api.dto.PartnerDto;
 import cn.hawy.quick.modular.api.entity.TDeptInfo;
+import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
 import cn.hawy.quick.modular.api.mapper.TDeptInfoMapper;
+import cn.hawy.quick.modular.api.param.DeptInfoParam;
+import cn.hawy.quick.modular.api.param.DeptRateChannelParam;
+import cn.hawy.quick.modular.system.entity.Dept;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.crypto.digest.BCrypt;
+import cn.stylefeng.roses.kernel.model.exception.ServiceException;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -29,7 +36,7 @@ public class TDeptInfoService extends ServiceImpl<TDeptInfoMapper, TDeptInfo> {
     public List<Map<String, Object>> findAll(Page page, String id, String account, String balance, String deptId, String beginTime, String endTime, String deptName) {
         return this.baseMapper.findAll(page, id, account, balance, deptId, beginTime, endTime, deptName);
     }
-    
+
         public boolean getDeptInfo(String DeptId) {
             TDeptInfo tDeptInfo = this.baseMapper.selectById(DeptId);
             if (BeanUtil.isEmpty(tDeptInfo)) {
@@ -51,7 +58,30 @@ public class TDeptInfoService extends ServiceImpl<TDeptInfoMapper, TDeptInfo> {
             TDeptInfo entity = getEntity(param);
             this.save(entity);
         }
+    public boolean getDeptInfo(Long deptId){
+        TDeptInfo dept = this.baseMapper.selectById(deptId);
+        if(BeanUtil.isEmpty(dept)){
+            throw new ServiceException(400, "该渠道不存在!");
+        }else{
+            return true;
+        }
+    }
+    public TDeptInfo findByDeptIdAndAgentId(String deptId, String agentId) {
+        TDeptInfo dept = new TDeptInfo();
+        dept.setId(deptId);
+        dept.setAgentId(agentId);
+        return this.baseMapper.selectOne(new QueryWrapper <>(dept));
+    }
 
+    /**
+     * 修改渠道信息
+     * @param channelParam
+     */
+        public void update(DeptInfoParam channelParam){
+        TDeptInfo TDeptRateChannel =new TDeptInfo();
+        BeanUtil.copyProperties(channelParam, TDeptRateChannel);
+        this.updateById(TDeptRateChannel);
+    }
         private TDeptInfo getEntity(PartnerDto param) {
             TDeptInfo entity = new TDeptInfo();
             ToolUtil.copyProperties(param, entity);

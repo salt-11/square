@@ -21,5 +21,5 @@ public interface TAgentInfoMapper extends BaseMapper<TAgentInfo> {
     int addBalance(@Param("agentId") String agentId, @Param("balance") Long balance);
 
     List<Map<String, Object>> findAll(@Param("page") Page page, @Param("id") String id, @Param("account") String account,@Param("balance") String balance, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("agentName") String agentName );
-
+    List<Map<String, Object>> getAgentInfo(String deptId);
 }
