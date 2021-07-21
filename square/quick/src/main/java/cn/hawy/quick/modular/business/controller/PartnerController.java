@@ -19,17 +19,14 @@ import cn.hawy.quick.core.common.annotion.Permission;
 import cn.hawy.quick.core.common.exception.BizExceptionEnum;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
 import cn.hawy.quick.core.shiro.ShiroKit;
-import cn.hawy.quick.core.shiro.ShiroUser;
 import cn.hawy.quick.core.util.CollectionKit;
-import cn.hawy.quick.core.util.IdGenerator;
 import cn.hawy.quick.core.util.PayUtil;
 import cn.hawy.quick.modular.api.dao.DeptAccountFlowExcel;
 import cn.hawy.quick.modular.api.dao.DeptCashFlowExcel;
 import cn.hawy.quick.modular.api.dao.DeptOrderReportExcel;
-import cn.hawy.quick.modular.api.dao.MchCashReportExcel;
+import cn.hawy.quick.modular.api.dto.PartnerDto;
 import cn.hawy.quick.modular.api.entity.*;
 import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
-import cn.hawy.quick.modular.api.param.AgentRateChannelParam;
 import cn.hawy.quick.modular.api.param.DeptRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
@@ -125,6 +122,25 @@ public class PartnerController extends BaseController {
         return LayuiPageFactory.createPageInfo(page);
     }
 
+    /**
+     * 新增页面
+     *
+     */
+    @RequestMapping("/deptAdd")
+    public String add()  {
+        return PREFIX + "/dept_info_add.html";
+    }
+
+    /**
+     * 新增接口
+     *
+     */
+    @RequestMapping("/addItem")
+    @ResponseBody
+    public ResponseData addItem(PartnerDto partnerDto) {
+        this.deptInfoService.add(partnerDto);
+        return ResponseData.success();
+    }
 
     /**
      * 跳转到渠道提现的首页

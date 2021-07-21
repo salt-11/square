@@ -59,7 +59,18 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
     });
 
 
+    // 添加按钮点击事件
+    $('#btnAdd').click(function () {
+        DeptInfo.jumpAddPage();
 
+    });
+
+    /**
+     * 跳转到添加页面
+     */
+    DeptInfo.jumpAddPage = function () {
+        window.location.href = Feng.ctxPath + '/partner/deptAdd'
+    };
 
     //渲染时间选择框
     laydate.render({
