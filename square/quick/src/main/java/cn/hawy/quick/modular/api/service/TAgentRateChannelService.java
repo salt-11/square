@@ -67,4 +67,6 @@ public class TAgentRateChannelService extends ServiceImpl<TAgentRateChannelMappe
 		this.updateById(tAgentRateChannel);
 	}
 
+
+
 }

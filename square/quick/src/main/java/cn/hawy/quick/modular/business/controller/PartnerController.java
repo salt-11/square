@@ -34,6 +34,7 @@ import cn.hawy.quick.modular.api.param.DeptRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
 import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
+import cn.hawy.quick.modular.business.warpper.DeptInfoWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptAccountFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptCashFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptOrderReportWrapper;
@@ -77,6 +78,8 @@ public class PartnerController extends BaseController {
     private static String PREFIX = "/modular/business/partner/";
 
     @Autowired
+    TDeptInfoService deptInfoService;
+    @Autowired
 	DeptService deptService;
     @Autowired
     TDeptCashFlowService deptCashFlowService;
@@ -90,6 +93,37 @@ public class PartnerController extends BaseController {
     TDeptOrderReportService deptOrderReportService;
     @Autowired
     TDeptRateChannelService deptRateChannelService;
+
+
+
+
+    //--------------------------------------------渠道信息---------------------------------------------------------------------
+    @RequestMapping("/deptInfo")
+    public String deptInfo() {
+        return PREFIX + "dept_info.html";
+    }
+
+    @RequestMapping("/deptInfoList")
+    @ResponseBody
+    public Object deptInfoList  (@RequestParam(required = false) String id,
+                                 @RequestParam(required = false) String account,
+                                 @RequestParam(required = false) String balance,
+                                 @RequestParam(required = false) String agentId,
+                                 @RequestParam(required = false) String beginTime,
+                                 @RequestParam(required = false) String endTime,
+                                 @RequestParam(required = false) String deptName ) {
+        //获取分页参数
+        Page page = LayuiPageFactory.defaultPage();
+        if (ShiroKit.isAdmin()) {
+            List<Map<String, Object>> result = deptInfoService.findAll( page,  id, account, balance, agentId, beginTime, endTime, deptName );
+            page.setRecords(new DeptInfoWrapper(result).wrap());
+        }else {
+            String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
+            List<Map<String, Object>> result = deptInfoService.findAll( page,  id, account, balance, agentId, beginTime, endTime, deptName );
+            page.setRecords(new DeptInfoWrapper(result).wrap());
+        }
+        return LayuiPageFactory.createPageInfo(page);
+    }
 
 
     /**

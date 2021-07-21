@@ -12,6 +12,7 @@
         <result column="balance" property="balance" />
         <result column="name" property="name" />
         <result column="card_no" property="cardNo" />
+        <result column="bank_name" property="bankName" />
         <result column="create_time" property="createTime" />
     </resultMap>
 
@@ -20,8 +21,36 @@
         id, agent_name, account, password, salt, balance, name, card_no, create_time
     </sql>
 
+    <sql id="Agent_Column_List">
+        id, agent_name AS agentName, account AS account , balance AS balance, name AS name , card_no AS cardNo , bank_name AS bankName , create_time AS createTime
+    </sql>
+
     <update id="addBalance">
         update t_agent_info set balance=balance + #{balance} where id = #{agentId}
     </update>
+
+    <select id="findAll" resultType="map">
+        select
+        <include refid="Agent_Column_List"/>
+        from t_agent_info
+        where 1=1
+        <if test="id != null and id != ''">
+             and id in (${id})
+        </if>
+        <if test="agentName != null and agentName != ''">
+            and agent_name like concat('%',#{agentName},'%')
+        </if>
+        <if test="account != null and account != ''">
+            and account like concat('%',#{account},'%')
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        order by create_time  desc
+    </select>
+
 
 </mapper>
