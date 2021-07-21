@@ -706,10 +706,10 @@ public class PartnerController extends BaseController {
     @ResponseBody
     public ResponseData deptEdit(DeptInfoParam channelParam) {
         agentInfoService.getAgentInfo(channelParam.getAgentId());
-        TDeptInfo byDeptIdAndAgentId = deptInfoService.findByDeptIdAndAgentId(channelParam.getId(), channelParam.getAgentId());
+       /* TDeptInfo byDeptIdAndAgentId = deptInfoService.findByDeptIdAndAgentId(channelParam.getId(), channelParam.getAgentId());
         if(!BeanUtil.isEmpty(byDeptIdAndAgentId)){
             throw new ServiceException(400,"该渠道已存在该代理商");
-        }
+        }*/
         this.deptInfoService.update(channelParam);
         return new SuccessResponseData();
     }

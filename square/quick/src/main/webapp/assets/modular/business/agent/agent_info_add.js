@@ -45,7 +45,7 @@ layui.use(['form', 'admin', 'ax','laydate','upload','formSelects'], function () 
         ],
         positiveInteger: [
             /^[1-9][0-9]{19}$/
-            ,'20位存数字'
+            ,'20位纯数字'
         ]
         ,content: function(value){
             layedit.sync(editIndex);
