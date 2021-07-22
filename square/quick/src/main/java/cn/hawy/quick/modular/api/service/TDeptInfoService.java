@@ -1,5 +1,6 @@
 package cn.hawy.quick.modular.api.service;
 
+import cn.hawy.quick.core.shiro.ShiroKit;
 import cn.hawy.quick.modular.api.dto.PartnerDto;
 import cn.hawy.quick.modular.api.entity.TDeptInfo;
 import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
@@ -85,8 +86,8 @@ public class TDeptInfoService extends ServiceImpl<TDeptInfoMapper, TDeptInfo> {
         private TDeptInfo getEntity(PartnerDto param) {
             TDeptInfo entity = new TDeptInfo();
             ToolUtil.copyProperties(param, entity);
-            entity.setSalt(BCrypt.gensalt());
-            entity.setPassword(BCrypt.hashpw(param.getPassword(), entity.getSalt()));
+            entity.setSalt(ShiroKit.getRandomSalt(32));
+            entity.setPassword(ShiroKit.md5(param.getPassword(),entity.getSalt()));
             return entity;
         }
 
