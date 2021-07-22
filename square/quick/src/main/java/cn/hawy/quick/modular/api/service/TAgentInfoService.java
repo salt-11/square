@@ -1,5 +1,6 @@
 package cn.hawy.quick.modular.api.service;
 
+import cn.hawy.quick.core.shiro.ShiroKit;
 import cn.hawy.quick.modular.api.dto.AgentDto;
 import cn.hawy.quick.modular.api.entity.TAgentInfo;
 import cn.hawy.quick.modular.api.entity.TAgentRateChannel;
@@ -64,8 +65,8 @@ public class TAgentInfoService extends ServiceImpl<TAgentInfoMapper, TAgentInfo>
     private TAgentInfo getEntity(AgentDto param) {
         TAgentInfo entity = new TAgentInfo();
         ToolUtil.copyProperties(param, entity);
-        entity.setSalt(BCrypt.gensalt());
-        entity.setPassword(BCrypt.hashpw(param.getPassword(), entity.getSalt()));
+        entity.setSalt(ShiroKit.getRandomSalt(32));
+        entity.setPassword(ShiroKit.md5(param.getPassword(),entity.getSalt()));
         return entity;
     }
 
