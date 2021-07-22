@@ -42,5 +42,18 @@ public class DeptInfoParam {
      */
     private String platformPublickey;
 
+    /**
+     * 银行卡姓名
+     */
+    private String name;
+
+    /**
+     * 银行卡号
+     */
+    private String cardNo;
+    /**
+     * 银行卡号
+     */
+    private String bankName;
 
 }

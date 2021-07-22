@@ -57,7 +57,8 @@ layui.use(['layer', 'table', 'admin', 'ax', 'laydate'], function () {
         admin.putTempData('formOk', false);
         top.layui.admin.open({
             type: 2,
-            title: '渠道信息',
+            area: ['500px', '750px'],//设置窗口大小
+            title: '渠道信息编辑',
             content: Feng.ctxPath + '/partner/deptInfoEdit?id='+data.id,
             end: function () {
                 admin.getTempData('formOk') && table.reload(DeptInfo.tableId);
