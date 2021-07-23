@@ -36,7 +36,7 @@
         from t_dept_info
         where 1=1
         <if test="id != null and id != ''">
-            and id in (${id})
+            and id = #{id}
         </if>
         <if test="deptName != null and deptName != ''">
             and dept_name like concat('%',#{deptName},'%')

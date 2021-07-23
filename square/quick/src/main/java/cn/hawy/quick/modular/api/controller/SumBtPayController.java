@@ -195,7 +195,7 @@ public class SumBtPayController {
 			if(agent == null) {
 				throw new RestException(401, "代理商信息错误!");
 			}
-			TAgentRateChannel agentRateChannel = agentRateChannelService.findByAgentIdAndChannel(dept.getAgentId(), Channel);
+			TAgentRateChannel agentRateChannel = agentRateChannelService.findByAgentIdAndBankCodeAndChannel(dept.getAgentId(),mchCard.getBankCode(), Channel);
 			if(agentRateChannel == null) {
 				throw new RestException(401, "未找到代理商信息");
 			}

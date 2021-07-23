@@ -76,13 +76,6 @@ public class TMchCashFlow implements Serializable {
 
     private Long deptAmount;
 
-    //代理商id
-    private String agentId;
-
-    private String agentRate;
-
-    private Long agentAmount;
-
     private String costFee;
 
     private Long costAmount;
@@ -269,30 +262,6 @@ public class TMchCashFlow implements Serializable {
 
     public void setCostAmount(Long costAmount) {
         this.costAmount = costAmount;
-    }
-
-    public String getAgentId() {
-        return agentId;
-    }
-
-    public void setAgentId(String agentId) {
-        this.agentId = agentId;
-    }
-
-    public String getAgentRate() {
-        return agentRate;
-    }
-
-    public void setAgentRate(String agentRate) {
-        this.agentRate = agentRate;
-    }
-
-    public Long getAgentAmount() {
-        return agentAmount;
-    }
-
-    public void setAgentAmount(Long agentAmount) {
-        this.agentAmount = agentAmount;
     }
 
     @Override
