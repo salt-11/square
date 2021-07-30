@@ -406,10 +406,5 @@ public class ConstantFactory implements IConstantFactory {
 		// TODO Auto-generated method stub
 		return getDictsByCode("UserType", userType);
 	}
-	
-	
-    
-    
-
 
 }

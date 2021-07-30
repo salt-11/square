@@ -23,11 +23,13 @@ import cn.hawy.quick.modular.api.dao.MchCashExcel;
 import cn.hawy.quick.modular.api.entity.TMchCashFlow;
 import cn.hawy.quick.modular.api.entity.TMchInfo;
 import cn.hawy.quick.modular.api.service.TCardAuthService;
+import cn.hawy.quick.modular.api.service.TMchCardService;
 import cn.hawy.quick.modular.api.service.TMchCashFlowService;
 import cn.hawy.quick.modular.api.service.TMchInfoService;
 import cn.hawy.quick.modular.api.utils.DateUtils;
 import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
 import cn.hawy.quick.modular.business.warpper.CardAuthWrapper;
+import cn.hawy.quick.modular.business.warpper.MchCardWrapper;
 import cn.hawy.quick.modular.business.warpper.MchCashFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.MchInfoWrapper;
 import cn.hutool.core.bean.BeanUtil;
@@ -67,6 +69,8 @@ public class MchController extends BaseController {
     TMchCashFlowService mchCashFlowService;
     @Autowired
     TCardAuthService cardAuthService;
+    @Autowired
+    TMchCardService mchCardService;
 
 
     /**
@@ -301,5 +305,24 @@ public class MchController extends BaseController {
         return  ResponseData.success(tjHtmlStr);
     }
 
+    @RequestMapping("/mchCard")
+    public String mchCard() {
+        return PREFIX + "mch_card.html";
+    }
+
+    @RequestMapping("/mchCardList")
+    @ResponseBody
+    public Object mchCardList(@RequestParam(required = false) String mchId, @RequestParam(required = false) String bankCardNo) {
+        Page page = LayuiPageFactory.defaultPage();
+        if (ShiroKit.isAdmin()) {
+            List<Map<String, Object>> result = mchCardService.findAll(page, null, mchId, bankCardNo);
+            page.setRecords(new MchCardWrapper(result).wrap());
+        }else {
+            String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
+            List<Map<String, Object>> result = mchCardService.findAll(page, join, mchId, bankCardNo);
+            page.setRecords(new MchCardWrapper(result).wrap());
+        }
+        return LayuiPageFactory.createPageInfo(page);
+    }
 
 }

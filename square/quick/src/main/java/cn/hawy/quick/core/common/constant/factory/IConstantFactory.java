@@ -181,4 +181,5 @@ public interface IConstantFactory {
      * 获取性别名称
      */
     String getUserTypeName(String userTypeCode);
+
 }

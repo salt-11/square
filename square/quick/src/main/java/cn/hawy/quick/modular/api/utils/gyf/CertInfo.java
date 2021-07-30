@@ -1,6 +1,5 @@
 package cn.hawy.quick.modular.api.utils.gyf;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 

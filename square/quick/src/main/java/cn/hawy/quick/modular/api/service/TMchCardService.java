@@ -6,11 +6,15 @@ import cn.hawy.quick.modular.api.mapper.TMchCardChannelMapper;
 import cn.hawy.quick.modular.api.mapper.TMchCardMapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -62,5 +66,8 @@ public class TMchCardService extends ServiceImpl<TMchCardMapper, TMchCard> {
 		}
 		
 	}
-	
+
+	public List<Map<String, Object>> findAll(Page page, String join, String mchId, String bankCardNo){
+		return this.baseMapper.findAll(page, join, mchId, bankCardNo);
+	}
 }

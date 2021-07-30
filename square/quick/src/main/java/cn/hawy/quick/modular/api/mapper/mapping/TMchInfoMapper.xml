@@ -24,13 +24,14 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        mch_id as mchId, mch_name as mchName, mch_short_name as mchShortName, area_code as areaCode, mch_address as mchAddress, mch_status as mchStatus, dept_id as deptId, mobile, email, customer_name as customerName,  customer_ident_type as customerIdentType, customer_ident_no as customerIdentNo, sett_mode as settMode, sett_circle as settCircle, card_kind as cardKind, create_time as createTime
+        mch_id as mchId, mch_name as mchName, mch_short_name as mchShortName, area_code as areaCode, mch_address as mchAddress, (case when mch_status = 1 then '待审核' when mch_status = 2 then '审核通过' when mch_status = 3 then '审核失败' end)as mchStatus, dept_id as deptId, mobile, email, customer_name as customerName,  (case when customer_ident_type = 0 then '身份证' end) as customerIdentType, customer_ident_no as customerIdentNo, sett_mode as settMode, sett_circle as settCircle, card_kind as cardKind, create_time as createTime
     </sql>
     
     <select id="findAll" resultType="map">
     	select
-        <include refid="Base_Column_List"/> 
-     	from t_mch_info  where 1=1 
+        <include refid="Base_Column_List"/>
+     	from t_mch_info  where 1=1
+
      	<if test="join != null and join !=''">
             and dept_id = ${join}
         </if>

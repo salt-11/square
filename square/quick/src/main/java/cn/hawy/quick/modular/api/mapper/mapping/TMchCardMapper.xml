@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="mch_id" property="mchId" />
         <result column="bank_card_no" property="bankCardNo" />
+        <result column="bank_code" property="bankCode" />
         <result column="bank_card_type" property="bankCardType" />
         <result column="expired" property="expired" />
         <result column="cvn" property="cvn" />
@@ -15,7 +16,20 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, mch_id, bank_card_no, bank_card_type, expired, cvn, create_time
+        id as id, t_mch_card.mch_id as mchId, bank_card_no as bankCardNo, bank_code as bankCode, bank_card_type as bankCardType, t_mch_card.create_time as createTime, mch_name as mchName
     </sql>
+
+    <select id="findAll" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_mch_card,t_mch_info  where t_mch_card.mch_id = t_mch_info.mch_id
+        <if test="mchId != null and mchId !=''">
+            and t_mch_card.mch_id = #{mchId}
+        </if>
+        <if test="bankCardNo != null and bankCardNo !=''">
+            and bank_card_no = #{bankCardNo}
+        </if>
+        order by t_mch_card.create_time  desc
+    </select>
 
 </mapper>
