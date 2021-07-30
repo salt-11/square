@@ -19,10 +19,16 @@ import cn.stylefeng.roses.core.config.WebAutoConfiguration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * SpringBoot方式启动类
@@ -41,4 +47,30 @@ public class GunsApplication {
         SpringApplication.run(GunsApplication.class, args);
         logger.info(GunsApplication.class.getSimpleName() + " is success!");
     }
+
+    @Value("${server.servlet.context-path:}")
+    private String contextPath;
+    /**
+     * 端口
+     */
+    @Value("${server.port}")
+    private String port;
+
+    /**
+     * 启动成功
+     */
+    @Bean
+    public ApplicationRunner applicationRunner() {
+        return applicationArguments -> {
+            System.out.println("port:"+port);
+            System.out.println("contextPath:"+contextPath);
+            try {
+                //获取本机内网IP
+                logger.info(">>> " + "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port + contextPath);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        };
+    }
+
 }

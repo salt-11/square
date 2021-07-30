@@ -36,7 +36,10 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 	@Autowired
 	TDeptInfoMapper deptInfoMapper;
 	@Autowired
+	TAgentAccountFlowMapper agentAccountFlowMapper;
+	@Autowired
 	TAgentInfoMapper agentInfoMapper;
+
 
 
 	public TPayOrder findByMchIdAndOutTradeNo(String mchId,String outTradeNo) {
@@ -64,7 +67,7 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptInfoMapper.addBalance(dept.getId(), payOrder.getDeptAmount());
+				deptInfoMapper.addBalance(payOrder.getDeptId(), payOrder.getDeptAmount());
 			}
 			if(payOrder.getAgentAmount() > 0 ){
 				TAgentInfo agent = agentInfoMapper.selectById(payOrder.getAgentId());
@@ -78,8 +81,9 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				agentAccountFlow.setDirection(1);
 				agentAccountFlow.setTradeNo(payOrder.getOrderId());
 				agentAccountFlow.setCreateTime(LocalDateTime.now());
+				agentAccountFlowMapper.insert(agentAccountFlow);
 				//增加代理商账户余额
-				agentInfoMapper.addBalance(agent.getId(),payOrder.getAgentAmount());
+				agentInfoMapper.addBalance(payOrder.getAgentId(),payOrder.getAgentAmount());
 			}
 			return true;
 		}else {
@@ -105,7 +109,7 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptInfoMapper.addBalance(dept.getId(), payOrder.getDeptAmount());
+				deptInfoMapper.addBalance(payOrder.getDeptId(), payOrder.getDeptAmount());
 			}
 			if(payOrder.getAgentAmount() > 0 ){
 				TAgentInfo agent = agentInfoMapper.selectById(payOrder.getAgentId());
@@ -119,8 +123,9 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				agentAccountFlow.setDirection(1);
 				agentAccountFlow.setTradeNo(payOrder.getOrderId());
 				agentAccountFlow.setCreateTime(LocalDateTime.now());
+				agentAccountFlowMapper.insert(agentAccountFlow);
 				//增加代理商账户余额
-				agentInfoMapper.addBalance(agent.getId(),payOrder.getAgentAmount());
+				agentInfoMapper.addBalance(payOrder.getAgentId(),payOrder.getAgentAmount());
 			}
 			return true;
 		}else {
@@ -161,8 +166,9 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				agentAccountFlow.setDirection(1);
 				agentAccountFlow.setTradeNo(payOrder.getOrderId());
 				agentAccountFlow.setCreateTime(LocalDateTime.now());
+				agentAccountFlowMapper.insert(agentAccountFlow);
 				//增加代理商账户余额
-				agentInfoMapper.addBalance(agent.getId(),payOrder.getAgentAmount());
+				agentInfoMapper.addBalance(payOrder.getAgentId(),payOrder.getAgentAmount());
 			}
 			if(mchCashFlow.getDeptAmount()>0) {
 				TDeptInfo dept = deptInfoMapper.selectById(payOrder.getDeptId());
@@ -178,7 +184,7 @@ public class TPayOrderService extends ServiceImpl<TPayOrderMapper, TPayOrder> {
 				deptAccountFlow.setCreateTime(LocalDateTime.now());
 				deptAccountFlowMapper.insert(deptAccountFlow);
 				//增加渠道商账户余额
-				deptInfoMapper.addBalance(dept.getId(), mchCashFlow.getDeptAmount());
+				deptInfoMapper.addBalance(payOrder.getDeptId(), mchCashFlow.getDeptAmount());
 			}
 			return true;
 		}else {

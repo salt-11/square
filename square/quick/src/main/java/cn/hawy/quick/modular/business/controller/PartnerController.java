@@ -26,12 +26,16 @@ import cn.hawy.quick.core.util.PayUtil;
 import cn.hawy.quick.modular.api.dao.DeptAccountFlowExcel;
 import cn.hawy.quick.modular.api.dao.DeptCashFlowExcel;
 import cn.hawy.quick.modular.api.dao.DeptOrderReportExcel;
-import cn.hawy.quick.modular.api.dao.MchCashReportExcel;
+import cn.hawy.quick.modular.api.dto.PartnerDto;
 import cn.hawy.quick.modular.api.entity.*;
 import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
+import cn.hawy.quick.modular.api.param.AgentRateChannelParam;
+import cn.hawy.quick.modular.api.param.DeptInfoParam;
+import cn.hawy.quick.modular.api.param.DeptRateChannelParam;
 import cn.hawy.quick.modular.api.service.*;
 import cn.hawy.quick.modular.api.utils.DateUtils;
 import cn.hawy.quick.modular.api.utils.ExportExcelUtil;
+import cn.hawy.quick.modular.business.warpper.DeptInfoWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptAccountFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptCashFlowWrapper;
 import cn.hawy.quick.modular.business.warpper.DeptOrderReportWrapper;
@@ -39,6 +43,7 @@ import cn.hawy.quick.modular.business.warpper.DeptRateChannelWrapper;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.model.DeptDto;
 import cn.hawy.quick.modular.system.service.DeptService;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
@@ -50,6 +55,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -60,6 +66,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * 日志管理的控制器
@@ -71,6 +78,8 @@ public class PartnerController extends BaseController {
 
     private static String PREFIX = "/modular/business/partner/";
 
+    @Autowired
+    TDeptInfoService deptInfoService;
     @Autowired
 	DeptService deptService;
     @Autowired
@@ -85,7 +94,60 @@ public class PartnerController extends BaseController {
     TDeptOrderReportService deptOrderReportService;
     @Autowired
     TDeptRateChannelService deptRateChannelService;
+    @Autowired
+    TAgentInfoService agentInfoService;
 
+
+
+
+    //--------------------------------------------渠道信息---------------------------------------------------------------------
+    @RequestMapping("/deptInfo")
+    public String deptInfo() {
+        return PREFIX + "dept_info.html";
+    }
+
+    @RequestMapping("/deptInfoList")
+    @ResponseBody
+    public Object deptInfoList  (@RequestParam(required = false) String id,
+                                 @RequestParam(required = false) String account,
+                                 @RequestParam(required = false) String balance,
+                                 @RequestParam(required = false) String agentId,
+                                 @RequestParam(required = false) String beginTime,
+                                 @RequestParam(required = false) String endTime,
+                                 @RequestParam(required = false) String deptName ) {
+        //获取分页参数
+        Page page = LayuiPageFactory.defaultPage();
+        if (ShiroKit.isAdmin()) {
+            List<Map<String, Object>> result = deptInfoService.findAll( page,  id, account, balance, agentId, beginTime, endTime, deptName );
+            page.setRecords(new DeptInfoWrapper(result).wrap());
+        }else {
+            String join = CollectionKit.join(ShiroKit.getDeptDataScope(), ",");
+            List<Map<String, Object>> result = deptInfoService.findAll( page,  id, account, balance, agentId, beginTime, endTime, deptName );
+            page.setRecords(new DeptInfoWrapper(result).wrap());
+        }
+        return LayuiPageFactory.createPageInfo(page);
+    }
+
+    /**
+     * 新增页面
+     *
+     */
+    @RequestMapping("/deptAdd")
+    public String add()  {
+        return PREFIX + "/dept_info_add.html";
+    }
+
+    /**
+     * 新增接口
+     *
+     */
+    @RequestMapping("/addItem")
+    @ResponseBody
+    public ResponseData addItem(PartnerDto partnerDto) {
+        agentInfoService.getAgentInfo(partnerDto.getAgentId());
+        this.deptInfoService.add(partnerDto);
+        return ResponseData.success();
+    }
 
     /**
      * 跳转到渠道提现的首页
@@ -95,6 +157,30 @@ public class PartnerController extends BaseController {
     @Permission
     public String deptCashFlow() {
         return PREFIX + "dept_cash_flow.html";
+    }
+    @RequestMapping("/deptRateChannelAdd")
+    public String deptRateChannelAdd() {
+        return PREFIX + "dept_rate_channel_add.html";
+    }
+    /**
+     * 跳转到编辑页面
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:43
+     */
+    @RequestMapping("/deptRateChannelEdit")
+    public String deptRateChannelEdit() {
+        return PREFIX + "dept_rate_channel_edit.html";
+    }
+    /**
+     * 跳转到编辑页面
+     *
+     * @author fengshuonan
+     * @Date 2018/12/24 22:43
+     */
+    @RequestMapping("/deptInfoEdit")
+    public String deptInfoEdit() {
+        return PREFIX + "dept_info_edit.html";
     }
 
     /**
@@ -540,6 +626,91 @@ public class PartnerController extends BaseController {
     }
 
 
+    /**
+     * 添加平台通道费率
+     * @param channelParam
+     * @param result
+     * @return
+     */
+    @RequestMapping("/add")
+    @ResponseBody
+    public ResponseData add(@Valid DeptRateChannelParam channelParam, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        deptInfoService.getDeptInfo(channelParam.getDeptId());
+         TDeptRateChannel byDeptId = deptRateChannelService.findByDeptIdAndBankCodeAndChannel(channelParam.getDeptId().toString(), channelParam.getBankCode(), channelParam.getChannel());
+            if(!BeanUtil.isEmpty(byDeptId)){
+                throw new ServiceException(400,"该通道的渠道号已存在该银行编码");
+            }
+         this.deptRateChannelService.addRateChannel(channelParam);
+        return new SuccessResponseData();
+    }
+    /**
+     * 编辑接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/edit")
+    @ResponseBody
+    public ResponseData editItem(DeptRateChannelParam channelParam) {
+        deptInfoService.getDeptInfo(channelParam.getDeptId());
+        this.deptRateChannelService.update(channelParam);
+        return new SuccessResponseData();
+    }
 
-
+    /**
+     * 删除店铺
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public ResponseData delete(DeptRateChannelParam channelParam) {
+        deptRateChannelService.removeById(channelParam.getId());
+        return new SuccessResponseData();
+    }
+    /**
+     * 查看详情接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/detail")
+    @ResponseBody
+    public ResponseData detail(DeptRateChannelParam channelParam){
+         TDeptRateChannel tDeptRateChannel = this.deptRateChannelService.getById(channelParam.getId());
+        return new SuccessResponseData(tDeptRateChannel);
+    }
+    /**
+     * 查看渠道详情接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/deptDetail")
+    @ResponseBody
+    public ResponseData deptDetail(DeptInfoParam channelParam){
+         TDeptInfo dept = this.deptInfoService.getById(channelParam.getId());
+        return new SuccessResponseData(dept);
+    }
+    /**
+     * 渠道编辑接口
+     *
+     * @author xxx
+     * @Date 2019-12-27
+     */
+    @RequestMapping("/deptEdit")
+    @ResponseBody
+    public ResponseData deptEdit(DeptInfoParam channelParam) {
+        agentInfoService.getAgentInfo(channelParam.getAgentId());
+       /* TDeptInfo byDeptIdAndAgentId = deptInfoService.findByDeptIdAndAgentId(channelParam.getId(), channelParam.getAgentId());
+        if(!BeanUtil.isEmpty(byDeptIdAndAgentId)){
+            throw new ServiceException(400,"该渠道已存在该代理商");
+        }*/
+        this.deptInfoService.update(channelParam);
+        return new SuccessResponseData();
+    }
 }

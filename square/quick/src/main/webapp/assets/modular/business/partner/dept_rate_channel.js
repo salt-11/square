@@ -26,7 +26,8 @@ layui.use(['layer', 'table', 'ax', 'admin', 'laydate'], function () {
             {field: 'costRate', width:150, title: '交易费率'},
             {field: 'cashRate', width:150, title: '提现手续费'},
             {field: 'cardAuthRate', width:240, title: '银行卡鉴权手续费'},
-            {field: 'createTime', title: '创建时间'}
+            {field: 'createTime', title: '创建时间'},
+            {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 160}
         ]];
     };
 
@@ -39,7 +40,57 @@ layui.use(['layer', 'table', 'ax', 'admin', 'laydate'], function () {
         queryData['deptId'] = $("#deptId").val();
         table.reload(DeptRateChannel.tableId, {where: queryData});
     };
-
+    /**
+     * 弹出添加对话框
+     */
+    DeptRateChannel.add = function () {
+        admin.putTempData('formOk', false);
+        top.layui.admin.open({
+            type: 2,
+            title: '添加平台通道费率',
+            content: Feng.ctxPath + '/partner/deptRateChannelAdd',
+            end: function () {
+                admin.getTempData('formOk') && table.reload(DeptRateChannel.tableId);
+            }
+        })
+    };
+    /**
+     * 点击编辑按钮时
+     *
+     * @param data 点击按钮时候的行数据
+     */
+    DeptRateChannel.onEdit = function (data) {
+        admin.putTempData('formOk', false);
+        top.layui.admin.open({
+            type: 2,
+            // area: ['480px', '500px'],//设置窗口大小
+            title: '编辑平台通道费率',
+            content: Feng.ctxPath + '/partner/deptRateChannelEdit?id='+data.id,
+            end: function () {
+                admin.getTempData('formOk') && table.reload(DeptRateChannel.tableId);
+            }
+        });
+    };
+    /**
+     * 删除操作
+     */
+    DeptRateChannel.onDelete = function (data) {
+        var operation = function () {
+            var ajax = new $ax(Feng.ctxPath + "/partner/delete", function (data) {
+                if(data.success){
+                    Feng.success("通道删除成功!");
+                    table.reload(DeptRateChannel.tableId);
+                }else{
+                    Feng.error(data.message);
+                }
+            }, function (data) {
+                Feng.error("通道删除失败!" + data.responseJSON.message + "!");
+            });
+            ajax.set("id", data.id);
+            ajax.start();
+        };
+        Feng.confirm("确定要删除改通道吗？", operation);
+    };
 
 
     // 渲染表格
@@ -58,5 +109,19 @@ layui.use(['layer', 'table', 'ax', 'admin', 'laydate'], function () {
     $('#btnSearch').click(function () {
     	DeptRateChannel.search();
     });
+    // 添加按钮点击事件
+    $('#btnAdd').click(function () {
+        DeptRateChannel.add();
+    });
+    // 工具条点击事件
+    table.on('tool(' + DeptRateChannel.tableId + ')', function (obj) {
+        var data = obj.data;
+        var layEvent = obj.event;
 
+        if (layEvent === 'edit') {
+            DeptRateChannel.onEdit(data);
+        } else if (layEvent === 'delete') {
+            DeptRateChannel.onDelete(data);
+        }
+    });
 });

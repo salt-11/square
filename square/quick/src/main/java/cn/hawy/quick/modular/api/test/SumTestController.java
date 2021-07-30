@@ -39,13 +39,17 @@ public class SumTestController {
 
 	public static String PrivateKey = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCkpiK7FMpkCGH+ZNGVC2Ng6sVw35xI61R2CZiaOVRAXs1lX1pz/T+xyXB1CHUox6SmSvkVHS+fu6kqFqTEpAgcyCbCmmLmqcsWeRVSX0MfIYs3u7wy7IwH9/A2ECCGedAZcJBmJPuoPUcyZ9/O2JTK4hBDrxibg+rjjGiD5A85Rdu7hAUEteeV/fEH8MamyWHps4unVKK6cOa4ZWtMZcMu7Ni3/VdPJ9D8FB8jvqOX6/d18fuqkiZ3rA9wsUvBngJlLx4C+XvkBwgx7rvU2J7pJBF90rtp7GXlgJ4wJ/fxz2pdQ88jCP+M1IKNsMjfIrUHip232d9c0wVEhizP5QwzAgMBAAECggEAHtnieBuVMNlBQ2Gww7S2klprVJMRvbgaw2NY7M0BNG6PHgeX81Pos2+DWuqSyWlfOKmjsokde1i2geRsS0xRGNOIL76t+XqnSza1ABJJiXPHmlHbGc+pDXUv1XGAJrJ8g8fLxtf3L7cLuC4uiZubhciGM6iDe+BkCu8sRkpdb+WQmflc6o3bRB1HWmVj/cyIcJai+JjBmNbGmnr3btv5oAUZ4TifNqgw0ak6W0wn2GrUQouFyj/cJnU8sXNJ76lId01wv/auTRAdBY4FWBm0Jw2Ym175QHwOLCXNZiFkx8r/J1GHrzQZazFS6P8ixPxt/SRgOQU/nXpDEKAyakZhAQKBgQD7VJ3omfnqQt6uDZWyFKwhHiG0Y8LebgMKhL7zEA0FiCYpgTmMcGbq1GddLEmxxUqBlvDjXa45VRYbrDlxvEpPiApQPlr2J81mxOOx99LC0J1IKL3xBnkpniTEGPJcUBC+ZOvIEGIeg9Q5YwFLX8StBB4PYf79+HcpxqPYHs7U8QKBgQCntT4GUikbIumnjNoyW2arwhUvgQghqNCaTKJCqa4eoaH0SzncOtNsCXIixMnEiAbDJI3Yo37k1Nbtynjyzw7RXxr2g+wb6/S1fNLGW8q7jxE3jPWsjAhcS5yx+4zFTQcS/SqEzlymrbfHM1Cu8aADJOWF4lUdCm2GNZo4dIfjYwKBgQCPNkhEonil5DS/OT5zmxP6SxEpmS8RT96rv7iPCDZjUJFuVRRV0jbS2PWNQg88HQ+3iCr7ZAZC5RkT669P/9rYNsyprN5oJYYFaWvVnUGbgQQeehjBns6ryFFq7EwuDfF8jEVOWweOG9ByYtf5+zg23oHCgjSqw0ojo+z42ZVCAQKBgQCDvnoSBxrpiVyZ1alW47xc8yMnZSqZHn94pvjUe20f/QM34Jx8Z+3MMgNqUsLZ063UQHP5mj5FzvlkZajrvUK7sQWCYBHrwUlEBOGjF1rESlhRFjesK3kp3/AhVSW5nJARF7X+DAp2mYMERkh8la2IqsRvj2QjYxy00IjtDoXtVwKBgAPt5jxnxfp7Zwl98wM88KNg0H24/4Z0Ura5azGtCbQhQyWiMjovmWvrk8x80XqNkNhGJM1p4SZXgm6XRJGw9/KJL74QehGlSC838PTzQ9LwmIoy/DRrF0kqHi37jVNo8tFGH2aPCANeUccdY390vweYRwbTUVT30FIa4V1Ydr/7";
 	public static String PublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApKYiuxTKZAhh/mTRlQtjYOrFcN+cSOtUdgmYmjlUQF7NZV9ac/0/sclwdQh1KMekpkr5FR0vn7upKhakxKQIHMgmwppi5qnLFnkVUl9DHyGLN7u8MuyMB/fwNhAghnnQGXCQZiT7qD1HMmffztiUyuIQQ68Ym4Pq44xog+QPOUXbu4QFBLXnlf3xB/DGpslh6bOLp1SiunDmuGVrTGXDLuzYt/1XTyfQ/BQfI76jl+v3dfH7qpImd6wPcLFLwZ4CZS8eAvl75AcIMe671Nie6SQRfdK7aexl5YCeMCf38c9qXUPPIwj/jNSCjbDI3yK1B4qdt9nfXNMFRIYsz+UMMwIDAQAB";
-	//public static String url = "http://localhost:7010/quick/api";
-	public static String url = "http://39.100.6.242:6001/quick/api";
+	public static String url = "http://localhost:8010/api";
+	//public static String url = "http://39.100.6.242:6001/quick/api";
 	//public static String url = "http://39.98.166.14:6001/quick/api";
 
 	public static void main(String[] args) throws  Exception{
 		// TODO Auto-generated method stub
-		recharge();
+		//recharge();
+		//query();
+		orderNotify();
+		//withdraw();
+		//withdrawQuery();
 
 
 
@@ -312,12 +316,12 @@ public class SumTestController {
 	public static void recharge() {
 		HashMap<String, Object> paramMap = new HashMap<>();
     	paramMap.put("reqTime",DateUtil.now());
-    	paramMap.put("partnerId", "3000801");
-    	paramMap.put("mchId", "1252901543923736577");
-    	paramMap.put("cardNo", "6226890131804550");
-    	paramMap.put("outTradeNo", "20201109001");
+    	paramMap.put("partnerId", "2000601");
+    	paramMap.put("mchId", "1168089463357235201");
+    	paramMap.put("cardNo", "1111111111111111");
+    	paramMap.put("outTradeNo", "2021072303");
     	paramMap.put("goodsName", "test0001");
-    	paramMap.put("orderAmount", "1000");
+    	paramMap.put("orderAmount", "10000");
     	paramMap.put("notifyUrl", "http://39.100.6.242:6001/quick/api/pay/test");
     	//paramMap.put("provinceCode", "20360503");
     	paramMap.put("payPassword", "hrh@123456789");
@@ -339,9 +343,9 @@ public class SumTestController {
 	public static void query() {
 		HashMap<String, Object> paramMap = new HashMap<>();
     	paramMap.put("reqTime",DateUtil.now());
-    	paramMap.put("partnerId", "2000801");
-    	paramMap.put("mchId", "1200355596702625793");
-    	paramMap.put("outTradeNo", "20200107003");
+    	paramMap.put("partnerId", "2000601");
+    	paramMap.put("mchId", "1168089463357235201");
+    	paramMap.put("outTradeNo", "2021072302");
     	String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(paramMap), "&", "=");
     	System.out.println(signContent);
 		String signature = RSA.sign(signContent, PrivateKey);
@@ -367,10 +371,10 @@ public class SumTestController {
 	public static void withdraw() {
 		HashMap<String, Object> paramMap = new HashMap<>();
     	paramMap.put("reqTime",DateUtil.now());
-    	paramMap.put("partnerId", "3000801");
-    	paramMap.put("mchId", "1252901543923736577");
-    	paramMap.put("cardNo", "6226890131804550");
-    	paramMap.put("outTradeNo", "20200428001");
+    	paramMap.put("partnerId", "2000601");
+    	paramMap.put("mchId", "1168089463357235201");
+    	paramMap.put("cardNo", "1111111111111111");
+    	paramMap.put("outTradeNo", "w20210723001");
     	paramMap.put("cashAmount", "994");
     	paramMap.put("cashFee", "60");
     	paramMap.put("payPassword", "hrh@123456789");
@@ -386,9 +390,9 @@ public class SumTestController {
 	public static void withdrawQuery() {
 		HashMap<String, Object> paramMap = new HashMap<>();
     	paramMap.put("reqTime",DateUtil.now());
-    	paramMap.put("partnerId", "2000801");
-    	paramMap.put("mchId", "1200355596702625793");
-    	paramMap.put("outTradeNo", "df20200107001");
+    	paramMap.put("partnerId", "2000601");
+    	paramMap.put("mchId", "1168089463357235201");
+    	paramMap.put("outTradeNo", "w20210723001");
     	String signContent = MapUtil.joinIgnoreNull(MapUtil.sort(paramMap), "&", "=");
     	System.out.println(signContent);
 		String signature = RSA.sign(signContent, PrivateKey);
@@ -413,19 +417,13 @@ public class SumTestController {
 
 	public static void orderNotify() {
 		HashMap<String, Object> paramMap = new HashMap<>();
-		paramMap.put("code","200");
-		HashMap<String, Object> dataMap = new HashMap<>();
-		dataMap.put("partnerId","2000832");
-		dataMap.put("mchId","1252793523294269441");
-		dataMap.put("outTradeNo","60662020042414450280160651");
-		dataMap.put("orderAmount","191932");
-		dataMap.put("orderStatus","2");
-		dataMap.put("returnMsg","交易成功");
-		dataMap.put("signature","DfvLVuyG8gpoZGve+kKPjzh0rghd1tsWqlIpyQiPEeNr8MCKRrw1RBpmtrW3fXKeSvCM0Rtd5FxK/DC2xCzevZb0sPX7SWobfeWpkfaVTJymgoyKEmtUPrNkkEcxQw6iM/ZPVnQGodbWDE0S40gjs41JtzXgvNu9OacBQNAhhLKm+Rny4o8EeYplqEqhLrd9RLbXuDHRM5UcUgbrIvu2cQhytVMQy4Wx0ubyEDVvj3bcZUpUXAo6DyMEIKIOKLkF5X9wsNCcuVUqHVd80sCWGXkleVSoEIBE0oIF4INDSUH3ZXbThHm1wjjro2q86RkSWcBi2NQ85cWI4JoHpBxn3g==");
-		paramMap.put("data",dataMap);
-		paramMap.put("message","成功");
-		System.out.println(JSONUtil.toJsonStr(paramMap));
-		String result= HttpUtil.post("https://code.lianshangyouxuan.com/lsyx/api/plan/sumCunsumeNotify", JSONUtil.toJsonStr(paramMap));
+		paramMap.put("resp_code","200");
+		paramMap.put("order_no","1418395163136794626");
+		paramMap.put("order_type","0");
+		paramMap.put("status","1");
+
+
+		String result= HttpUtil.post(url+"/vs/pay/orderNotify", JSONUtil.toJsonStr(paramMap));
     	System.out.println(result);
 	}
 

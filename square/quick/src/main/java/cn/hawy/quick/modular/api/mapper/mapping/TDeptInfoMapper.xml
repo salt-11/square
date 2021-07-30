@@ -10,7 +10,7 @@
         <result column="password" property="password" />
         <result column="salt" property="salt" />
         <result column="balance" property="balance" />
-        <result column="agent_id" property="agentId" />
+        <result column="dept_id" property="deptId" />
         <result column="dept_publickey" property="deptPublickey" />
         <result column="platform_privatekey" property="platformPrivatekey" />
         <result column="platform_publickey" property="platformPublickey" />
@@ -19,11 +19,42 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dept_name, account, password, salt, balance, agent_id, dept_publickey, platform_privatekey, platform_publickey, create_time
+        id, dept_name, account, password, salt, balance, dept_id, dept_publickey, platform_privatekey, platform_publickey, create_time
     </sql>
 
+    <sql id="Dept_Column_List">
+        id, dept_name AS deptName, account AS account , balance AS balance, name AS name ,  agent_id AS agentId , card_no AS cardNo , bank_name AS bankName , create_time AS createTime
+    </sql>
+    
     <update id="addBalance">
         update t_dept_info set balance=balance + #{balance} where id = #{deptId}
     </update>
+
+    <select id="findAll" resultType="map">
+        select
+        <include refid="Dept_Column_List"/>
+        from t_dept_info
+        where 1=1
+        <if test="id != null and id != ''">
+            and id = #{id}
+        </if>
+        <if test="deptName != null and deptName != ''">
+            and dept_name like concat('%',#{deptName},'%')
+        </if>
+        <if test="account != null and account != ''">
+            and account like concat('%',#{account},'%')
+        </if>
+        <if test="agentId != null and agentId != ''">
+            and agent_id like concat('%',#{agentId},'%')
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            and create_time &gt;= CONCAT(#{beginTime},' 00:00:00')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and create_time &lt;= CONCAT(#{endTime},' 23:59:59')
+        </if>
+        order by create_time  desc
+    </select>
+
 
 </mapper>

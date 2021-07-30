@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -59,12 +60,16 @@ public class TAgentInfo implements Serializable {
      * 银行卡号
      */
     private String cardNo;
+    /**
+     * 银行卡号
+     */
+    private String bankName;
 
     /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private Date createTime;
 
 
     public String getId() {
@@ -73,6 +78,14 @@ public class TAgentInfo implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
     public String getAgentName() {
@@ -131,11 +144,11 @@ public class TAgentInfo implements Serializable {
         this.cardNo = cardNo;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
