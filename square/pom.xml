@@ -17,8 +17,6 @@
 
     <modules>
         <module>quick</module>
-        <module>quick-partner</module>
-        <module>quick-agent</module>
     </modules>
 
 

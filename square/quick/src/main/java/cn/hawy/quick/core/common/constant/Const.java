@@ -23,19 +23,19 @@ import java.util.List;
  * 系统常量
  *
  * @author fengshuonan
- * @date 2017年2月12日 下午9:42:53
+ * @date 2021年11月15日
  */
 public interface Const {
 
     /**
      * 默认管理系统的名称
      */
-    String DEFAULT_SYSTEM_NAME = "统统收业务管理平台";
+    String DEFAULT_SYSTEM_NAME = "学业预警管理平台";
 
     /**
      * 默认欢迎界面的提示
      */
-    String DEFAULT_WELCOME_TIP = "欢迎使用统统收业务管理平台!";
+    String DEFAULT_WELCOME_TIP = "欢迎使用学业预警管理平台!";
 
     /**
      * 系统默认的管理员密码

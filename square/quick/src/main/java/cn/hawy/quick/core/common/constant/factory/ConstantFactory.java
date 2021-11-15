@@ -124,7 +124,7 @@ public class ConstantFactory implements IConstantFactory {
         if (deptId == null) {
             return "";
         } else if (deptId == 0L) {
-            return "顶级";
+            return "福建工程学院";
         } else {
         	Dept dept = deptMapper.selectById(deptId);
             if (ToolUtil.isNotEmpty(dept) && ToolUtil.isNotEmpty(dept.getFullName())) {
@@ -185,7 +185,7 @@ public class ConstantFactory implements IConstantFactory {
         if (ToolUtil.isEmpty(code)) {
             return "";
         } else if (code.equals("0")) {
-            return "顶级";
+            return "福建工程学院";
         } else {
             Menu param = new Menu();
             param.setCode(code);

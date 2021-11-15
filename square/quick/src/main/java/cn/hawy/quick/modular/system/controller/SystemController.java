@@ -99,33 +99,6 @@ public class SystemController extends BaseController {
         return "/modular/frame/password.html";
     }
 
-    /**
-     * 个人消息列表
-     *
-     * @author fengshuonan
-     * @Date 2018/12/24 22:43
-     */
-    @RequestMapping("/message")
-    public String message() {
-        return "/modular/frame/message.html";
-    }
-
-    /**
-     * 跳转到查看用户详情页面
-     *
-     * @author fengshuonan
-     * @Date 2018/12/24 22:43
-     */
-    @RequestMapping("/user_info")
-    public String userInfo(Model model) {
-        Long userId = ShiroKit.getUserNotNull().getId();
-        User user = this.userService.getById(userId);
-        
-        model.addAllAttributes(BeanUtil.beanToMap(user));
-        model.addAttribute("roleName", ConstantFactory.me().getRoleName(user.getRoleId()));
-        LogObjectHolder.me().set(user);
-        return "/modular/frame/user_info.html";
-    }
 
     /**
      * 通用的树列表选择器
@@ -174,49 +147,6 @@ public class SystemController extends BaseController {
         return SUCCESS_TIP;
     }
 
-    /**
-     * 预览头像
-     *
-     * @author fengshuonan
-     * @Date 2018/11/9 12:45 PM
-     */
-    @RequestMapping("/previewAvatar")
-    @ResponseBody
-    public Object previewAvatar(HttpServletResponse response) {
-
-        ShiroUser currentUser = ShiroKit.getUser();
-        if (currentUser == null) {
-            throw new ServiceException(CoreExceptionEnum.NO_CURRENT_USER);
-        }
-
-        //获取当前用户的头像id
-        User user = userService.getById(currentUser.getId());
-        String avatar = user.getAvatar();
-
-        //如果头像id为空就返回默认的
-        if (ToolUtil.isEmpty(avatar)) {
-            avatar = DefaultAvatar.BASE_64_AVATAR;
-        } else {
-            FileInfo fileInfo = fileInfoService.getById(avatar);
-            if (fileInfo == null) {
-                avatar = DefaultAvatar.BASE_64_AVATAR;
-            } else {
-                avatar = fileInfo.getFileData();
-            }
-        }
-
-        //输出图片的文件流
-        try {
-            response.setContentType("image/jpeg");
-            byte[] decode = Base64.decode(avatar);
-            response.getOutputStream().write(decode);
-        } catch (IOException e) {
-            log.error("获取图片的流错误！", avatar);
-            throw new ServiceException(CoreExceptionEnum.SERVICE_ERROR);
-        }
-
-        return null;
-    }
 
     /**
      * 获取当前用户详情

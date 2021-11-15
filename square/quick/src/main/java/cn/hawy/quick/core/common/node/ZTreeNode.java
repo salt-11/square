@@ -66,7 +66,7 @@ public class ZTreeNode {
         ZTreeNode zTreeNode = new ZTreeNode();
         zTreeNode.setChecked(true);
         zTreeNode.setId(0L);
-        zTreeNode.setName("顶级");
+        zTreeNode.setName("福建工程学院");
         zTreeNode.setOpen(true);
         zTreeNode.setPId(0L);
         return zTreeNode;

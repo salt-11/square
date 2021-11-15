@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/square/quick/quick.iml" filepath="$PROJECT_DIR$/square/quick/quick.iml" />
+      <module fileurl="file://$PROJECT_DIR$/square/square.iml" filepath="$PROJECT_DIR$/square/square.iml" />
+    </modules>
+  </component>
+</project>

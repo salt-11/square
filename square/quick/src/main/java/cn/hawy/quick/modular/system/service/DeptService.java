@@ -4,11 +4,6 @@ import cn.hawy.quick.core.common.exception.BizExceptionEnum;
 import cn.hawy.quick.core.common.node.TreeviewNode;
 import cn.hawy.quick.core.common.node.ZTreeNode;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
-import cn.hawy.quick.modular.api.entity.TDeptAccountFlow;
-import cn.hawy.quick.modular.api.entity.TDeptCashFlow;
-import cn.hawy.quick.modular.api.entity.TDeptRateChannel;
-import cn.hawy.quick.modular.api.mapper.TDeptAccountFlowMapper;
-import cn.hawy.quick.modular.api.mapper.TDeptCashFlowMapper;
 import cn.hawy.quick.modular.system.entity.Dept;
 import cn.hawy.quick.modular.system.mapper.DeptMapper;
 import cn.hawy.quick.modular.system.model.DeptDto;
@@ -40,10 +35,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
 
     @Resource
     private DeptMapper deptMapper;
-    @Autowired
-    TDeptCashFlowMapper deptCashFlowMapper;
-    @Autowired
-    TDeptAccountFlowMapper deptAccountFlowMapper;
+
     /**
      * 新增部门
      *
@@ -153,39 +145,4 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
         }
     }
 
-    @Transactional
-    public void deptCash(DeptDto deptDto) {
-        //增加提现流水
-        TDeptCashFlow deptCashFlow = new TDeptCashFlow();
-        deptCashFlow.setDeptId(String.valueOf(deptDto.getDeptId()));
-        deptCashFlow.setDeptName(deptDto.getFullName());
-        //partnerCashFlow.setOutTradeNo(partnerCashDto.getOutTradeNo());
-        deptCashFlow.setCashAmount(deptDto.getCashAmount());
-        deptCashFlow.setCashStatus(1);
-        deptCashFlow.setCashRate(deptDto.getCashRate());
-        deptCashFlow.setCashFee(deptDto.getCashFee());
-        deptCashFlow.setOutAmount(deptDto.getOutAmount());
-        deptCashFlow.setName(deptDto.getName());
-        deptCashFlow.setCardNo(deptDto.getCardNo());
-        deptCashFlow.setBankName(deptDto.getBankName());
-        //partnerCashFlow.setNotifyUrl(partnerCashDto.getNotifyUrl());
-        deptCashFlow.setCreateTime(LocalDateTime.now());
-        deptCashFlowMapper.insert(deptCashFlow);
-        //增加渠道商账户流水
-        TDeptAccountFlow deptAccountFlow = new TDeptAccountFlow();
-        deptAccountFlow.setDeptId(String.valueOf(deptDto.getDeptId()));
-        deptAccountFlow.setDeptName(deptDto.getFullName());
-        deptAccountFlow.setBalance(deptDto.getBalance());
-        deptAccountFlow.setAmount(deptDto.getCashAmount());
-        deptAccountFlow.setBizType(3);
-        deptAccountFlow.setDirection(2);
-        deptAccountFlow.setTradeNo(deptCashFlow.getId().longValue());
-        deptAccountFlow.setCreateTime(LocalDateTime.now());
-        deptAccountFlowMapper.insert(deptAccountFlow);
-        //减少渠道商余额
-        int count = this.baseMapper.minusBalance(deptDto.getDeptId(), deptDto.getCashAmount());
-        if(count == 0) {
-            throw new ServiceException(400, "渠道商账户余额不足!");
-        }
-    }
 }

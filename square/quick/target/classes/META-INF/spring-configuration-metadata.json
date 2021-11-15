@@ -1,0 +1,105 @@
+{
+  "groups": [
+    {
+      "name": "beetl",
+      "type": "cn.hawy.quick.config.properties.BeetlProperties",
+      "sourceType": "cn.hawy.quick.config.properties.BeetlProperties"
+    },
+    {
+      "name": "guns",
+      "type": "cn.hawy.quick.config.properties.GunsProperties",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties"
+    },
+    {
+      "name": "rest",
+      "type": "cn.hawy.quick.config.properties.RestProperties",
+      "sourceType": "cn.hawy.quick.config.properties.RestProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "beetl.delimiter-statement-end",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.delimiter-statement-start",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.properties",
+      "type": "java.util.Properties",
+      "sourceType": "cn.hawy.quick.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.resource-auto-check",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.resource-tagroot",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.BeetlProperties"
+    },
+    {
+      "name": "beetl.resource-tagsuffix",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.BeetlProperties"
+    },
+    {
+      "name": "guns.file-upload-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties"
+    },
+    {
+      "name": "guns.kaptcha-open",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "guns.locked",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "guns.session-invalidate-time",
+      "type": "java.lang.Integer",
+      "description": "session 失效时间（默认为30分钟 单位：秒）",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties"
+    },
+    {
+      "name": "guns.session-validation-interval",
+      "type": "java.lang.Integer",
+      "description": "session 验证失效时间（默认为15分钟 单位：秒）",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties"
+    },
+    {
+      "name": "guns.spring-session-open",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "guns.swagger-open",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.hawy.quick.config.properties.GunsProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "rest.img-path",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.RestProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "rest.img-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.hawy.quick.config.properties.RestProperties",
+      "defaultValue": ""
+    }
+  ],
+  "hints": []
+}
