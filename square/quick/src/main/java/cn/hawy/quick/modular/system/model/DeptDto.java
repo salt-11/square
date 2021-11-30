@@ -20,48 +20,16 @@ public class DeptDto implements Serializable {
      */
     private Long deptId;
     /**
-     * 父部门id
+     * 父级id
      */
     private Long pid;
     /**
-     * 父部门名称
+     * 父级名称
      */
     private String pName;
-    /**
-     * 简称
-     */
-    private String simpleName;
     /**
      * 全称
      */
     private String fullName;
-    /**
-     * 描述
-     */
-    private String description;
-    /**
-     * 排序
-     */
-    private Integer sort;
-    /**
-     * 余额
-     */
-    private Long balance;
-
-    private Long cashAmount;
-
-    private Long cashId;
-
-    private String cashRate;
-
-    private Long cashFee;
-
-    private Long outAmount;
-
-    private String name;
-
-    private String cardNo;
-
-    private String bankName;
 
 }

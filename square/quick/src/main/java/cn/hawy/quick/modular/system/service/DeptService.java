@@ -5,6 +5,7 @@ import cn.hawy.quick.core.common.node.TreeviewNode;
 import cn.hawy.quick.core.common.node.ZTreeNode;
 import cn.hawy.quick.core.common.page.LayuiPageFactory;
 import cn.hawy.quick.modular.system.entity.Dept;
+import cn.hawy.quick.modular.system.entity.Menu;
 import cn.hawy.quick.modular.system.mapper.DeptMapper;
 import cn.hawy.quick.modular.system.model.DeptDto;
 import cn.hutool.core.bean.BeanUtil;
@@ -19,12 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * <p>
- * 部门表 服务实现类
+ * 专业表 服务实现类
  * </p>
  *
  * @author stylefeng
@@ -37,7 +39,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
     private DeptMapper deptMapper;
 
     /**
-     * 新增部门
+     * 新增专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 5:00 PM
@@ -45,7 +47,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
     @Transactional(rollbackFor = Exception.class)
     public void addDept(Dept dept) {
 
-        if (ToolUtil.isOneEmpty(dept, dept.getSimpleName(), dept.getFullName(), dept.getPid())) {
+        if (ToolUtil.isOneEmpty(dept,dept.getDeptId(), dept.getFullName(), dept.getPid())) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
 
@@ -56,7 +58,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
     }
 
     /**
-     * 修改部门
+     * 修改专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 5:00 PM
@@ -64,7 +66,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
     @Transactional(rollbackFor = Exception.class)
     public void editDept(Dept dept) {
 
-        if (ToolUtil.isOneEmpty(dept, dept.getDeptId(), dept.getSimpleName(), dept.getFullName(), dept.getPid(), dept.getDescription())) {
+        if (ToolUtil.isOneEmpty(dept, dept.getDeptId(), dept.getFullName(), dept.getPid())) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
 
@@ -75,7 +77,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
     }
 
     /**
-     * 删除部门
+     * 删除专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 5:16 PM
@@ -143,6 +145,24 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
             dept.setPid(pid);
             dept.setPids(pids + "[" + pid + "],");
         }
+    }
+
+    public List<Map<String, Object>> selectDeptTree(String condition, String deptId) {
+        List<Map<String, Object>> maps = this.baseMapper.selectDeptTree(condition, deptId);
+
+        if (maps == null) {
+            maps = new ArrayList<>();
+        }
+
+        //创建根节点
+        Dept dept = new Dept();
+        dept.setDeptId(-1L);
+        dept.setFullName("根节点");
+        dept.setPid(-1L);
+
+        maps.add(BeanUtil.beanToMap(dept));
+
+        return maps;
     }
 
 }

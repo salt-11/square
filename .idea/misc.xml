@@ -6,12 +6,6 @@
         <option value="$PROJECT_DIR$/square/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/square/quick-agent/pom.xml" />
-        <option value="$PROJECT_DIR$/square/quick-partner/pom.xml" />
-      </set>
-    </option>
   </component>
   <component name="PDMPlugin">
     <option name="skipTestSources" value="false" />

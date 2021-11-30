@@ -26,7 +26,7 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
 
         layer.open({
             type: 2,
-            title: '父级部门',
+            title: '父级',
             area: ['300px', '200px'],
             content: Feng.ctxPath + '/system/commonTree?formName=' + formName + "&formId=" + formId + "&treeUrl=" + treeUrl,
             end: function () {

@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * <p>
- * 部门表 Mapper 接口
+ * 专业表 Mapper 接口
  * </p>
  *
  * @author stylefeng
@@ -26,14 +26,14 @@ public interface DeptMapper extends BaseMapper<Dept> {
     List<ZTreeNode> tree();
 
     /**
-     * 获取所有部门列表
+     * 获取所有专业列表
      */
     Page<Map<String, Object>> list(@Param("page") Page page, @Param("condition") String condition, @Param("deptId") String deptId);
 
     /**
-     * 获取所有部门树列表
+     * 获取所有专业树列表
      */
     List<TreeviewNode> treeviewNodes();
 
-    int minusBalance(@Param("deptId") Long deptId,@Param("balance") Long balance);
+    List<Map<String, Object>> selectDeptTree(@Param("condition") String condition, @Param("deptId") String deptId);
 }

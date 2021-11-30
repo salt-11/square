@@ -92,21 +92,6 @@ public class UserMgrController extends BaseController {
         return PREFIX + "user_add.html";
     }
 
-    /**
-     * 跳转到角色分配页面
-     *
-     * @author fengshuonan
-     * @Date 2018/12/24 22:43
-     */
-    @Permission
-    @RequestMapping("/role_assign")
-    public String roleAssign(@RequestParam Long userId, Model model) {
-        if (ToolUtil.isEmpty(userId)) {
-            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
-        }
-        model.addAttribute("userId", userId);
-        return PREFIX + "user_roleassign.html";
-    }
 
     /**
      * 跳转到编辑管理员页面
@@ -362,23 +347,4 @@ public class UserMgrController extends BaseController {
         return SUCCESS_TIP;
     }
 
-    /**
-     * 上传图片
-     *
-     * @author fengshuonan
-     * @Date 2018/12/24 22:44
-     */
-    @RequestMapping(method = RequestMethod.POST, path = "/upload")
-    @ResponseBody
-    public String upload(@RequestPart("file") MultipartFile picture) {
-
-        String pictureName = UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
-        try {
-            String fileSavePath = gunsProperties.getFileUploadPath();
-            picture.transferTo(new File(fileSavePath + pictureName));
-        } catch (Exception e) {
-            throw new ServiceException(BizExceptionEnum.UPLOAD_ERROR);
-        }
-        return pictureName;
-    }
 }

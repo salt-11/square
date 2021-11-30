@@ -2,26 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hawy.quick.modular.system.mapper.StudentMapper">
 
+    <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.hawy.quick.modular.system.entity.Student">
-        <id column="STUDENT_ID" property="studentId" />
-        <result column="STUDENT_NAME" property="studentName"/>
-        <result column="STUDENT_SEX" property="studentSex"/>
-        <result column="STUDENT_AGE" property="studentAge"/>
-        <result column="STUDENT_PHONE" property="studentPhone"/>
+        <result column="STUDENT_ID" property="studentId" />
+        <result column="STUDENT_NAME" property="studentName" />
+        <result column="STUDENT_SEX" property="studentSex" />
+        <result column="STUDENT_PHONE" property="studentPhone" />
+        <result column="STUDENT_AGE" property="studentAge" />
+        <result column="STUDENT_CREDIT" property="studentCredit" />
+        <result column="STUDENT_MAJOR_ID" property="studentMajorId" />
+        <result column="STUDENT_CREDIT_NOW" property="studentCreditNow" />
+        <result column="STUDENT_CLASS" property="studentClass" />
+        <result column="STUDENT_CREDIT_OLD" property="studentCreditOld" />
     </resultMap>
 
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        STUDENT_ID AS studentId, STUDENT_NAME AS studentName, STUDENT_SEX AS studentSex,
-        STUDENT_AGE AS studentAge, STUDENT_PHONE AS studentPhone
+        STUDENT_ID AS "studentId", STUDENT_NAME AS "studentName", STUDENT_SEX AS "studentSex",
+        STUDENT_PHONE AS "studentPhone", STUDENT_AGE AS "studentAge", STUDENT_CREDIT AS "studentCredit",
+        STUDENT_MAJOR_ID AS "studentMajorId", STUDENT_CREDIT_NOW AS "studentCreditNow", STUDENT_CLASS AS "studentClass",
+        STUDENT_CREDIT_OLD AS "studentCreditOld"
     </sql>
 
-    <select id="selectStudents" resultType="map">
+    <select id="list" resultType="map">
         select
-        <include refid="Base_Column_List"/>
-        from sys_student
-        <if test="studentId != null">
-            where STUDENT_ID like CONCAT('%',#{studentId},'%')
-        </if>
-        order by STUDENT_ID asc
+        FULL_NAME AS fullName,
+        <include refid="Base_Column_List"></include>
+        from sys_student left join sys_dept on STUDENT_MAJOR_ID=DEPT_ID
+        where STUDENT_ID = #{id}
     </select>
 </mapper>

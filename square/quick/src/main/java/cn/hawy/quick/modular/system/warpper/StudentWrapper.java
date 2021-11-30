@@ -28,7 +28,5 @@ public class StudentWrapper extends BaseControllerWrapper {
 
     @Override
     protected void wrapTheMap(Map<String, Object> map) {
-        Long creater = (Long) map.get("createUser");
-        map.put("createrName", ConstantFactory.me().getUserNameById(creater));
     }
 }

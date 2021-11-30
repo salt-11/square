@@ -1,41 +1,18 @@
 @layout("/common/_container.html",{plugins:["ztree"],js:["/assets/modular/system/student/student.js"]}){
 
 <div class="layui-body-header">
-    <span class="layui-body-header-title">学生管理</span>
+  <span class="layui-body-header-title">个人信息</span>
 </div>
 
 <div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-        <div class="layui-col-lg12">
-            <div class="layui-card">
-                <div class="layui-card-body">
-                    <div class="layui-form toolbar">
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <input id="studentId" class="layui-input" type="text" placeholder="学号"/>
-                            </div>
-                            <div class="layui-inline">
-                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
-                                @if(shiro.hasPermission("/student/add")){
-                                <button id="btnAdd" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>
-                                @}
-                            </div>
-                        </div>
-                    </div>
-                    <table class="layui-table" id="studentTable" lay-filter="studentTable"></table>
-                </div>
-            </div>
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-lg12">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <table class="layui-table" id="studentTable" lay-filter="studentTable"></table>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-
-<script type="text/html" id="tableBar">
-    @if(shiro.hasPermission("/student/update")){
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-    @}
-    @if(shiro.hasPermission("/student/delete")){
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
-    @}
-</script>
-
 @}

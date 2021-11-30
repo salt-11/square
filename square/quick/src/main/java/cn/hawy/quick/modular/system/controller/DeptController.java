@@ -15,8 +15,11 @@
  */
 package cn.hawy.quick.modular.system.controller;
 
+import cn.hawy.quick.core.common.constant.Const;
+import cn.hawy.quick.core.common.page.LayuiPageInfo;
 import cn.hawy.quick.core.shiro.ShiroKit;
 import cn.hawy.quick.core.util.PayUtil;
+import cn.hawy.quick.modular.system.warpper.MenuWrapper;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hawy.quick.core.common.annotion.BussinessLog;
 import cn.hawy.quick.core.common.annotion.Permission;
@@ -49,7 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 部门控制器
+ * 专业控制器
  *
  * @author fengshuonan
  * @Date 2017年2月17日20:27:22
@@ -64,7 +67,7 @@ public class DeptController extends BaseController {
     private DeptService deptService;
 
     /**
-     * 跳转到部门管理首页
+     * 跳转到专业管理首页
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:56 PM
@@ -75,7 +78,7 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 跳转到添加部门
+     * 跳转到添加专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:56 PM
@@ -86,7 +89,7 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 跳转到修改部门
+     * 跳转到修改专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:56 PM
@@ -107,7 +110,7 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 获取部门的tree列表，ztree格式
+     * 获取专业的tree列表，ztree格式
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:56 PM
@@ -121,7 +124,7 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 获取部门的tree列表，treeview格式
+     * 获取专业的tree列表，treeview格式
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:57 PM
@@ -143,12 +146,12 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 新增部门
+     * 新增专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:57 PM
      */
-    @BussinessLog(value = "添加部门", key = "simpleName", dict = DeptDict.class)
+    @BussinessLog(value = "添加专业", key = "deptId", dict = DeptDict.class)
     @RequestMapping(value = "/add")
     @Permission
     @ResponseBody
@@ -158,11 +161,12 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 获取所有部门列表
+     * 获取所有专业列表
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:57 PM
      */
+    /**
     @RequestMapping(value = "/list")
     @Permission
     @ResponseBody
@@ -172,9 +176,23 @@ public class DeptController extends BaseController {
         Page<Map<String, Object>> wrap = new DeptWrapper(list).wrap();
         return LayuiPageFactory.createPageInfo(wrap);
     }
+     */
+
+    @Permission(Const.ADMIN_NAME)
+    @RequestMapping(value = "/listTree")
+    @ResponseBody
+    public Object listTree(@RequestParam(value = "condition", required = false) String condition,
+                           @RequestParam(value = "deptId", required = false) String deptId) {
+        List<Map<String, Object>> tree = this.deptService.selectDeptTree(condition, deptId);
+        List<Map<String, Object>> wrap = new DeptWrapper(tree).wrap();
+
+        LayuiPageInfo result = new LayuiPageInfo();
+        result.setData(wrap);
+        return result;
+    }
 
     /**
-     * 部门详情
+     * 专业详情
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:57 PM
@@ -190,32 +208,14 @@ public class DeptController extends BaseController {
         return deptDto;
     }
 
-    /**
-     * 部门详情
-     *
-     * @author fengshuonan
-     * @Date 2018/12/23 4:57 PM
-     */
-    @RequestMapping(value = "/balance")
-    @ResponseBody
-    public Object balance() {
-        Long deptId = ShiroKit.getDeptId();
-    	Dept dept = deptService.getById(deptId);
-        DeptDto deptDto = new DeptDto();
-        BeanUtil.copyProperties(dept, deptDto);
-        String balance = PayUtil.transFenToYuan(String.valueOf(deptDto.getBalance()));
-        Map<String,String> map = new HashMap<String, String>();
-        map.put("balance",balance);
-        return map;
-    }
 
     /**
-     * 修改部门
+     * 修改专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:57 PM
      */
-    @BussinessLog(value = "修改部门", key = "simpleName", dict = DeptDict.class)
+    @BussinessLog(value = "修改专业", key = "deptId", dict = DeptDict.class)
     @RequestMapping(value = "/update")
     @Permission
     @ResponseBody
@@ -225,18 +225,18 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 删除部门
+     * 删除专业
      *
      * @author fengshuonan
      * @Date 2018/12/23 4:57 PM
      */
-    @BussinessLog(value = "删除部门", key = "deptId", dict = DeptDict.class)
+    @BussinessLog(value = "删除专业", key = "deptId", dict = DeptDict.class)
     @RequestMapping(value = "/delete")
     @Permission
     @ResponseBody
     public ResponseData delete(@RequestParam Long deptId) {
 
-        //缓存被删除的部门名称
+        //缓存被删除的专业名称
         LogObjectHolder.me().set(ConstantFactory.me().getDeptName(deptId));
 
         deptService.deleteDept(deptId);

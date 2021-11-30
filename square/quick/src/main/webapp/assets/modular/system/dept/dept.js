@@ -1,12 +1,15 @@
-layui.use(['table', 'admin', 'ax', 'ztree'], function () {
-    var $ = layui.$;
-    var table = layui.table;
-    var $ax = layui.ax;
-    var admin = layui.admin;
+layui.use(['layer', 'form', 'ztree', 'laydate', 'admin', 'ax', 'table', 'treetable'], function () {
+    var layer = layui.layer;
+    var form = layui.form;
     var $ZTree = layui.ztree;
+    var $ax = layui.ax;
+    var laydate = layui.laydate;
+    var admin = layui.admin;
+    var table = layui.table;
+    var treetable = layui.treetable;
 
     /**
-     * 系统管理--部门管理
+     * 系统管理--专业管理
      */
     var Dept = {
         tableId: "deptTable",
@@ -20,13 +23,9 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
      */
     Dept.initColumn = function () {
         return [[
-            {type: 'checkbox'},
-            {field: 'deptId', sort: true, title: '渠道号'},
-            {field: 'simpleName', sort: true, title: '部门简称'},
-            {field: 'fullName', sort: true, title: '部门全称'},
-            {field: 'sort', sort: true, title: '排序'},
-            {field: 'balance', sort: true, title: '余额'},
-            {field: 'description', sort: true, title: '备注'},
+            {type: 'numbers'},
+            {field: 'deptId', sort: true, title: '专业编号'},
+            {field: 'fullName', sort: true, title: '专业名称'},
             {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 200}
         ]];
     };
@@ -38,7 +37,7 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
         var queryData = {};
         queryData['condition'] = $("#name").val();
         queryData['deptId'] = Dept.condition.deptId;
-        table.reload(Dept.tableId, {where: queryData});
+        Dept.initTable(Dept.tableId, {where: queryData});
     };
 
     /**
@@ -56,10 +55,10 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
         admin.putTempData('formOk', false);
         top.layui.admin.open({
             type: 2,
-            title: '添加部门',
+            title: '添加专业',
             content: Feng.ctxPath + '/dept/dept_add',
             end: function () {
-                admin.getTempData('formOk') && table.reload(Dept.tableId);
+                admin.getTempData('formOk') && Dept.initTable(Dept.tableId);
             }
         });
     };
@@ -77,7 +76,7 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
     };
 
     /**
-     * 点击编辑部门
+     * 点击编辑专业
      *
      * @param data 点击按钮时候的行数据
      */
@@ -85,16 +84,16 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
         admin.putTempData('formOk', false);
         top.layui.admin.open({
             type: 2,
-            title: '修改部门',
+            title: '修改专业',
             content: Feng.ctxPath + '/dept/dept_update?deptId=' + data.deptId,
             end: function () {
-                admin.getTempData('formOk') && table.reload(Dept.tableId);
+                admin.getTempData('formOk') && Dept.initTable(Dept.tableId);
             }
         });
     };
 
     /**
-     * 点击删除部门
+     * 点击删除专业
      *
      * @param data 点击按钮时候的行数据
      */
@@ -102,25 +101,35 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
         var operation = function () {
             var ajax = new $ax(Feng.ctxPath + "/dept/delete", function () {
                 Feng.success("删除成功!");
-                table.reload(Dept.tableId);
+                Dept.initTable(Dept.tableId);
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
             ajax.set("deptId", data.deptId);
             ajax.start();
         };
-        Feng.confirm("是否删除部门 " + data.simpleName + "?", operation);
+        Feng.confirm("是否删除专业 " + data.simpleName + "?", operation);
     };
 
-    // 渲染表格
-    var tableResult = table.render({
-        elem: '#' + Dept.tableId,
-        url: Feng.ctxPath + '/dept/list',
-        page: true,
-        height: "full-158",
-        cellMinWidth: 100,
-        cols: Dept.initColumn()
-    });
+    Dept.initTable = function (deptId, data) {
+        return treetable.render({
+            elem: '#' + deptId,
+            url: Feng.ctxPath + '/dept/listTree',
+            where: data,
+            page: false,
+            height: "full-158",
+            cellMinWidth: 100,
+            cols: Dept.initColumn(),
+            treeColIndex: 2,
+            treeSpid: "0",
+            treeIdName: 'deptId',
+            treePidName: 'pid',
+            treeDefaultClose: false,
+            treeLinkage: true
+
+        });
+    };
+    var tableResult = Dept.initTable(Dept.tableId);
 
     //初始化左侧部门树
     var ztree = new $ZTree("deptTree", "/dept/tree");

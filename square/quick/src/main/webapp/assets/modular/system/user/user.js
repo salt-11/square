@@ -28,11 +28,11 @@ layui.use(['layer', 'form', 'table', 'ztree', 'laydate', 'admin', 'ax'], functio
             {field: 'userId', hide: true, sort: true, title: '用户id'},
             {field: 'account', sort: true, title: '账号'},
             {field: 'name', sort: true, title: '姓名'},
-            {field: 'deptName', sort: true, title: '部门'},
+            //{field: 'deptName', sort: true, title: '部门'},
             {field: 'roleName', sort: true, title: '角色'},
             {field: 'phone', sort: true, title: '电话'},
             {field: 'createTime', sort: true, title: '创建时间'},
-            {field: 'status', sort: true, templet: '#statusTpl', title: '状态'},
+            //{field: 'status', sort: true, templet: '#statusTpl', title: '状态'},
             {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 280}
         ]];
     };
@@ -120,23 +120,6 @@ layui.use(['layer', 'form', 'table', 'ztree', 'laydate', 'admin', 'ax'], functio
     };
 
     /**
-     * 分配角色
-     *
-     * @param data 点击按钮时候的行数据
-     */
-    MgrUser.roleAssign = function (data) {
-        layer.open({
-            type: 2,
-            title: '角色分配',
-            area: ['300px', '400px'],
-            content: Feng.ctxPath + '/mgr/role_assign?userId=' + data.userId,
-            end: function () {
-                table.reload(MgrUser.tableId);
-            }
-        });
-    };
-
-    /**
      * 重置密码
      *
      * @param data 点击按钮时候的行数据
@@ -151,34 +134,6 @@ layui.use(['layer', 'form', 'table', 'ztree', 'laydate', 'admin', 'ax'], functio
             ajax.set("userId", data.userId);
             ajax.start();
         });
-    };
-
-    /**
-     * 修改用户状态
-     *
-     * @param userId 用户id
-     * @param checked 是否选中（true,false），选中就是解锁用户，未选中就是锁定用户
-     */
-    MgrUser.changeUserStatus = function (userId, checked) {
-        if (checked) {
-            var ajax = new $ax(Feng.ctxPath + "/mgr/unfreeze", function (data) {
-                Feng.success("解除冻结成功!");
-            }, function (data) {
-                Feng.error("解除冻结失败!");
-                table.reload(MgrUser.tableId);
-            });
-            ajax.set("userId", userId);
-            ajax.start();
-        } else {
-            var ajax = new $ax(Feng.ctxPath + "/mgr/freeze", function (data) {
-                Feng.success("冻结成功!");
-            }, function (data) {
-                Feng.error("冻结失败!" + data.responseJSON.message + "!");
-                table.reload(MgrUser.tableId);
-            });
-            ajax.set("userId", userId);
-            ajax.start();
-        }
     };
 
     // 渲染表格
@@ -227,8 +182,6 @@ layui.use(['layer', 'form', 'table', 'ztree', 'laydate', 'admin', 'ax'], functio
             MgrUser.onEditUser(data);
         } else if (layEvent === 'delete') {
             MgrUser.onDeleteUser(data);
-        } else if (layEvent === 'roleAssign') {
-            MgrUser.roleAssign(data);
         } else if (layEvent === 'reset') {
             MgrUser.resetPassword(data);
         }

@@ -40,9 +40,6 @@
     @if(shiro.hasPermission("/mgr/delete")){
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
     @}
-    @if(shiro.hasPermission("/mgr/setRole")){
-    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="roleAssign">分配角色</a>
-    @}
     @if(shiro.hasPermission("/mgr/reset")){
     <a class="layui-btn layui-btn-xs" lay-event="reset">重置密码</a>
     @}

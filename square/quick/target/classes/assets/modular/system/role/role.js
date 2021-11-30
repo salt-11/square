@@ -24,8 +24,6 @@ layui.use(['layer', 'form', 'table', 'admin', 'ax'], function () {
             {type: 'checkbox'},
             {field: 'roleId', hide: true, sort: true, title: '角色id'},
             {field: 'name', sort: true, title: '名称'},
-            {field: 'pName', sort: true, title: '上级角色'},
-            {field: 'description', sort: true, title: '别名'},
             {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 200}
         ]];
     };

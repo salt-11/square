@@ -18,7 +18,7 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
     // 让当前iframe弹层高度适应
     admin.iframeAuto();
 
-    //获取部门信息
+    //获取专业信息
     var ajax = new $ax(Feng.ctxPath + "/dept/detail/" + Feng.getUrlParam("deptId"));
     var result = ajax.start();
     form.val('deptForm', result);
@@ -31,7 +31,7 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
 
         layer.open({
             type: 2,
-            title: '父级部门',
+            title: '父级',
             area: ['300px', '200px'],
             content: Feng.ctxPath + '/system/commonTree?formName=' + formName + "&formId=" + formId + "&treeUrl=" + treeUrl,
             end: function () {

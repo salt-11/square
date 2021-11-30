@@ -53,12 +53,13 @@ public class DeptWrapper extends BaseControllerWrapper {
     protected void wrapTheMap(Map<String, Object> map) {
         Long pid = (Long) map.get("pid");
 
-        if (ToolUtil.isEmpty(pid) || pid == 0) {
+        if(pid == 0){
+            map.put("pName","福建工程学院");
+        }else if (ToolUtil.isEmpty(pid)) {
             map.put("pName", "--");
         } else {
             map.put("pName", ConstantFactory.me().getDeptName(pid));
         }
 
-        map.put("balance",  PayUtil.transFenToYuan(String.valueOf(map.get("balance"))));
     }
 }
